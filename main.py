@@ -1,6 +1,8 @@
-def main():
-    print("Hello from data-science-website!")
-
+# main.py
+from core.orchestration.mcp_server import mcp
 
 if __name__ == "__main__":
-    main()
+    # Lancement du serveur MCP
+    # Il peut être utilisé par Claude Desktop ou une autre interface
+    print("🚀 Model Context Protocol Server is running...")
+    mcp.run()
