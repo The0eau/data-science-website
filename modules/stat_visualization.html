@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 6 | Stats & Visualization Masterclass</title>
+    <style>
+        :root {
+            --bg: #050505;
+            --surface: #111111;
+            --border: #2a2a2a;
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
+            --accent: #ffffff;
+            --code-bg: #181818;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 50px;
+            margin-bottom: 60px;
+            text-align: left;
+        }
+
+        .tag {
+            background: var(--text-main);
+            color: var(--bg);
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.2rem;
+            margin-top: 10px;
+            font-weight: 300;
+        }
+
+        section {
+            margin-bottom: 80px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p {
+            color: var(--text-dim);
+            font-size: 1.05rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 12px;
+            transition: border-color 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--text-dim);
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-top: 0;
+            color: var(--text-main);
+        }
+
+        .card ul {
+            padding-left: 20px;
+            color: var(--text-dim);
+        }
+
+        .card ul li {
+            margin-bottom: 10px;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 25px 0;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: #e0e0e0;
+        }
+
+        .comment { color: #666; font-style: italic; }
+        .keyword { color: #fff; font-weight: bold; }
+
+        .master-quote {
+            background: linear-gradient(135deg, #111 0%, #050505 100%);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .master-quote blockquote {
+            font-size: 1.5rem;
+            font-style: italic;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .master-quote cite {
+            display: block;
+            margin-top: 20px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+
+        footer {
+            margin-top: 100px;
+            padding: 40px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <span class="tag">Final Module</span>
+        <h1>Statistical Analysis & Visualization</h1>
+        <p class="subtitle">Transforming raw data into strategic storytelling for decision making</p>
+    </header>
+
+    <section>
+        <p>This module marks the transition from <strong>"What does the data say?"</strong> to <strong>"What should we do?"</strong>. It is where the Data Scientist takes over from the Data Engineer to provide business value.</p>
+        
+        
+
+        <div class="grid">
+            <div class="card">
+                <h3>🔍 1. Automated EDA</h3>
+                <p>Understanding data distribution and quality before deep analysis.</p>
+                <ul>
+                    <li><strong>Pandas Profiling:</strong> Full HTML reports in one line of code.</li>
+                    <li><strong>Seaborn/Matplotlib:</strong> Industry standards for histograms and scatter plots.</li>
+                </ul>
+                <code>df.profile_report()</code>
+            </div>
+
+            <div class="card">
+                <h3>🧪 2. Statistical Rigor</h3>
+                <p>Proving that trends are statistically significant, not just random noise.</p>
+                <ul>
+                    <li><strong>Correlations:</strong> Measuring variable links (Pearson/Spearman).</li>
+                    <li><strong>Normality Tests:</strong> Shapiro-Wilk test to validate data distributions.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>🚀 3. Interactive Dashboards</h3>
+                <p>Empowering stakeholders to explore data themselves.</p>
+                <ul>
+                    <li><strong>Streamlit:</strong> Rapid web-app development in pure Python.</li>
+                    <li><strong>Plotly:</strong> Interactive charts with zoom, hover, and filtering.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <span class="tag">Implementation</span>
+        <h2>Code Example: Analysis & Viz</h2>
+        <p>This script demonstrates a statistical correlation test combined with a visual regression analysis.</p>
+
+        
+
+        <pre><code><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+<span class="keyword">import</span> seaborn <span class="keyword">as</span> sns
+<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">from</span> scipy.stats <span class="keyword">import</span> pearsonr
+
+<span class="comment"># 1. Loading & Exploration</span>
+df = sns.load_dataset(<span class="keyword">'tips'</span>)
+
+<span class="comment"># 2. Statistical Correlation Test</span>
+corr, p_value = pearsonr(df[<span class="keyword">'total_bill'</span>], df[<span class="keyword">'tip'</span>])
+print(f<span class="keyword">"Correlation: {corr:.2f}"</span>)
+
+<span class="comment"># 3. Visualization with Seaborn</span>
+plt.figure(figsize=(10, 6))
+sns.regplot(x=<span class="keyword">'total_bill'</span>, y=<span class="keyword">'tip'</span>, data=df, color=<span class="keyword">'white'</span>)
+plt.title(<span class="keyword">"Relationship: Bill vs Tip (Regression Line)"</span>)
+plt.show()</code></pre>
+    </section>
+
+    <div class="master-quote">
+        <blockquote>"I transform raw data into clear visualizations for strategic decision-making."</blockquote>
+        <cite>Data Insight Strategy</cite>
+    </div>
+
+    <footer>
+        &copy; 2026 - Data Strategy Course - From Raw Data to Decisions.
+    </footer>
+</div>
+
+</body>
+</html>

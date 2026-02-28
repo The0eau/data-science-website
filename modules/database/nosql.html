@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoSQL Mastery | MongoDB & Document Databases</title>
+    <style>
+        :root {
+            --bg: #050505;
+            --surface: #111111;
+            --border: #2a2a2a;
+            --text-main: #ffffff;
+            --text-dim: #999999;
+            --accent: #ffffff;
+            --code-bg: #181818;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 50px;
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: -3px;
+            margin: 0;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.2rem;
+            margin-top: 15px;
+            font-weight: 300;
+        }
+
+        section {
+            margin-bottom: 80px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            border-left: 3px solid var(--accent);
+            padding-left: 20px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        h3 {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: var(--text-dim);
+            margin-bottom: 20px;
+        }
+
+        /* Code Blocks */
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            color: #f0f0f0;
+        }
+
+        .keyword { color: #ffffff; font-weight: bold; }
+        .string { color: #a0a0a0; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+        }
+
+        th, td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            color: var(--text-main);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .tag {
+            background: var(--text-main);
+            color: var(--bg);
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 25px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        footer {
+            margin-top: 100px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>NoSQL Mastery</h1>
+        <p class="subtitle">Focus on MongoDB: The king of unstructured and flexible data.</p>
+    </header>
+
+    <section>
+        <span class="tag">Concept</span>
+        <h2>1. Why NoSQL?</h2>
+        <p>Traditional SQL databases (like PostgreSQL) require a fixed schema. <b>NoSQL</b> (Not Only SQL) allows you to store data without a predefined structure, making it ideal for rapid development and "messy" data.</p>
+        
+        <div class="card">
+            <h3>Key Advantages</h3>
+            <ul>
+                <li><b>Dynamic Schema:</b> Add new fields anytime without breaking the app.</li>
+                <li><b>Scalability:</b> Designed to be distributed across many servers (Horizontal Scaling).</li>
+                <li><b>Natural Format:</b> Stores data in documents (JSON/BSON) that look like code objects.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <span class="tag">Structure</span>
+        <h2>2. Anatomy of a Document</h2>
+        <p>In MongoDB, we don't have rows; we have <b>Documents</b>. We don't have tables; we have <b>Collections</b>.</p>
+
+        
+
+        <pre><code>{
+    <span class="keyword">"_id"</span>: <span class="string">"507f191e810c19729de860ea"</span>,
+    <span class="keyword">"title"</span>: <span class="string">"The NoSQL Revolution"</span>,
+    <span class="keyword">"author"</span>: {
+        <span class="keyword">"name"</span>: <span class="string">"Jane Doe"</span>,
+        <span class="keyword">"verified"</span>: <span class="keyword">true</span>
+    },
+    <span class="keyword">"content"</span>: <span class="string">"Long unstructured text or articles go here..."</span>,
+    <span class="keyword">"tags"</span>: [<span class="string">"tech"</span>, <span class="string">"future"</span>, <span class="string">"nosql"</span>],
+    <span class="keyword">"views"</span>: <span class="keyword">1450</span>
+}</code></pre>
+    </section>
+
+    <section>
+        <span class="tag">Operations</span>
+        <h2>3. Common CRUD Operations</h2>
+        <p>MongoDB uses its own query language (MQL) which is based on JavaScript-like syntax.</p>
+
+        <h3>Create (Insert)</h3>
+        <pre><code>db.users.insertOne({ name: <span class="string">"Alice"</span>, bio: <span class="string">"Writer"</span> });</code></pre>
+
+        <h3>Read (Find)</h3>
+        <pre><code>db.users.find({ name: <span class="string">"Alice"</span> });</code></pre>
+
+        <h3>Update</h3>
+        <pre><code>db.users.updateOne(
+    { name: <span class="string">"Alice"</span> }, 
+    { <span class="keyword">$set</span>: { bio: <span class="string">"Lead Writer"</span> } }
+);</code></pre>
+    </section>
+
+    <section>
+        <span class="tag">Usage</span>
+        <h2>4. When to use NoSQL?</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Use Case</th>
+                    <th>Why NoSQL / MongoDB?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>Content Management</b></td>
+                    <td>Blogs, CMS, and articles with varying formats.</td>
+                </tr>
+                <tr>
+                    <td><b>Real-time Analytics</b></td>
+                    <td>High-speed logging and IoT sensor data.</td>
+                </tr>
+                <tr>
+                    <td><b>User Profiles</b></td>
+                    <td>Where different users have different optional attributes.</td>
+                </tr>
+                <tr>
+                    <td><b>Unstructured Text</b></td>
+                    <td>Storing raw logs or large text blobs for search.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        
+    </section>
+
+    <footer>
+        &copy; 2026 NOSQL GUIDE • DOCUMENT-BASED ARCHITECTURE
+    </footer>
+</div>
+
+</body>
+</html>
