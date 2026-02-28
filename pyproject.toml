@@ -5,10 +5,14 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "gensim>=4.4.0",
     "matplotlib>=3.10.8",
     "numpy>=2.4.2",
+    "pip>=26.0.1",
+    "plotly>=6.5.2",
     "polars>=1.38.1",
     "scikit-learn>=1.8.0",
     "scipy>=1.17.1",
     "seaborn>=0.13.2",
+    "spacy>=3.8.11",
 ]
