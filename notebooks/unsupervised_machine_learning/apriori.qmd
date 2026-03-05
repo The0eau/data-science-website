@@ -1,0 +1,145 @@
+---
+title: "Unsupervised Learning: Association Rule Mining (Apriori) from Scratch"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: flatly
+    output-file: "apriori_mining.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Concept: Association Rule Mining
+
+The **Apriori algorithm** is a classic unsupervised learning method used for "Market Basket Analysis." It identifies sets of items that frequently appear together in transactions and derives rules to predict the occurrence of an item based on the presence of others.
+
+
+
+### Key Metrics:
+* **Support:** How frequently an itemset appears in the dataset.
+* **Confidence:** The probability that item B is purchased given that item A is purchased.
+* **Lift:** The ratio of the observed support to that expected if A and B were independent. A lift > 1 suggests a strong association.
+
+
+
+---
+
+## 2. Core Implementation
+
+The algorithm uses a "bottom-up" approach, where frequent subsets are extended one item at a time (candidate generation), and groups that do not meet the minimum support are pruned.
+
+```{python}
+import numpy as np
+import pandas as pd
+from itertools import combinations, chain
+
+class AprioriScratch:
+    def __init__(self, min_support=0.5, min_confidence=0.7):
+        self.min_support = min_support
+        self.min_confidence = min_confidence
+        self.frequent_itemsets = {} 
+        self.rules = []
+
+    def _get_support(self, transactions, itemset):
+        count = 0
+        for transaction in transactions:
+            if set(itemset).issubset(set(transaction)):
+                count += 1
+        return count / len(transactions)
+
+    def fit(self, transactions):
+        # Step 1: Find frequent 1-itemsets
+        all_items = set(chain(*transactions))
+        current_candidates = [frozenset([item]) for item in all_items]
+        
+        k = 1
+        while current_candidates:
+            frequent_k = {}
+            for itemset in current_candidates:
+                support = self._get_support(transactions, itemset)
+                if support >= self.min_support:
+                    frequent_k[itemset] = support
+            
+            if not frequent_k:
+                break
+                
+            self.frequent_itemsets.update(frequent_k)
+            current_candidates = self._generate_next_candidates(list(frequent_k.keys()), k)
+            k += 1
+        
+        self._generate_rules()
+        return self
+
+    def _generate_next_candidates(self, prev_frequent, k):
+        new_candidates = set()
+        for i in range(len(prev_frequent)):
+            for j in range(i + 1, len(prev_frequent)):
+                l1, l2 = sorted(list(prev_frequent[i])), sorted(list(prev_frequent[j]))
+                if l1[:-1] == l2[:-1]:
+                    new_candidates.add(prev_frequent[i] | prev_frequent[j])
+        return new_candidates
+
+    def _generate_rules(self):
+        for itemset, support_abc in self.frequent_itemsets.items():
+            if len(itemset) < 2:
+                continue
+            for i in range(1, len(itemset)):
+                for antecedent in combinations(itemset, i):
+                    antecedent = frozenset(antecedent)
+                    consequent = itemset - antecedent
+                    
+                    support_a = self.frequent_itemsets.get(antecedent)
+                    confidence = support_abc / support_a
+                    
+                    if confidence >= self.min_confidence:
+                        support_b = self.frequent_itemsets.get(consequent)
+                        lift = confidence / support_b
+                        self.rules.append({
+                            'rule': f"{set(antecedent)} -> {set(consequent)}",
+                            'confidence': confidence,
+                            'lift': lift,
+                            'support': support_abc
+                        })
+
+```
+
+---
+
+## 3. Application to Transactional Data
+
+While the `creditcard.csv` dataset is numeric, association mining is typically used on categorical "baskets." Here, we simulate a transactional dataset to see the logic in action.
+
+```{python}
+# Sample Transactional Data
+dataset = [
+    ['Milk', 'Bread', 'Eggs'],
+    ['Milk', 'Bread'],
+    ['Milk', 'Eggs'],
+    ['Bread', 'Butter'],
+    ['Milk', 'Bread', 'Butter', 'Eggs'],
+    ['Bread', 'Eggs']
+]
+
+# Initialize and Fit
+model = AprioriScratch(min_support=0.3, min_confidence=0.6)
+model.fit(dataset)
+
+# Convert rules to DataFrame for visualization
+rules_df = pd.DataFrame(model.rules)
+
+print("--- Frequent Associations Discovered ---")
+if not rules_df.empty:
+    print(rules_df.sort_values(by='lift', ascending=False).head())
+else:
+    print("No rules met the thresholds.")
+
+```
+
+---
+
+## 4. Conclusion
+
+The **Apriori algorithm** is highly effective for identifying co-occurrence patterns. In fraud detection, it can be used to identify unusual "baskets" of actions—for example, a sequence of a small test transaction followed immediately by a high-value purchase and a change of address.

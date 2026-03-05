@@ -1,0 +1,148 @@
+---
+title: "Unsupervised Learning: Manifold Learning (t-SNE & UMAP)"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: vapor
+    output-file: "manifold_learning.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Concept: Non-Linear Dimensionality Reduction
+
+When data lies on a curved manifold (like a Swiss roll), linear techniques like PCA fail to capture the true structure. Manifold learning algorithms aim to "unroll" this data into a 2D or 3D space.
+
+### t-SNE (t-distributed Stochastic Neighbor Embedding)
+t-SNE converts similarities between data points to joint probabilities. It is exceptionally good at preserving **local structure**, ensuring that points that were close in high-dimensional space remain close in the embedding.
+
+
+### UMAP (Uniform Manifold Approximation and Projection)
+UMAP is built on theoretical foundations of Riemannian geometry. It is generally faster than t-SNE and is often praised for preserving more of the **global structure** (the relative distance between different clusters) while maintaining local detail.
+
+
+---
+
+## 2. Core Implementation
+
+Both algorithms rely on building a neighbor graph in high-dimensional space and then optimizing a low-dimensional layout via gradient descent.
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+
+# --- t-SNE Scratch ---
+class tSNEScratch:
+    def __init__(self, n_components=2, perplexity=30.0, learning_rate=200.0, n_iter=250):
+        self.n_components = n_components
+        self.perplexity = perplexity
+        self.learning_rate = learning_rate
+        self.n_iter = n_iter
+        self.embedding_ = None
+    
+    def fit_transform(self, X):
+        n_samples = X.shape[0]
+        # High-dim affinities
+        sum_X = np.sum(np.square(X), axis=1)
+        dist_sq = np.maximum(np.add(np.add(-2 * np.dot(X, X.T), sum_X).T, sum_X), 0)
+        P = np.exp(-dist_sq / (2 * self.perplexity ** 2))
+        np.fill_diagonal(P, 0)
+        P = (P + P.T) / (2 * n_samples * np.sum(P, axis=1, keepdims=True))
+
+        # Random initialization
+        Y = np.random.randn(n_samples, self.n_components) * 1e-4
+        
+        for i in range(self.n_iter):
+            sum_Y = np.sum(np.square(Y), axis=1)
+            dist_sq_Y = np.maximum(np.add(np.add(-2 * np.dot(Y, Y.T), sum_Y).T, sum_Y), 0)
+            Q = 1.0 / (1.0 + dist_sq_Y)
+            np.fill_diagonal(Q, 0)
+            Q /= np.sum(Q)
+            
+            # Gradient descent
+            PQ_diff = P - Q
+            grad = np.zeros((n_samples, self.n_components))
+            for j in range(n_samples):
+                grad[j] = 4 * np.dot(PQ_diff[j, :], Y[j] - Y)
+            Y -= self.learning_rate * grad
+            
+        self.embedding_ = Y
+        return Y
+
+# --- UMAP Scratch ---
+class UMAPScratch:
+    def __init__(self, n_components=2, n_neighbors=15, learning_rate=1.0, n_epochs=50):
+        self.n_components = n_components
+        self.n_neighbors = n_neighbors
+        self.learning_rate = learning_rate
+        self.n_epochs = n_epochs
+        self.embedding_ = None
+
+    def fit_transform(self, X):
+        n_samples = X.shape[0]
+        sum_X = np.sum(np.square(X), axis=1)
+        dist_sq = np.maximum(np.add(np.add(-2 * np.dot(X, X.T), sum_X).T, sum_X), 0)
+        
+        # Simulating membership strengths (simplified graph)
+        P = np.zeros((n_samples, n_samples))
+        for i in range(n_samples):
+            idx = np.argsort(dist_sq[i])[1:self.n_neighbors+1]
+            P[i, idx] = 1.0
+        P = (P + P.T) / 2
+        
+        Y = np.random.randn(n_samples, self.n_components)
+        for epoch in range(self.n_epochs):
+            sum_Y = np.sum(np.square(Y), axis=1)
+            dist_sq_Y = np.maximum(np.add(np.add(-2 * np.dot(Y, Y.T), sum_Y).T, sum_Y), 0)
+            
+            grad = np.zeros((n_samples, self.n_components))
+            for i in range(n_samples):
+                attr = P[i, :] * (1 / (dist_sq_Y[i, :] + 1e-1))
+                repul = (1 - P[i, :]) * (1 / (dist_sq_Y[i, :]**2 + 1e-1))
+                grad[i] = np.dot(attr - repul, Y[i] - Y)
+            Y -= self.learning_rate * grad
+            
+        self.embedding_ = Y
+        return Y
+
+```
+
+---
+
+## 3. Visualization: Identifying Transaction Clusters
+
+Manifold learning is often used as a "sanity check" to see if fraudulent transactions naturally cluster away from legitimate ones in a visual map.
+
+```{python}
+# 1. Load Data
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+df = pd.read_csv(csv_path, nrows=100)
+
+# 2. Features
+X = df.drop(columns=['Time', 'Class']).values
+X = (X - X.mean(axis=0)) / (X.std(axis=0) + 1e-9)
+
+# 3. Apply t-SNE
+tsne = tSNEScratch(n_iter=100)
+X_tsne = tsne.fit_transform(X)
+
+# 4. Apply UMAP
+umap = UMAPScratch(n_epochs=50)
+X_umap = umap.fit_transform(X)
+
+print("--- Manifold Projection Shapes ---")
+print(f"t-SNE Result Shape: {X_tsne.shape}")
+print(f"UMAP Result Shape:  {X_umap.shape}")
+
+```
+
+---
+
+## 4. Conclusion
+
+**t-SNE** and **UMAP** are indispensable for exploratory data analysis. While they are computationally heavy compared to PCA, they reveal the non-linear "sub-communities" within your financial data. If frauds are being hidden within legitimate-looking transaction volumes, these techniques can often stretch the data enough to make those hidden clusters visible to the naked eye.

@@ -1,0 +1,21 @@
+{
+  "name": "golden-template",
+  "version": "1.0.0",
+  "description": "A golden template for new projects.",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "prettier --check .",
+    "lint:fix": "prettier --write .",
+    "test": "echo \"No JavaScript tests configured yet.\" && exit 0",
+    "deploy": "gh-pages -d ."
+  },
+  "homepage": "https://The0eau.github.io/data-science-website",
+  "author": "Theau AGUET",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^3.2.5"
+  },
+  "dependencies": {
+    "gh-pages": "^6.3.0"
+  }
+}

@@ -1,0 +1,109 @@
+---
+title: "Local-First RAG: Engineering Private AI Pipelines"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: vapor
+---
+
+## 1. Concept: Retrieval Augmented Generation (RAG)
+
+LLMs are frozen in time—they only know what they were trained on. **RAG** solves this by providing the model with a "temporary memory" (the context) fetched from a vector database.
+
+
+
+[Image of RAG Retrieval Augmented Generation workflow diagram]
+
+
+### The LCEL Advantage
+Unlike older LangChain versions, **LCEL (LangChain Expression Language)** uses the `|` operator to create a transparent data flow. 
+
+
+
+1. **Retriever**: Grabs the most relevant chunks from the FAISS vector store.
+2. **RunnablePassthrough**: Forwards the original user question through the chain.
+3. **Prompt**: Merges the context and question into a single instruction.
+4. **ChatOllama**: The local model engine processes the instruction.
+5. **OutputParser**: Cleans the model's raw output into a simple string.
+
+---
+
+## 2. Implementation: The Orchestrator
+
+This implementation uses `langchain-huggingface` for embeddings and `langchain-ollama` to interface with the local model engine.
+
+```{python}
+import os
+from langchain_community.vectorstores import FAISS
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_ollama import ChatOllama
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnablePassthrough
+from langchain_core.output_parsers import StrOutputParser
+
+class LocalRAGOrchestrator:
+    def __init__(self, docs):
+        # Using a lightweight embedding model for speed
+        self.embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        
+        # In-memory FAISS store for lightning-fast retrieval
+        self.vector_store = FAISS.from_texts(docs, self.embeddings)
+        self.retriever = self.vector_store.as_retriever()
+        
+        # Temperature 0 ensures deterministic, factual responses
+        self.llm = ChatOllama(model="llama3", temperature=0)
+
+    def ask(self, query):
+        template = """Answer the question based ONLY on the following context:
+        {context}
+        
+        Question: {question}
+        """
+        prompt = ChatPromptTemplate.from_template(template)
+
+        # The LCEL Chain
+        chain = (
+            {"context": self.retriever, "question": RunnablePassthrough()}
+            | prompt
+            | self.llm
+            | StrOutputParser()
+        )
+        
+        return chain.invoke(query)
+
+```
+
+---
+
+## 3. Results & Grounding
+
+By asking a question about technical specifications and "security codes" only present in our local data, we prove that the model is **grounded** in our private context and not hallucinating from its general training data.
+
+```{python}
+# Technical documentation snippets
+my_data = [
+    "The internal network uses Python-based automation scripts.",
+    "The primary firewall was configured on a specialized Linux server in 2026.",
+    "The emergency access code for the server room is 98765."
+]
+
+orchestrator = LocalRAGOrchestrator(my_data)
+question = "What is the emergency access code and on which system was the firewall built?"
+
+response = orchestrator.ask(question)
+print(f"Question: {question}")
+print(f"Response: {response}")
+
+```
+
+---
+
+## 4. Key Performance Indicators (KPIs)
+
+* **Privacy**: Zero data leaves the local environment. All processing is done via local model instances.
+* **Latency**: Using efficient embedding models like `all-MiniLM-L6-v2` ensures retrieval happens in <10ms.
+* **Accuracy**: The `temperature=0` setting minimizes creative risks, focusing purely on providing evidence-based answers from the context.

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 04: Orchestration & Software Architecture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        code, pre { font-family: 'Fira Code', monospace; }
+        .gradient-header { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased">
+
+    <header class="gradient-header text-white py-20 px-6 shadow-2xl relative overflow-hidden">
+        <div class="max-w-5xl mx-auto relative z-10">
+            <div class="flex items-center gap-3 mb-6 text-indigo-300">
+                <i data-lucide="layers" class="w-10 h-10"></i>
+                <span class="uppercase tracking-widest text-sm font-bold border-b-2 border-indigo-500 pb-1">Module 04</span>
+            </div>
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">Orchestration & <br><span class="text-indigo-400">Software Architecture</span></h1>
+            <p class="text-xl text-slate-300 max-w-2xl leading-relaxed">
+                Building robust, modular, and AI-ready data pipelines using Python MCP servers and asynchronous workflows.
+            </p>
+        </div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+    </header>
+
+    <main class="max-w-5xl mx-auto py-16 px-6">
+
+        <section class="mb-24">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                        <i data-lucide="cpu" class="text-indigo-600"></i> The Core Logic
+                    </h2>
+                    <p class="text-slate-600 text-lg mb-6 leading-relaxed">
+                        Data Science is more than just notebooks. To scale, we must decouple <strong>Ingestion</strong>, <strong>Processing</strong>, and <strong>Orchestration</strong>. This architecture ensures that a failure in one module doesn't crash the entire system.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border-l-4 border-indigo-500">
+                            <i data-lucide="api" class="text-indigo-500 mt-1"></i>
+                            <div>
+                                <h4 class="font-bold">REST API & MCP</h4>
+                                <p class="text-sm text-slate-500">Using FastAPI or FastMCP to transform scripts into interactive services.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border-l-4 border-indigo-500">
+                            <i data-lucide="activity" class="text-indigo-500 mt-1"></i>
+                            <div>
+                                <h4 class="font-bold">Asynchronous Workflow</h4>
+                                <p class="text-sm text-slate-500">Non-blocking I/O with <code>httpx</code> for high-performance data fetching.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-900 rounded-3xl p-8 shadow-2xl relative">
+                    <h3 class="text-indigo-400 font-mono text-sm mb-6 uppercase tracking-widest">// Modular Pipeline Flow</h3>
+                    
+                    <div class="flex flex-col gap-4 mt-8">
+                        <div class="flex items-center gap-3 text-slate-300 bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <span class="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-xs text-white">1</span>
+                            <span>Ingest Raw Data (CSV/API)</span>
+                        </div>
+                        <i data-lucide="arrow-down" class="mx-auto text-slate-600 w-5 h-5"></i>
+                        <div class="flex items-center gap-3 text-slate-300 bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <span class="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-xs text-white">2</span>
+                            <span>NLP & Cleaning (Core Logic)</span>
+                        </div>
+                        <i data-lucide="arrow-down" class="mx-auto text-slate-600 w-5 h-5"></i>
+                        <div class="flex items-center gap-3 text-slate-300 bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <span class="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-xs text-white">3</span>
+                            <span>AI Integration (MCP Server)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-24 bg-white rounded-3xl p-10 shadow-sm border border-slate-100">
+            <h2 class="text-3xl font-bold mb-8">Infrastructure Design</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="space-y-4">
+                    <div class="p-3 bg-rose-50 rounded-lg w-fit text-rose-600"><i data-lucide="container"></i></div>
+                    <h4 class="font-bold text-lg">Containerization</h4>
+                    <p class="text-slate-500 text-sm">Encapsulating the MCP server in <strong>Docker</strong> ensures reproducibility across Cloud environments (AWS/GCP).</p>
+                </div>
+                <div class="space-y-4 text-center md:border-x border-slate-100 px-6">
+                    <div class="p-3 bg-indigo-50 rounded-lg w-fit mx-auto text-indigo-600"><i data-lucide="shield-check"></i></div>
+                    <h4 class="font-bold text-lg">Observability</h4>
+                    <p class="text-slate-500 text-sm">Implementing <strong>Structured Logging</strong> to monitor pipeline health and debug 24/7 autonomous runs.</p>
+                </div>
+                <div class="space-y-4 text-right">
+                    <div class="p-3 bg-emerald-50 rounded-lg w-fit ml-auto text-emerald-600"><i data-lucide="zap"></i></div>
+                    <h4 class="font-bold text-lg">Scalability</h4>
+                    <p class="text-slate-500 text-sm">Horizontal scaling via <strong>FastAPI workers</strong> to handle high-concurrency requests.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="project" class="mb-16">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="bg-indigo-600 p-4 rounded-2xl shadow-lg">
+                    <i data-lucide="blocks" class="text-white w-8 h-8"></i>
+                </div>
+                <div>
+                    <h2 class="text-4xl font-bold text-slate-900 tracking-tight">Practical Case: From Scratch MCP Pipeline</h2>
+                    <p class="text-slate-500 font-medium italic mt-1">"Building a modular news intelligence engine from the ground up."</p>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-5 gap-10">
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden">
+                        <h3 class="font-bold text-xl mb-6 flex items-center gap-2">
+                            <i data-lucide="folder-tree" class="text-indigo-500 w-6 h-6"></i> 
+                            Clean Architecture
+                        </h3>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="text-indigo-600 font-mono font-bold pt-1">01.</div>
+                                <div>
+                                    <span class="block font-bold text-slate-800">Ingestion Layer</span>
+                                    <span class="text-sm text-slate-500">Asynchronous fetching using <code>httpx</code> to handle live data streams.</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 border-l-2 border-indigo-100 pl-4">
+                                <div class="text-indigo-600 font-mono font-bold pt-1">02.</div>
+                                <div>
+                                    <span class="block font-bold text-slate-800">Processing Layer</span>
+                                    <span class="text-sm text-slate-500">Decoupled NLP logic to clean and score headlines without I/O blocking.</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 border-l-2 border-indigo-100 pl-4">
+                                <div class="text-indigo-600 font-mono font-bold pt-1">03.</div>
+                                <div>
+                                    <span class="block font-bold text-slate-800">Orchestration Layer</span>
+                                    <span class="text-sm text-slate-500">The MCP Server exposing functions as AI-Discoverable tools.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 text-white p-8 rounded-3xl shadow-2xl">
+                        <h4 class="font-bold text-indigo-400 mb-4 flex items-center gap-2">
+                            <i data-lucide="info" class="w-5 h-5"></i> Professional Standard
+                        </h4>
+                        <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                            By building this <strong>From Scratch</strong>, I demonstrate a deep mastery of <strong>Single Responsibility Principle</strong> and <strong>Dependency Injection</strong>.
+                        </p>
+                        <div class="flex gap-2">
+                            <span class="text-[10px] bg-white/10 px-2 py-1 rounded border border-white/10 uppercase font-bold tracking-widest">AsyncIO</span>
+                            <span class="text-[10px] bg-white/10 px-2 py-1 rounded border border-white/10 uppercase font-bold tracking-widest">MCP</span>
+                            <span class="text-[10px] bg-white/10 px-2 py-1 rounded border border-white/10 uppercase font-bold tracking-widest">Modular</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3">
+                    <div class="bg-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-800">
+                        <div class="flex items-center justify-between px-8 py-4 bg-slate-800/50 border-b border-slate-700">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="file-code" class="text-indigo-400 w-4 h-4"></i>
+                                <span class="text-xs font-mono text-slate-400">core/orchestration/mcp_server.py</span>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <div class="w-3 h-3 rounded-full bg-rose-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+                            </div>
+                        </div>
+                        <div class="p-8 overflow-x-auto text-indigo-100">
+                            <pre class="text-sm font-mono leading-7">
+<span class="text-indigo-400">from</span> mcp.server.fastmcp <span class="text-indigo-400">import</span> FastMCP
+<span class="text-indigo-400">from</span> core.orchestration.ingestion <span class="text-indigo-400">import</span> fetch_news
+<span class="text-indigo-400">from</span> core.orchestration.processor <span class="text-indigo-400">import</span> analyze_data
+
+<span class="text-slate-500"># 1. Initialize the AI-Ready Orchestrator</span>
+mcp = <span class="text-amber-400">FastMCP</span>(<span class="text-emerald-400">"NewsIntelligence"</span>)
+
+<span class="text-indigo-400">@mcp.tool</span>()
+<span class="text-indigo-400">async def</span> <span class="text-amber-400">run_news_pipeline</span>(topic: str):
+    <span class="text-slate-500">"""
+    Full Modular Pipeline: Ingestion -> Analysis -> Result.
+    """</span>
+    <span class="text-slate-500"># Fetch data (Async)</span>
+    raw_data = <span class="text-indigo-400">await</span> <span class="text-amber-400">fetch_news</span>(topic)
+    
+    <span class="text-slate-500"># Clean & Process (Decoupled Logic)</span>
+    final_results = <span class="text-amber-400">analyze_data</span>(raw_data)
+    
+    <span class="text-indigo-400">return</span> final_results
+
+<span class="text-indigo-400">if</span> __name__ == <span class="text-emerald-400">"__main__"</span>:
+    mcp.<span class="text-amber-400">run</span>()</pre>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-end">
+                        <a href="../core/orchestration" 
+                           target="_blank"
+                           class="group flex items-center gap-3 bg-white border-2 border-slate-200 px-8 py-4 rounded-2xl font-bold text-slate-700 hover:border-indigo-500 hover:text-indigo-600 transition-all shadow-sm">
+                            <i data-lucide="github" class="group-hover:rotate-12 transition-transform"></i>
+                            Browse Complete Code on GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-12 px-6 text-center">
+        <p class="text-slate-400 text-sm">Design & Logic by Theau © 2026</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

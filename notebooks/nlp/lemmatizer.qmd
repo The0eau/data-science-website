@@ -1,0 +1,96 @@
+---
+title: "NLP Foundations: Normalization via Lemmatization"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: flatly
+---
+
+## 1. Concept: Why Normalize Text?
+
+In Natural Language Processing, words like "ran," "running," and "runs" all represent the same semantic concept: the verb **run**. If we treat them as separate features, we dilute our data's signal. 
+
+**Lemmatization** uses a vocabulary and morphological analysis to return a word to its "dictionary form" (its **lemma**). Unlike Stemming, which simply cuts off suffixes, Lemmatization handles irregular forms like "better" $\rightarrow$ "good."
+
+
+
+---
+
+## 2. Implementation: Dictionary-Based Lemmatization
+
+This implementation uses a hash-map (Python dictionary) for $O(1)$ lookup time. This is a highly efficient way to handle common English inflections and irregular verbs locally.
+
+```{python}
+class Lemmatizer:
+    """
+    A dictionary-based lemmatizer to normalize words to their root forms.
+    """
+
+    def __init__(self):
+        """
+        Initializes the lemmatizer with a mapping of inflected forms to lemmas.
+        """
+        # A subset of a linguistic database mapping inflections to roots
+        self.lemma_lookup = {
+            "running": "run",
+            "ran": "run",
+            "runs": "run",
+            "ate": "eat",
+            "eaten": "eat",
+            "eating": "eat",
+            "better": "good",
+            "worst": "bad",
+            "rocks": "rock",
+            "corpora": "corpus"
+        }
+
+    def lemmatize(self, token: str) -> str:
+        """
+        Returns the lemma of a given token. If not found, returns the original word.
+        """
+        word = token.lower()
+        return self.lemma_lookup.get(word, word)
+
+```
+
+---
+
+## 3. Execution & Testing
+
+We apply the lemmatizer to a sample sentence to see how it handles irregular adjectives ("better", "worst") and past-tense verbs ("ran").
+
+```{python}
+lemmatizer = Lemmatizer()
+
+# Sample sentence tokens
+tokens = ["The", "performance", "was", "better", "than", "the", "worst", "expectations"]
+
+# Apply lemmatization
+lemmas = [lemmatizer.lemmatize(t) for t in tokens]
+
+import pandas as pd
+df_results = pd.DataFrame({"Original": tokens, "Lemma": lemmas})
+print("Comparison Table:")
+display(df_results.T)
+
+```
+
+---
+
+## 4. Analysis of Results
+
+* **Irregular Handling**: Notice how "better" successfully became "good". A simple stemmer would have likely left "bett" or "better".
+* **Dictionary Limitations**: Technical or rare terms not present in the mapping remain unchanged. In industrial applications, we use broader models like **WordNet** or neural lemmatizers to fill these gaps.
+* **Case Sensitivity**: Our implementation normalizes to lowercase, ensuring consistency across the corpus.
+
+### Computational Efficiency
+
+Using a dictionary lookup is computationally lightweight. For a text of length $n$, the time complexity is:
+
+$$O(n)$$
+
+This efficiency makes it suitable for real-time preprocessing in local AI pipelines and edge computing environments where resources are constrained.

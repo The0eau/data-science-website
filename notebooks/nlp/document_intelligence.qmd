@@ -1,0 +1,105 @@
+---
+title: "NLP Intelligence: Local Summarization & Extractive QA"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: journal
+---
+
+## 1. Concept: Task-Specific Transformers
+
+Modern NLP has shifted from simple keyword matching to **Semantic Understanding**. We use pre-trained Transformer models that have been "fine-tuned" for specific downstream tasks:
+
+* **BART (Bidirectional and Auto-Regressive Transformers)**: Excellent for summarization because it combines bidirectional encoding (like BERT) with auto-regressive decoding (like GPT).
+* **DistilBERT**: A smaller, faster, and lighter version of BERT that retains 97% of its performance, perfect for extractive Question Answering on standard local hardware.
+
+
+
+---
+
+## 2. Implementation: The Document Intelligence Engine
+
+We use the Hugging Face `pipeline` API to abstract away the complexity of tokenization and tensor management.
+
+```{python}
+from transformers import pipeline
+
+class DocumentIntelligence:
+    """
+    Handles Summarization and Question Answering locally.
+    """
+    def __init__(self):
+        # Using Distil models to maintain high performance without a dedicated GPU
+        print("--- Loading Summarization Model (DistilBART) ---")
+        self.summarizer = pipeline(
+            "summarization", 
+            model="sshleifer/distilbart-cnn-12-6"
+        )
+        
+        print("--- Loading Q&A Model (DistilBERT) ---")
+        self.qa_model = pipeline(
+            "question-answering", 
+            model="distilbert-base-cased-distilled-squad"
+        )
+
+    def summarize(self, text, max_length=130, min_length=30):
+        """Generates a concise summary using abstractive summarization."""
+        summary = self.summarizer(text, max_length=max_length, min_length=min_length, do_sample=False)
+        return summary[0]['summary_text']
+
+    def answer_question(self, context, question):
+        """Performs extractive QA to find the exact answer span in the text."""
+        result = self.qa_model(question=question, context=context)
+        return result['answer'], result['score']
+
+```
+
+---
+
+## 3. Testing the Engine
+
+We will provide a technical context regarding renewable energy and ask the engine to both summarize it and answer a specific question.
+
+```{python}
+# Initialize the engine
+engine = DocumentIntelligence()
+
+# Sample Context: Renewable Energy Overview
+context_text = """
+Renewable energy comes from natural sources that replace themselves as quickly as 
+they are used. Solar and wind energy are the most common forms. In 2024, solar 
+installations grew by 30% globally due to falling costs of photovoltaic cells. 
+Wind power also saw significant gains, particularly in offshore projects in the 
+North Sea. The primary goal of transitioning to these sources is to reduce 
+carbon emissions and achieve energy independence.
+"""
+
+# 1. Summarization
+print("\n[AI Summary]:")
+summary = engine.summarize(context_text)
+print(summary)
+
+# 2. Extractive Q&A
+question = "What was the growth rate of solar installations in 2024?"
+answer, score = engine.answer_question(context_text, question)
+
+print(f"\n[Question]: {question}")
+print(f"[Answer]: {answer} (Confidence Score: {score:.4f})")
+
+```
+
+---
+
+## 4. Key Takeaways
+
+### Abstractive vs. Extractive
+
+In this notebook, the **Summarizer** is *abstractive* (it paraphrases and generates new sentences), while the **Q&A** is *extractive* (it identifies the exact word or phrase already present in the source text).
+
+### Local Performance optimization
+
+By using `Distil` models, we ensure that the inference time remains under a few seconds on standard consumer-grade CPUs. This demonstrates that document intelligence can be deployed locally, ensuring data privacy and reducing cloud costs.

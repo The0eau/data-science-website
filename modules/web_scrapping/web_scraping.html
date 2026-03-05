@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module: Web Scraping & Automated Research</title>
+    <style>
+        :root {
+            --bg: #050505;
+            --surface: #111111;
+            --border: #2a2a2a;
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
+            --accent: #ffffff;
+            --code-bg: #181818;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 40px;
+            margin-bottom: 60px;
+        }
+
+        .tag {
+            background: var(--text-main);
+            color: var(--bg);
+            padding: 2px 12px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        h1 { font-size: 2.8rem; font-weight: 900; letter-spacing: -1px; margin: 0; }
+        h2 { font-size: 1.6rem; margin-top: 50px; text-transform: uppercase; letter-spacing: 1px; border-left: 3px solid #fff; padding-left: 15px;}
+        h3 { color: var(--text-main); font-size: 1.2rem; margin-top: 30px; }
+
+        p { color: var(--text-dim); margin-bottom: 20px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 25px;
+            border-radius: 8px;
+        }
+
+        .card h4 { margin-top: 0; color: var(--text-main); font-size: 1.1rem; }
+        .card ul { padding-left: 18px; color: var(--text-dim); font-size: 0.9rem; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: var(--surface);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: #1a1a1a; font-size: 0.8rem; text-transform: uppercase; color: var(--text-main); }
+        td { color: var(--text-dim); font-size: 0.9rem; }
+
+        pre {
+            background: var(--code-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        code { font-family: 'Fira Code', monospace; color: #e0e0e0; font-size: 0.9rem; }
+        .keyword { color: #569cd6; }
+        .comment { color: #6a9955; }
+        .string { color: #ce9178; }
+
+        .highlight-box {
+            border: 1px dashed var(--border);
+            padding: 25px;
+            border-radius: 8px;
+            background: #0a0a0a;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <span class="tag">Module: Data Sourcing</span>
+        <h1>Web Scraping & Automated Research</h1>
+        <p>Transforming the vastness of the web into structured intelligence.</p>
+    </header>
+
+    <section>
+        <p>This is "Step Zero" of any Data Science project. If the data doesn't exist in your database yet, you go find it where it lives—efficiently, ethically, and automatically.</p>
+        
+        
+
+        <h2>1. The 3 Technological Pillars</h2>
+        <div class="grid">
+            <div class="card">
+                <h4>🍵 BeautifulSoup</h4>
+                <p>Lightweight & Fast. Perfect for static HTML (news articles, blogs, forums).</p>
+                <ul>
+                    <li>Parses HTML tags</li>
+                    <li>Easy to implement</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>🤖 Selenium / Playwright</h4>
+                <p>Interactive. Simulates human behavior on modern sites (React, Vue).</p>
+                <ul>
+                    <li>Handles JavaScript</li>
+                    <li>Fills forms & scrolls</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>🏗️ Scrapy</h4>
+                <p>Industrial Framework. Designed for massive, parallel scraping projects.</p>
+                <ul>
+                    <li>Robust error handling</li>
+                    <li>High-speed performance</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>2. Scientific APIs: The Clean Path</h2>
+        <p>APIs (Application Programming Interfaces) are official gateways to retrieve clean, structured data in JSON format.</p>
+        
+        
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Source</th>
+                    <th>Use Case</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>arXiv / Semantic Scholar</b></td>
+                    <td>Retrieve metadata for research papers (titles, authors, citations).</td>
+                </tr>
+                <tr>
+                    <td><b>CrossRef</b></td>
+                    <td>Access DOI information for indexing and cross-referencing.</td>
+                </tr>
+                <tr>
+                    <td><b>PubMed</b></td>
+                    <td>Essential for medical and biological research data.</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>3. Document Parsing</h2>
+        <p>Scientific intelligence is often locked in complex formats:</p>
+        <ul>
+            <li><strong>HTML Parsing:</strong> Using CSS selectors or XPath to target specific data points.</li>
+            <li><strong>PDF Parsing:</strong> Using libraries like <code>PyMuPDF</code> or <code>PyPDF2</code> to extract text and tables from frozen publications.</li>
+        </ul>
+
+        <h3>Python Example: Simple Scraping</h3>
+        <pre><code><span class="keyword">import</span> requests
+<span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup
+
+<span class="comment"># 1. HTTP Request</span>
+url = <span class="string">"https://example-science-site.com/articles"</span>
+response = requests.get(url)
+
+<span class="comment"># 2. HTML Parsing</span>
+soup = BeautifulSoup(response.text, <span class="string">'html.parser'</span>)
+
+<span class="comment"># 3. Extracting Titles</span>
+titles = soup.find_all(<span class="string">'h2'</span>, class_=<span class="string">'article-title'</span>)
+<span class="keyword">for</span> title <span class="keyword">in</span> titles:
+    print(f<span class="string">"Found Paper: {title.text.strip()}"</span>)</code></pre>
+    </section>
+
+    <div class="highlight-box">
+        <p style="color: var(--text-main); font-weight: bold; margin-bottom: 5px;">Why is this a Game Changer?</p>
+        <p>Mastering scraping proves your <strong>independence</strong>. You no longer rely on pre-packaged files; you build your own custom datasets from scratch.</p>
+        <p style="font-style: italic; font-size: 0.9rem;">"I have automated the collection of scientific data via web scraping and public APIs."</p>
+    </div>
+
+    <footer>
+        &copy; 2026 - Data Sourcing Course - Built for Data Professionals.
+    </footer>
+</div>
+
+</body>
+</html>
