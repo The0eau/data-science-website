@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Lemmatization</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Lemmatization Master Class</h1>
+            <p><a href="text_mining.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Text Mining</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="lemmatizer.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Normalizing Words to Their Root Form</h2>
+                <p>
+                    In NLP, we often want to treat words like "run", "running", and "ran" as the same concept. <strong>Lemmatization</strong> is the process of reducing a word to its "lemma", or its canonical dictionary form. This is a form of text normalization that helps to group together different inflections of a word.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. Lemmatization vs. Stemming</h2>
+                <p>
+                    Lemmatization is often confused with stemming, but there is a key difference:
+                </p>
+                <ul>
+                    <li><strong>Stemming:</strong> A crude, rule-based process that chops off the end of words. For example, "studies", "studying", and "student" might all be stemmed to "stud". The result is not always a real word.</li>
+                    <li><strong>Lemmatization:</strong> A more sophisticated process that uses a vocabulary and morphological analysis to return the base form of a word. For example, "studies" and "studying" would both be lemmatized to "study". The result is always a real word.</li>
+                </ul>
+                <p>Lemmatization is more computationally expensive than stemming, but it provides a more accurate and interpretable result.</p>
+            </section>
+
+            <section>
+                <h2>3. The Importance of Context (Part-of-Speech Tagging)</h2>
+                <p>
+                    A good lemmatizer needs to understand the part-of-speech of a word to produce the correct lemma. For example:
+                </p>
+                <ul>
+                    <li>The word "saw" as a noun refers to a tool, and its lemma is "saw".</li>
+                    <li>The word "saw" as a verb is the past tense of "see", and its lemma is "see".</li>
+                </ul>
+                <p>Modern lemmatizers, like the one in spaCy, use part-of-speech tagging to disambiguate these cases and provide the correct lemma based on the context.</p>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Lemmatization is a crucial step for many NLP tasks, as it reduces the vocabulary size and allows models to generalize better. By consolidating different forms of a word into a single lemma, we can create a cleaner and more meaningful representation of the text, which is essential for tasks like information retrieval, text classification, and sentiment analysis.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

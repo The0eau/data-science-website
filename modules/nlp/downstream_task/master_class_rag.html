@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Retrieval-Augmented Generation (RAG)</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Enhancing LLMs with External Knowledge</h2>
+                <p>
+                    Large Language Models (LLMs) have a vast amount of knowledge, but they are limited to the data they were trained on. This means they can be out-of-date and are unable to access private or domain-specific information. <strong>Retrieval-Augmented Generation (RAG)</strong> is a technique that addresses this problem by combining the generative power of LLMs with the ability to retrieve information from external knowledge sources.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. How It Works</h2>
+                <p>
+                    The RAG process involves two main steps:
+                </p>
+                <ol>
+                    <li><strong>Retrieval:</strong> When a user provides a prompt, the RAG system first retrieves relevant documents from a knowledge base. This is typically done by embedding the prompt and the documents in a vector space and then finding the documents that are most similar to the prompt.</li>
+                    <li><strong>Generation:</strong> The retrieved documents are then passed to the LLM along with the original prompt. The LLM uses this information to generate a more accurate and informed response.</li>
+                </ol>
+            </section>
+
+            <section>
+                <h2>3. The Importance of Vector Databases</h2>
+                <p>
+                    RAG systems rely on a <strong>vector database</strong> to store and retrieve the document embeddings. A vector database is a specialized type of database that is optimized for fast similarity searches in high-dimensional vector spaces. This is a critical component for building a scalable and efficient RAG system.
+                </p>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    RAG is a powerful technique that allows us to build more intelligent and capable LLM-powered applications. By giving LLMs access to external knowledge, we can overcome their limitations and create systems that are more accurate, up-to-date, and useful.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

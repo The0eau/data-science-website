@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Local & Private Models</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Local & Private Models Master Class</h1>
+            <p><a href="rag.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to RAG</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="test_langchain.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Taking Control of Your AI</h2>
+                <p>
+                    While powerful, proprietary models from companies like OpenAI and Google come with several limitations: they can be expensive, they raise privacy concerns, and they are not suitable for offline use. The good news is that there is a growing ecosystem of powerful open-source models that you can run on your own hardware. This gives you complete control over your data and your AI applications.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The Rise of Open-Source LLMs</h2>
+                <p>
+                    Models like Llama, Mistral, and Gemma have demonstrated that open-source models can achieve performance on par with their proprietary counterparts. These models are available in a range of sizes, from small models that can run on a laptop to large models that require a powerful server. The process of running these models locally is becoming increasingly easy, thanks to tools like Hugging Face Transformers, Ollama, and llama.cpp.
+                </p>
+            </section>
+
+            <section>
+                <h2>3. The GGUF Format: Making Models Portable</h2>
+                <p>
+                    One of the key innovations that has made local models more accessible is the <strong>GGUF (Georgi Gerganov Universal Format)</strong>. This format is designed to make it easy to run LLMs on a variety of hardware, including CPUs and GPUs. GGUF files contain everything needed to run the model, including the model weights, the vocabulary, and the model configuration. They are also often quantized, which means that the model weights are stored using a lower-precision format (e.g., 4-bit integers instead of 16-bit floating-point numbers). This dramatically reduces the memory footprint of the model, making it possible to run large models on consumer hardware.
+                </p>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    The ability to run powerful language models locally is a game-changer. It democratizes access to AI, enables new applications in privacy-sensitive domains, and gives developers unprecedented control over their AI systems. By combining local models with RAG, it is now possible to build sophisticated, private, and powerful AI applications that are tailored to your specific needs.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

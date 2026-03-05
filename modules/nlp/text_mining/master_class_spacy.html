@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Industrial Pipelines with spaCy</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Industrial Pipelines with spaCy Master Class</h1>
+            <p><a href="text_mining.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Text Mining</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="tools.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: A Unified and Opinionated Pipeline</h2>
+                <p>
+                    In a professional environment, building and maintaining separate components for tokenization, lemmatization, and other preprocessing tasks is inefficient. <strong>spaCy</strong> is an open-source library for advanced Natural Language Processing, designed to provide a single, unified, and highly optimized pipeline for processing text. It provides a "Document" object where every word is already enriched with a wealth of linguistic features.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. Why Use spaCy for Preprocessing?</h2>
+                <ul>
+                    <li><strong>Speed and Efficiency:</strong> Written in Cython, spaCy is significantly faster than pure Python implementations for NLP tasks. It is designed for production use and can process large volumes of text quickly.</li>
+                    <li><strong>Context-Awareness:</strong> Unlike simple dictionary-based methods, spaCy's components (like the lemmatizer) are context-aware. They use Part-of-Speech (POS) tagging to disambiguate words and provide more accurate results.</li>
+                    <li><strong>Batteries-Included:</strong> spaCy comes with pre-trained models that can perform a wide range of tasks out-of-the-box, including tokenization, lemmatization, part-of-speech tagging, named entity recognition (NER), and more.</li>
+                    <li><strong>Customizable and Extensible:</strong> The spaCy pipeline is fully customizable. You can add, remove, or replace components to create a pipeline that is tailored to your specific needs.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. The spaCy Processing Pipeline</h2>
+                <p>
+                    When you process a text with spaCy, it is passed through a sequence of components:
+                </p>
+                <ol>
+                    <li><strong>Tokenizer:</strong> Segments the text into tokens.</li>
+                    <li><strong>Tagger:</strong> Assigns a part-of-speech tag to each token.</li>
+                    <li><strong>Parser:</strong> Performs dependency parsing to determine the grammatical relationships between tokens.</li>
+                    <li><strong>NER (Named Entity Recognizer):</strong> Identifies and labels named entities like people, organizations, and locations.</li>
+                    <li><strong>Lemmatizer:</strong> Reduces words to their base form.</li>
+                </ol>
+                <p>This modular architecture allows for efficient and sophisticated text analysis.</p>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    By leveraging spaCy, we can replace multiple manual preprocessing steps with a single, robust, and optimized function. This provides a critical "Clean Data" layer that is required before feeding information into downstream components like a vector search engine or a fact-checking model. It represents the industry standard for building reliable and scalable NLP applications.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

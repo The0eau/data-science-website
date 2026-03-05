@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Sentence Transformers</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Beyond Averaging Word Embeddings</h2>
+                <p>
+                    While Word2Vec provides excellent representations for individual words, creating a single, meaningful vector for an entire sentence is not straightforward. A common but flawed approach is to average the Word2Vec embeddings of all words in the sentence. This method loses crucial information about word order and syntax. For example, "The cat chased the dog" and "The dog chased the cat" would have identical sentence embeddings.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The Siamese Architecture</h2>
+                <p>
+                    <strong>Sentence Transformers</strong> solve this problem by fine-tuning pre-trained transformer models (like BERT or RoBERTa) in a <strong>siamese network architecture</strong>. This involves feeding two sentences into two identical transformer models, and then training the model to produce similar embeddings for similar sentences and dissimilar embeddings for dissimilar sentences. This process teaches the model to understand sentence-level semantics.
+                </p>
+            </section>
+
+            <section>
+                <h2>3. How it Works: Training for Semantic Similarity</h2>
+                <p>
+                    The model is trained on a large dataset of sentence pairs. For each pair, the model is optimized to minimize the distance (e.g., cosine distance) between the embeddings of semantically similar sentences and to maximize the distance between the embeddings of dissimilar sentences. This results in a model that can generate a single, fixed-size vector that captures the meaning of an entire sentence.
+                </p>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Sentence Transformers represent a significant leap forward in creating sentence and paragraph-level embeddings. They provide a powerful way to generate vectors that are highly suitable for a wide range of tasks, including semantic search, clustering, and sentence similarity comparison, without the loss of information that comes from simply averaging word embeddings.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

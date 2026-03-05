@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Tokenizer</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tokenizer Master Class</h1>
+            <p><a href="text_mining.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Text Mining</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="tokenizer.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: The Atomization of Text</h2>
+                <p>
+                    <strong>Tokenization</strong> is the foundational first step in any Natural Language Processing pipeline. It involves breaking down a continuous stream of text into its fundamental units, known as <strong>tokens</strong>. These tokens can be words, punctuation marks, or even sub-word units, depending on the strategy.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. Why a Simple `.split()` is Not Enough</h2>
+                <p>
+                    While it might be tempting to just split a sentence by its spaces, this approach fails to handle the complexities of human language:
+                </p>
+                <ul>
+                    <li><strong>Punctuation:</strong> A simple split would treat "NLP!" as a single token, but the exclamation mark should be a separate entity to understand sentence boundaries or sentiment.</li>
+                    <li><strong>Contractions:</strong> In "I'm learning", the token "I'm" represents two distinct grammatical concepts: "I" and "am". A good tokenizer will separate these into `['I', ''m']`.</li>
+                    <li><strong>Hyphenation:</strong> Words like "state-of-the-art" need to be handled consistently, either as a single token or split into their components.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. Types of Tokenizers</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Rule-Based Tokenizers</h4>
+                        <p>These tokenizers use a set of explicit rules to segment text. For example, they might have rules to separate punctuation, handle specific contractions, and manage exceptions. They are deterministic and transparent.</p>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Subword Tokenizers (e.g., BPE, WordPiece)</h4>
+                        <p>Used by modern transformer models like BERT and GPT, these tokenizers break down rare words into smaller, meaningful sub-word units. This allows the model to handle any word it encounters, even if it wasn't in the training data, and to understand the relationship between words like "run" and "running".</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Tokenization is a critical preprocessing step that transforms unstructured text into a format that machine learning models can understand. The choice of tokenizer has a significant impact on the performance of the entire NLP pipeline, as it defines the vocabulary and the level of granularity at which the model will process language.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - One-Hot Encoding</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Categorical to Numerical</h2>
+                <p>
+                    <strong>One-Hot Encoding</strong> is a technique used to convert categorical variables into a numerical format that can be fed into machine learning algorithms. In the context of NLP, this means converting words into vectors.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. How It Works</h2>
+                <p>
+                    Imagine you have a vocabulary of 10,000 words. With one-hot encoding, each word is represented by a 10,000-dimensional vector. This vector is all zeros except for a single '1' at the index corresponding to that word in the vocabulary.
+                </p>
+                <ul>
+                    <li>Vocabulary: `[king, queen, prince]`</li>
+                    <li>`king`: `[1, 0, 0]`</li>
+                    <li>`queen`: `[0, 1, 0]`</li>
+                    <li>`prince`: `[0, 0, 1]`</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. The Curse of Dimensionality</h2>
+                 <p>
+                    While simple, one-hot encoding has major drawbacks:
+                </p>
+                <ul>
+                    <li><strong>Sparsity:</strong> The resulting vectors are mostly zeros, making them inefficient to store and process.</li>
+                    <li><strong>High Dimensionality:</strong> For a large vocabulary, the vectors become extremely large, which can lead to computational issues.</li>
+                    <li><strong>No Semantic Meaning:</strong> One-hot vectors are orthogonal, meaning they do not capture any relationship between words. The vector for "king" is no more similar to "queen" than it is to "apple".</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    One-hot encoding is a simple and intuitive way to represent words as numbers, but it fails to capture the rich semantic relationships in language. It serves as a good starting point for understanding vectorization but has been largely superseded by more powerful techniques like word embeddings.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
