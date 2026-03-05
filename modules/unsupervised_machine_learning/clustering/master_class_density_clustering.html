@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Density-Based Clustering</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Density-Based Clustering (DBSCAN & OPTICS) Master Class</h1>
+            <p><a href="clustering.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Clustering</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="density_clustering.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Clusters as Dense Regions</h2>
+                <p>
+                    Unlike centroid-based methods that assume clusters are spherical, density-based algorithms define clusters as continuous regions of high point density, separated by regions of low density. This allows them to discover clusters of arbitrary shapes and sizes, and importantly, to identify noise points that don't belong to any cluster.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. Two Key Algorithms</h2>
+                
+                <h3>DBSCAN (Density-Based Spatial Clustering of Applications with Noise)</h3>
+                <p>DBSCAN is the most popular density-based algorithm. It groups together points that are closely packed, marking as outliers points that lie alone in low-density regions. Its two key parameters are `eps` (the radius to consider for neighbors) and `min_samples` (the minimum number of points required to form a dense core). A major advantage is that it doesn't require you to specify the number of clusters beforehand.</p>
+
+                <h3>OPTICS (Ordering Points To Identify the Clustering Structure)</h3>
+                <p>OPTICS can be seen as an extension of DBSCAN that addresses its main weakness: the difficulty in identifying clusters of varying densities. OPTICS produces a "reachability plot" which is a visualization of the data's clustering structure. This plot allows for the identification of clusters at different density levels, making it more versatile than DBSCAN.</p>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Can Find Arbitrarily Shaped Clusters:</strong> Not limited to spherical or convex shapes.</li>
+                            <li><strong>Robust to Outliers:</strong> Has a built-in mechanism for identifying and labeling noise points.</li>
+                            <li><strong>No Need to Specify Number of Clusters:</strong> The number of clusters is determined by the data and parameters.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Difficulty with Varying Densities (DBSCAN):</strong> Struggles when clusters have significantly different densities.</li>
+                            <li><strong>Parameter Sensitivity:</strong> The choice of `eps` and `min_samples` can be challenging and has a significant impact on the results.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Density-based clustering algorithms are essential for real-world datasets where clusters are complex and noise is present. DBSCAN provides a simple and effective way to perform anomaly detection, while OPTICS offers a more nuanced view of the data's density structure. They are powerful tools for discovering patterns that other clustering methods would miss.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - One-Class SVM</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>One-Class SVM Master Class</h1>
+            <p><a href="anomaly_detection.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Anomaly Detection</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="one_class_svm.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Learning a Boundary Around Normality</h2>
+                <p>
+                    The <strong>One-Class Support Vector Machine (SVM)</strong> is an unsupervised algorithm that learns a decision boundary around a set of "normal" data points. Instead of separating two classes, it separates the data from the origin, effectively creating a contour that encloses the majority of the data. Any point falling outside this boundary is considered an anomaly.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. How It Works</h2>
+                <p>
+                    The One-Class SVM operates by:
+                </p>
+                <ul>
+                    <li><strong>Mapping to a Higher Dimension:</strong> Using a kernel function, the data is mapped to a high-dimensional feature space.</li>
+                    <li><strong>Finding the Optimal Hyperplane:</strong> The algorithm finds a hyperplane that separates the data points from the origin with the maximum margin.</li>
+                    <li><strong>Defining the "Normal" Region:</strong> The region on the side of the hyperplane containing the data is considered "normal." The other side is the "anomalous" region.</li>
+                    <li><strong>The $\nu$ Parameter:</strong> A key parameter, $\nu$ (nu), acts as an upper bound on the fraction of training points that can be outliers and a lower bound on the fraction of support vectors.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Effective in High-Dimensional Spaces:</strong> Works well with a large number of features.</li>
+                            <li><strong>Robust to Overfitting:</strong> The use of a margin maximizes the separation, making the model more general.</li>
+                            <li><strong>Handles Non-Linear Boundaries:</strong> With the use of kernel functions, it can learn complex, non-linear shapes of normality.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Sensitive to Parameters:</strong> The choice of the kernel and the $\nu$ parameter can significantly impact performance.</li>
+                            <li><strong>Can be Computationally Intensive:</strong> Training time can be long, especially on large datasets.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    The One-Class SVM is a powerful tool for anomaly detection, especially in scenarios where you have a good understanding of what "normal" looks like and want to identify anything that deviates from it. It's widely used in areas like industrial monitoring and intrusion detection.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

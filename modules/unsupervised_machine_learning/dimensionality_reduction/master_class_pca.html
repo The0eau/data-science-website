@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Principal Component Analysis</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Principal Component Analysis (PCA) Master Class</h1>
+            <p><a href="dimensionality_reduction.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Dimensionality Reduction</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="pca_dimensionality_reduction.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Finding the Directions of Maximum Variance</h2>
+                <p>
+                    <strong>Principal Component Analysis (PCA)</strong> is a linear dimensionality reduction technique that transforms the data into a new coordinate system. The new axes, called principal components, are orthogonal and are ordered by the amount of variance they explain in the data. The first principal component captures the most variance, the second captures the second most, and so on.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The Process</h2>
+                <p>
+                    PCA achieves this through a process of linear algebra:
+                </p>
+                <ol>
+                    <li><strong>Standardize the Data:</strong> Each feature is scaled to have a mean of 0 and a standard deviation of 1.</li>
+                    <li><strong>Compute the Covariance Matrix:</strong> This matrix shows how the different features in the dataset vary with respect to each other.</li>
+                    <li><strong>Calculate Eigenvectors and Eigenvalues:</strong> The eigenvectors of the covariance matrix are the principal components, and the corresponding eigenvalues represent the amount of variance explained by each principal component.</li>
+                    <li><strong>Select Principal Components:</strong> The eigenvectors are sorted by their eigenvalues in descending order. The top `k` eigenvectors are chosen to form the new feature space.</li>
+                    <li><strong>Transform the Data:</strong> The original data is projected onto the new feature space defined by the selected principal components.</li>
+                </ol>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Reduces Dimensionality:</strong> Can significantly reduce the number of features, which can speed up model training and reduce overfitting.</li>
+                            <li><strong>Noise Reduction:</strong> By discarding components with low variance, PCA can help to filter out noise in the data.</li>
+                            <li><strong>Unsupervised:</strong> Does not require labeled data.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Assumes Linearity:</strong> PCA is a linear technique and may not perform well on data with non-linear relationships.</li>
+                            <li><strong>Less Interpretable:</strong> The principal components are linear combinations of the original features and can be difficult to interpret.</li>
+                            <li><strong>Sensitive to Scaling:</strong> PCA is highly sensitive to the scaling of the data, so standardization is crucial.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    PCA is a fundamental technique for dimensionality reduction and data exploration. It provides a way to simplify complex datasets while retaining the most important information. It is often used as a preprocessing step before applying other machine learning algorithms.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

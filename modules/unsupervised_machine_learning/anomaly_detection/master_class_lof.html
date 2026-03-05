@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Local Outlier Factor</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Local Outlier Factor (LOF) Master Class</h1>
+            <p><a href="anomaly_detection.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Anomaly Detection</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="lof_anomaly_detection.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Density-Based Anomaly Detection</h2>
+                <p>
+                    The <strong>Local Outlier Factor (LOF)</strong> is a unique anomaly detection algorithm that identifies outliers based on their local density. Instead of judging a point in isolation, it compares its density to that of its neighbors. An anomaly is a point that is in a significantly less dense region than its neighbors.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The LOF Calculation</h2>
+                <p>
+                    The LOF score is calculated in a few steps:
+                </p>
+                <ul>
+                    <li><strong>K-Distance:</strong> The distance to the k-th nearest neighbor. This defines the neighborhood.</li>
+                    <li><strong>Local Reachability Density (LRD):</strong> This is the inverse of the average distance from the point to its neighbors. A high LRD means the point is in a dense area.</li>
+                    <li><strong>Local Outlier Factor (LOF):</strong> This is the ratio of the average LRD of the neighbors to the LRD of the point itself.</li>
+                </ul>
+                <p>An LOF score close to 1 means the point is in a region of similar density to its neighbors (normal). A score significantly greater than 1 means the point is in a much sparser region and is likely an outlier.</p>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Effective at Finding Local Anomalies:</strong> Excels at identifying outliers that might be missed by global methods.</li>
+                            <li><strong>Handles Varying Densities:</strong> Works well on datasets where the density of "normal" clusters varies.</li>
+                            <li><strong>Unsupervised:</strong> Does not require labeled data.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Computationally Intensive:</strong> The need to calculate distances between all points makes it slow on large datasets.</li>
+                            <li><strong>Sensitive to the Choice of 'k':</strong> The number of neighbors (k) can have a significant impact on the results.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    LOF is a sophisticated and powerful algorithm for detecting anomalies in complex datasets where the definition of "normal" can vary. It is particularly useful in scenarios where anomalies are not just extreme values, but points that don't fit in with their local context.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

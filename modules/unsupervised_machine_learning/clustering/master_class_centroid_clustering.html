@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Centroid-Based Clustering</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Centroid-Based Clustering (K-Means & K-Medoids) Master Class</h1>
+            <p><a href="clustering.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Clustering</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="centroid_clustering.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Partitioning Data into K Groups</h2>
+                <p>
+                    Centroid-based clustering algorithms are fundamental unsupervised methods that partition a dataset into a pre-determined number (K) of distinct, non-overlapping clusters. The goal is to create groups where the points within a cluster are as similar as possible, and the points in different clusters are as dissimilar as possible.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. Two Key Algorithms</h2>
+                
+                <h3>K-Means</h3>
+                <p>K-Means is the most famous and widely used clustering algorithm. It works by iteratively assigning each data point to the nearest cluster <strong>centroid</strong> (the mean of the points in that cluster) and then recalculating the centroid. This process minimizes the within-cluster sum of squares (variance). It is fast and scales well to large datasets.</p>
+
+                <h3>K-Medoids</h3>
+                <p>K-Medoids is a robust alternative to K-Means. Instead of using a calculated mean as the cluster center, it uses an actual data point from the cluster, known as the <strong>medoid</strong>. This makes it much less sensitive to outliers. The algorithm iteratively swaps medoids with non-medoid points to find the configuration that minimizes the total distance between points and their assigned medoid.</p>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Simple and Fast:</strong> Both algorithms are easy to understand and computationally efficient.</li>
+                            <li><strong>Scalable:</strong> K-Means, in particular, scales well to very large datasets.</li>
+                            <li><strong>K-Medoids is Robust to Outliers:</strong> Provides a significant advantage in noisy datasets.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Need to Specify K:</strong> The number of clusters, K, must be chosen beforehand.</li>
+                            <li><strong>Assumes Spherical Clusters:</strong> Both algorithms work best when clusters are roughly spherical and of similar size.</li>
+                            <li><strong>Sensitive to Initialization:</strong> The initial choice of centroids/medoids can affect the final clustering result.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    K-Means and K-Medoids are essential tools for data exploration and customer segmentation. K-Means offers speed and simplicity, making it a great starting point. K-Medoids provides robustness, making it a better choice when dealing with datasets containing significant outliers or noise.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

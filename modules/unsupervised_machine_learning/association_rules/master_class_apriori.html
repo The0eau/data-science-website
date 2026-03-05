@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Apriori Algorithm</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Apriori Algorithm Master Class</h1>
+            <p><a href="association_rules.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Association Rule Learning</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="apriori_mining.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Market Basket Analysis</h2>
+                <p>
+                    The <strong>Apriori algorithm</strong> is a cornerstone of association rule learning, designed to uncover patterns in transactional data. Its most famous application is "Market Basket Analysis," which aims to discover which items are frequently purchased together. The algorithm generates rules like "If a customer buys bread, they are likely to also buy milk."
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The Apriori Principle</h2>
+                <p>
+                    The algorithm is built on a simple, yet powerful heuristic known as the Apriori Principle:
+                </p>
+                <blockquote>
+                    <strong>"If an itemset is frequent, then all of its subsets must also be frequent."</strong>
+                </blockquote>
+                <p>This allows the algorithm to work efficiently by pruning the search space. It starts by finding frequent individual items and then iteratively builds larger itemsets, discarding any that contain an infrequent subset.</p>
+            </section>
+
+            <section>
+                <h2>3. Key Metrics</h2>
+                <ul>
+                    <li><strong>Support:</strong> The proportion of transactions that contain a given itemset. A measure of how popular an itemset is.</li>
+                    <li><strong>Confidence:</strong> The conditional probability of purchasing item B given that item A has been purchased. A measure of the rule's predictive power.</li>
+                    <li><strong>Lift:</strong> The ratio of confidence to the expected confidence if the items were independent. A lift greater than 1 suggests that the items are indeed associated.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Easy to Understand and Implement:</strong> The logic is straightforward and intuitive.</li>
+                            <li><strong>Generates Interpretable Rules:</strong> The output rules are easy to understand and can lead to actionable business insights.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Computationally Expensive:</strong> Can be slow on large datasets due to the need to repeatedly scan the data and generate a large number of candidate itemsets.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>5. Conclusion</h2>
+                <p>
+                    Apriori is a foundational algorithm for anyone interested in unsupervised learning and pattern mining. While more modern algorithms have improved upon its speed, Apriori's core principles are still highly relevant and provide a clear introduction to the world of association rule learning.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
