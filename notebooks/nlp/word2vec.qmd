@@ -1,0 +1,136 @@
+---
+title: "Word2Vec: Learning Semantic Geometry"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: spacelab
+---
+
+## 1. Concept: Distributional Semantics
+
+The core idea behind Word2Vec is: *"You shall know a word by the company it keeps."* In the **Skip-gram** model, we take a target word and try to predict the surrounding context words. To do this, the model must learn a compressed representation (the embedding) that captures the essence of the word's usage.
+
+
+
+---
+
+## 2. Low-Level Implementation (NumPy)
+
+By implementing the weight matrices $W_1$ (Input-to-Hidden) and $W_2$ (Hidden-to-Output), we can visualize how backpropagation adjusts vectors in high-dimensional space to minimize prediction error.
+
+```{python}
+import numpy as np
+
+class Word2VecScratch:
+    """
+    A minimalist Skip-Gram Word2Vec implementation using NumPy.
+    """
+    def __init__(self, vocab_size, embedding_dim=10, learning_rate=0.01):
+        self.v_size = vocab_size
+        self.n_dim = embedding_dim
+        self.lr = learning_rate
+        
+        # W1 contains the actual word vectors (the lookup table)
+        self.W1 = np.random.uniform(-0.5, 0.5, (self.v_size, self.n_dim))
+        # W2 is the context matrix used for prediction
+        self.W2 = np.random.uniform(-0.5, 0.5, (self.n_dim, self.v_size))
+
+    def softmax(self, x):
+        e_x = np.exp(x - np.max(x))
+        return e_x / e_x.sum(axis=0)
+
+    def train_step(self, target_idx, context_indices):
+        """
+        One pass of Stochastic Gradient Descent.
+        """
+        # Forward Pass: Extract embedding and calculate scores
+        h = self.W1[target_idx] 
+        u = np.dot(self.W2.T, h) 
+        y_pred = self.softmax(u)
+
+        # Backward Pass: Calculate error (Prediction - Actual)
+        e = np.copy(y_pred)
+        for idx in context_indices:
+            e[idx] -= 1 
+        
+        # Update weights based on gradients
+        dW2 = np.outer(h, e)
+        dW1 = np.dot(self.W2, e)
+
+        self.W2 -= self.lr * dW2
+        self.W1[target_idx] -= self.lr * dW1
+
+```
+
+---
+
+## 3. Industrial Application (Gensim)
+
+In production, we use **Gensim**. It implements critical optimizations like **Negative Sampling** and **Hierarchical Softmax**, allowing it to train on billions of words efficiently while maintaining a small memory footprint.
+
+```{python}
+from gensim.models import Word2Vec as GensimWord2Vec
+
+class Word2VecExplorer:
+    def __init__(self, sentences):
+        # We use a 10-dimensional space for this demo
+        self.model = GensimWord2Vec(sentences, vector_size=10, window=2, min_count=1)
+
+    def get_most_similar(self, word):
+        return self.model.wv.most_similar(word, topn=3)
+
+```
+
+---
+
+## 4. Results & Analysis
+
+### Learning a Relationship
+
+We train the scratch model on a tiny vocabulary. After 1000 iterations, the vectors for "data" and "science" should align significantly, as they frequently share the same context in our training step.
+
+```{python}
+vocab = {"data": 0, "science": 1, "is": 2, "fun": 3}
+scratch_model = Word2VecScratch(vocab_size=len(vocab), embedding_dim=2)
+
+for epoch in range(1000):
+    scratch_model.train_step(0, [1]) # Target: 'data', Context: 'science'
+
+v_data = scratch_model.W1[0]
+v_science = scratch_model.W1[1]
+sim = np.dot(v_data, v_science) / (np.linalg.norm(v_data) * np.linalg.norm(v_science))
+
+print(f"Cosine Similarity ('data', 'science'): {sim:.4f}")
+
+```
+
+### Semantic Associations
+
+Using Gensim on a toy corpus, we can see the model "discovering" that **kings** and **queens** share similar structural roles in sentences, resulting in high similarity scores.
+
+```{python}
+corpus = [
+    ["king", "rules", "the", "empire"],
+    ["queen", "rules", "the", "empire"],
+    ["man", "is", "strong"],
+    ["woman", "is", "strong"]
+]
+
+explorer = Word2VecExplorer(corpus)
+print(f"Most similar to 'king': {explorer.get_most_similar('king')}")
+
+```
+
+---
+
+## 5. Why Vectors?
+
+Representing words as vectors allows us to perform "Semantic Algebra." In a fully trained model, you can often perform operations like:
+
+$$\text{Vector}(\text{"King"}) - \text{Vector}(\text{"Man"}) + \text{Vector}(\text{"Woman"}) \approx \text{Vector}(\text{"Queen"})$$
+
+This ability to map logic onto geometry is what enables everything from modern search engines to the complex reasoning seen in Large Language Models.

@@ -1,0 +1,179 @@
+---
+title: "XGBoost from Scratch: Gradient & Hessian Optimization"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: flatly
+    output-file: "boosting.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. The XGBoost Philosophy
+
+XGBoost (Extreme Gradient Boosting) stands out by using a second-order Taylor expansion to approximate the loss function. This allows the model to leverage both the **Gradient** (first derivative) and the **Hessian** (second derivative) for faster and more accurate convergence.
+
+
+
+* **Gradient ($g$):** Represents the direction and magnitude of the error.
+* **Hessian ($h$):** Represents the curvature of the loss, allowing for more precise weight updates.
+* **Gain:** The score used to determine the best split, incorporating **L2 Regularization** ($\lambda$) to prevent overfitting.
+
+---
+
+## 2. Core Implementation
+
+We define a manual splitting utility and the core XGBoost tree engine.
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+
+def train_test_split_scratch(X, y, test_size=0.2, random_state=None):
+    """Splits data into training and testing sets manually."""
+    if random_state:
+        np.random.seed(random_state)
+    indices = np.arange(X.shape[0])
+    np.random.shuffle(indices)
+    
+    split_idx = int(X.shape[0] * (1 - test_size))
+    return X[indices[:split_idx]], X[indices[split_idx:]], y[indices[:split_idx]], y[indices[split_idx:]]
+
+def accuracy_score(y_true, y_pred):
+    return np.sum(y_true == y_pred) / len(y_true)
+
+class XGBoostNode:
+    def __init__(self, feature=None, threshold=None, left=None, right=None, *, value=None):
+        self.feature, self.threshold, self.left, self.right, self.value = feature, threshold, left, right, value
+
+    def is_leaf(self):
+        return self.value is not None
+
+class XGBoostTree:
+    def __init__(self, max_depth=3, lambda_reg=1, gamma=0):
+        self.max_depth, self.lambda_reg, self.gamma = max_depth, lambda_reg, gamma
+        self.root = None
+
+    def _calc_leaf_value(self, g, h):
+        return -np.sum(g) / (np.sum(h) + self.lambda_reg)
+
+    def _calc_similarity(self, g, h):
+        return (np.sum(g)**2) / (np.sum(h) + self.lambda_reg)
+
+    def fit(self, X, g, h):
+        self.root = self._build_tree(X, g, h, 0)
+
+    def _build_tree(self, X, g, h, depth):
+        n_samples, n_features = X.shape
+        if depth >= self.max_depth or n_samples < 2:
+            return XGBoostNode(value=self._calc_leaf_value(g, h))
+
+        best_gain, split_idx, split_thresh = 0, None, None
+        root_sim = self._calc_similarity(g, h)
+
+        for f_idx in range(n_features):
+            thresholds = np.unique(X[:, f_idx])
+            for threshold in thresholds:
+                left_m = X[:, f_idx] <= threshold
+                right_m = ~left_m
+                if not np.any(left_m) or not np.any(right_m): continue
+
+                gain = 0.5 * (self._calc_similarity(g[left_m], h[left_m]) + 
+                             self._calc_similarity(g[right_m], h[right_m]) - 
+                             root_sim) - self.gamma
+                
+                if gain > best_gain:
+                    best_gain, split_idx, split_thresh = gain, f_idx, threshold
+
+        if split_idx is None:
+            return XGBoostNode(value=self._calc_leaf_value(g, h))
+
+        left = self._build_tree(X[X[:, split_idx] <= split_thresh], g[X[:, split_idx] <= split_thresh], h[X[:, split_idx] <= split_thresh], depth + 1)
+        right = self._build_tree(X[X[:, split_idx] > split_thresh], g[X[:, split_idx] > split_thresh], h[X[:, split_idx] > split_thresh], depth + 1)
+        return XGBoostNode(split_idx, split_thresh, left, right)
+
+    def predict(self, X):
+        return np.array([self._traverse(x, self.root) for x in X])
+
+    def _traverse(self, x, node):
+        if node.is_leaf(): return node.value
+        return self._traverse(x, node.left) if x[node.feature] <= node.threshold else self._traverse(x, node.right)
+
+```
+
+---
+
+## 3. XGBoost Classifier
+
+This classifier optimizes the **Log-Loss** function for binary classification.
+
+```{python}
+class XGBoostClassifierScratch:
+    def __init__(self, n_estimators=5, lr=0.3, max_depth=3, lambda_reg=1):
+        self.n_estimators, self.lr, self.max_depth, self.lambda_reg = n_estimators, lr, max_depth, lambda_reg
+        self.trees = []
+
+    def _sigmoid(self, x): 
+        return 1 / (1 + np.exp(-np.clip(x, -15, 15)))
+
+    def fit(self, X, y):
+        p_avg = np.mean(y)
+        self.base_pred = np.log(p_avg / (1 - p_avg + 1e-9))
+        y_hat = np.full(y.shape, self.base_pred)
+        for i in range(self.n_estimators):
+            p = self._sigmoid(y_hat)
+            g, h = p - y, p * (1 - p)
+            tree = XGBoostTree(self.max_depth, self.lambda_reg)
+            tree.fit(X, g, h)
+            y_hat += self.lr * tree.predict(X)
+            self.trees.append(tree)
+
+    def predict(self, X):
+        y_hat = np.full(X.shape[0], self.base_pred)
+        for tree in self.trees: y_hat += self.lr * tree.predict(X)
+        return (self._sigmoid(y_hat) > 0.5).astype(int)
+
+```
+
+---
+
+## 4. Evaluation on Financial Fraud Data
+
+We apply the **80/20 split** on our 50-row subset of the credit card dataset.
+
+```{python}
+# Load Credit Card Data (50 rows)
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+df = pd.read_csv(csv_path, nrows=50)
+
+X = df.drop(columns=['Time', 'Class']).values
+y = df['Class'].values
+
+# 80/20 Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split_scratch(X, y, test_size=0.2, random_state=42)
+
+# Initialize and Train
+xgb = XGBoostClassifierScratch(n_estimators=10, lr=0.3, max_depth=3)
+xgb.fit(X_train, y_train)
+
+# Predictions on Test Set
+test_preds = xgb.predict(X_test)
+test_acc = accuracy_score(y_test, test_preds)
+
+print(f"Training set size: {X_train.shape[0]}")
+print(f"Testing set size: {X_test.shape[0]}")
+print("-" * 30)
+print(f"XGBoost Test Accuracy: {test_acc * 100:.2f}%")
+
+```
+
+---
+
+## 5. Conclusion
+
+By implementing a **Train/Test split**, we ensure that the boosting algorithm generalizes well beyond the data it was trained on. XGBoost's use of second-order derivatives makes it highly efficient, even on small datasets, at identifying the complex patterns associated with fraudulent transactions.

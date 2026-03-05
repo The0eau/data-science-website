@@ -1,0 +1,132 @@
+---
+title: "Unsupervised Learning: ECLAT Algorithm from Scratch"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: flatly
+    output-file: "eclat_mining.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Concept: Vertical Itemset Mining
+
+**ECLAT** (Equivalence Class Transformation) is a powerful alternative to the Apriori algorithm. While Apriori uses a horizontal data format (scanning transactions for itemsets), ECLAT uses a **Vertical Data Format**.
+
+
+
+### How it works:
+1.  **Tidlists:** Every item is associated with a "Tidlist"—a set of IDs of the transactions in which it appears.
+2.  **Intersection:** To find the frequency of a pair (e.g., {Milk, Bread}), ECLAT simply intersects the Tidlist of 'Milk' with the Tidlist of 'Bread'. The size of the resulting set is the support.
+3.  **Depth-First Search (DFS):** ECLAT explores the itemset lattice using a recursive search, making it generally faster and more memory-efficient than Apriori for dense datasets.
+
+
+
+---
+
+## 2. Core Implementation
+
+The implementation relies on Python sets for efficient intersection operations.
+
+```{python}
+import numpy as np
+import pandas as pd
+
+class EclatScratch:
+    """
+    Equivalence Class Transformation for frequent itemset mining.
+    """
+    def __init__(self, min_support=0.5):
+        self.min_support = min_support
+        self.frequent_itemsets = {}
+
+    def fit(self, transactions):
+        n_trans = len(transactions)
+        self.min_abs_support = self.min_support * n_trans
+        
+        # Step 1: Create Tidlists (Vertical Format)
+        tidlists = {}
+        for idx, trans in enumerate(transactions):
+            for item in trans:
+                if item not in tidlists:
+                    tidlists[item] = set()
+                tidlists[item].add(idx)
+        
+        # Step 2: Filter initial items by min_support
+        initial_tidlists = {
+            frozenset([k]): v for k, v in tidlists.items() 
+            if len(v) >= self.min_abs_support
+        }
+        
+        # Step 3: Recursive DFS
+        self._eclat_recursive(initial_tidlists, n_trans)
+        return self
+
+    def _eclat_recursive(self, current_tidlists, n_trans):
+        items = list(current_tidlists.keys())
+        
+        for i in range(len(items)):
+            item_i = items[i]
+            tid_i = current_tidlists[item_i]
+            
+            # Record support
+            self.frequent_itemsets[item_i] = len(tid_i) / n_trans
+            
+            # Intersect with other items in the same equivalence class
+            next_tier = {}
+            for j in range(i + 1, len(items)):
+                item_j = items[j]
+                tid_j = current_tidlists[item_j]
+                
+                intersection = tid_i & tid_j
+                
+                if len(intersection) >= self.min_abs_support:
+                    new_itemset = item_i | item_j
+                    next_tier[new_itemset] = intersection
+            
+            # Recursive depth-first step
+            if next_tier:
+                self._eclat_recursive(next_tier, n_trans)
+
+```
+
+---
+
+## 3. Application to Retail Patterns
+
+ECLAT is particularly useful when we want to find patterns across millions of transactions where the number of unique items is relatively small.
+
+```{python}
+# Sample Market Basket Data
+dataset = [
+    ['Milk', 'Bread', 'Eggs'],
+    ['Milk', 'Bread'],
+    ['Milk', 'Eggs'],
+    ['Bread', 'Butter'],
+    ['Milk', 'Bread', 'Butter', 'Eggs'],
+    ['Bread', 'Eggs']
+]
+
+# Initialize and Fit
+model = EclatScratch(min_support=0.4)
+model.fit(dataset)
+
+# Convert to DataFrame for presentation
+results = pd.DataFrame([
+    {'Itemset': list(itemset), 'Support': support} 
+    for itemset, support in model.frequent_itemsets.items()
+])
+
+print("--- Frequent Itemsets Found (ECLAT) ---")
+print(results.sort_values(by='Support', ascending=False).to_string(index=False))
+
+```
+
+---
+
+## 4. Conclusion
+
+ECLAT's use of **vertical intersection** makes it a "fast-track" algorithm for finding frequent itemsets. While it doesn't generate rules (like Confidence or Lift) by default like Apriori, the frequent itemsets it discovers are the essential building blocks for any association-based fraud detection or recommendation system.

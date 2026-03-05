@@ -1,0 +1,121 @@
+---
+title: "Unsupervised Learning: Autoencoders for Anomaly Detection"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: vapor
+    output-file: "autoencoder_anomaly.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Concept: Neural Data Compression
+
+An **Autoencoder** is a type of neural network trained to copy its input to its output. It has two main parts:
+1.  **Encoder:** Compresses the input into a lower-dimensional "latent space" (bottleneck).
+2.  **Decoder:** Attempts to reconstruct the original input from this compressed representation.
+
+
+
+### Why use it for Fraud?
+In an unsupervised setting, we train the Autoencoder only (or mostly) on normal transactions. The network learns the "essence" of what a normal transaction looks like. When presented with a **fraudulent transaction**, the network will struggle to reconstruct it, resulting in a high **Reconstruction Error (MSE)**.
+
+
+
+---
+
+## 2. Core Implementation
+
+We implement a shallow Autoencoder from scratch using `numpy`, including the forward pass, backpropagation, and the Sigmoid activation function.
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+
+class AutoencoderScratch:
+    def __init__(self, input_dim, encoding_dim, learning_rate=0.01):
+        self.lr = learning_rate
+        # Xavier-like initialization
+        self.W_enc = np.random.randn(input_dim, encoding_dim) * np.sqrt(1/input_dim)
+        self.b_enc = np.zeros(encoding_dim)
+        self.W_dec = np.random.randn(encoding_dim, input_dim) * np.sqrt(1/encoding_dim)
+        self.b_dec = np.zeros(input_dim)
+
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
+    
+    def _sigmoid_derivative(self, out):
+        return out * (1 - out)
+    
+    def fit(self, X, epochs=50):
+        for epoch in range(epochs):
+            # Forward pass
+            z_enc = X @ self.W_enc + self.b_enc
+            encoded = self.sigmoid(z_enc)
+            z_dec = encoded @ self.W_dec + self.b_dec
+            decoded = self.sigmoid(z_dec)
+            
+            # Backpropagation
+            error_dec = (decoded - X) / X.shape[0]
+            d_z_dec = error_dec * self._sigmoid_derivative(decoded)
+            
+            error_enc = d_z_dec @ self.W_dec.T
+            d_z_enc = error_enc * self._sigmoid_derivative(encoded)
+            
+            # Updates
+            self.W_dec -= (encoded.T @ d_z_dec) * self.lr
+            self.b_dec -= np.sum(d_z_dec, axis=0) * self.lr
+            self.W_enc -= (X.T @ d_z_enc) * self.lr
+            self.b_enc -= np.sum(d_z_enc, axis=0) * self.lr
+        return self
+
+    def get_reconstruction_error(self, X):
+        """Calculates the MSE for each row."""
+        z_enc = X @ self.W_enc + self.b_enc
+        encoded = self.sigmoid(z_enc)
+        z_dec = encoded @ self.W_dec + self.b_dec
+        decoded = self.sigmoid(z_dec)
+        return np.mean((X - decoded) ** 2, axis=1)
+
+```
+
+---
+
+## 3. Detecting Fraud via Reconstruction Error
+
+We train the model on the data. Since we assume fraud is rare, the model will primarily learn to reconstruct normal patterns. We then flag transactions with the highest error.
+
+```{python}
+# 1. Load Data
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+df = pd.read_csv(csv_path, nrows=100)
+
+# 2. Normalize (Sigmoid expects inputs usually between 0 and 1)
+X = df.drop(columns=['Time', 'Class']).values
+X_min, X_max = X.min(axis=0), X.max(axis=0)
+X_scaled = (X - X_min) / (X_max - X_min + 1e-9)
+
+# 3. Fit Autoencoder
+# Compress 29 features down to 10
+ae = AutoencoderScratch(input_dim=X_scaled.shape[1], encoding_dim=10, learning_rate=0.1)
+ae.fit(X_scaled, epochs=100)
+
+# 4. Compute Anomaly Score
+df['reconstruction_error'] = ae.get_reconstruction_error(X_scaled)
+
+# 5. Show Top Suspicious Transactions
+print("--- Top 5 Transactions by Reconstruction Error ---")
+print(df[['Class', 'Amount', 'reconstruction_error']].sort_values(by='reconstruction_error', ascending=False).head())
+
+```
+
+---
+
+## 4. Conclusion
+
+**Autoencoders** represent the bridge between traditional machine learning and deep learning for fraud detection. By forcing the data through a bottleneck, we filter out noise and capture the essential features of "legitimate" behavior. Any transaction that fails to pass through this bottleneck and emerge looking like its original self is, by definition, an anomaly worth investigating.

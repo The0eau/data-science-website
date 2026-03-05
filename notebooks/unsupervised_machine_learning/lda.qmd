@@ -1,0 +1,137 @@
+---
+title: "Supervised Learning: Linear Discriminant Analysis (LDA) from Scratch"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: flatly
+    output-file: "lda_dim_reduction.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Concept: Maximizing Class Separability
+
+**Linear Discriminant Analysis (LDA)** is a supervised dimensionality reduction technique. Its goal is to project the features into a lower-dimensional space while preserving as much class-discriminatory information as possible.
+
+
+
+### How it works:
+LDA achieves this by optimizing two criteria simultaneously:
+1.  **Maximize Between-Class Scatter ($S_B$):** Push the means of different classes as far apart as possible.
+2.  **Minimize Within-Class Scatter ($S_W$):** Keep the points of the same class tightly clustered together.
+
+The optimal projection is found by solving the generalized eigenvalue problem for the matrix $S_W^{-1} S_B$.
+
+
+
+---
+
+## 2. Core Implementation
+
+We implement the scatter matrix calculations and the eigenvalue decomposition using `numpy`.
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+
+class LDAScratch:
+    """
+    Linear Discriminant Analysis for supervised dimensionality reduction.
+    """
+    def __init__(self, n_components=None):
+        self.n_components = n_components
+        self.scalings_ = None
+
+    def fit(self, X, y):
+        n_samples, n_features = X.shape
+        class_labels = np.unique(y)
+        n_classes = len(class_labels)
+
+        # Mathematical limit: n_components cannot exceed n_classes - 1
+        limit = n_classes - 1
+        if self.n_components is None or self.n_components > limit:
+            self.n_components = limit
+
+        overall_mean = np.mean(X, axis=0)
+        S_W = np.zeros((n_features, n_features))
+        S_B = np.zeros((n_features, n_features))
+
+        for c in class_labels:
+            X_c = X[y == c]
+            mean_c = np.mean(X_c, axis=0)
+            
+            # Within-class: variance of points around their class mean
+            z_c = X_c - mean_c
+            S_W += z_c.T @ z_c
+            
+            # Between-class: distance of class mean from overall mean
+            n_c = X_c.shape[0]
+            mean_diff = (mean_c - overall_mean).reshape(-1, 1)
+            S_B += n_c * (mean_diff @ mean_diff.T)
+
+        # Solve (Sw^-1 * Sb)v = lambda * v
+        # We use pinv (pseudo-inverse) for numerical stability
+        A = np.linalg.pinv(S_W) @ S_B
+        eigenvalues, eigenvectors = np.linalg.eig(A)
+
+        # Sort by eigenvalues (real part) descending
+        idx = np.argsort(np.real(eigenvalues))[::-1]
+        eigenvectors = np.real(eigenvectors[:, idx])
+
+        self.scalings_ = eigenvectors[:, :self.n_components]
+        return self
+
+    def transform(self, X):
+        return np.dot(X, self.scalings_)
+
+```
+
+---
+
+## 3. Application: Fraud vs. Legitimate Separation
+
+In the credit card dataset, most features (V1-V28) are already PCA components. LDA allows us to take these features and re-project them specifically to highlight the difference between fraudulent (Class 1) and legitimate (Class 0) transactions.
+
+```{python}
+# --- UPDATED TEST BLOCK ---
+# 1. Load Data
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+
+# We need a sample that definitely contains both classes
+df_full = pd.read_csv(csv_path)
+df_class_0 = df_full[df_full['Class'] == 0].sample(400, random_state=42)
+df_class_1 = df_full[df_full['Class'] == 1].sample(100, random_state=42)
+df = pd.concat([df_class_0, df_class_1]).sample(frac=1).reset_index(drop=True)
+
+# 2. Prepare Data
+X = df.drop(columns=['Time', 'Class']).values
+y = df['Class'].values
+
+# 3. Fit and Transform
+# Now that we have 2 classes, n_components=1 is mathematically valid
+lda = LDAScratch(n_components=1)
+X_lda = lda.fit(X, y).transform(X)
+
+# Safety check: ensure X_lda isn't empty before making the DataFrame
+if X_lda.shape[1] > 0:
+    df_lda = pd.DataFrame(X_lda, columns=['LD1'])
+    df_lda['Class'] = y
+    
+    # 4. Results
+    print("--- LDA Component Means by Class ---")
+    print(df_lda.groupby('Class')['LD1'].mean())
+else:
+    print("Error: LDA failed to produce components. Ensure at least two classes are present in the sample.")
+
+```
+
+---
+
+## 4. Conclusion
+
+**LDA** is an excellent preprocessing step for classification. By reducing the dimensionality while maximizing class separation, it simplifies the task for downstream models like Logistic Regression or SVMs, often improving their accuracy and reducing overfitting by removing "noise" that doesn't contribute to class distinction.

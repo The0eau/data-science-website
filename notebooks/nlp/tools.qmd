@@ -1,0 +1,89 @@
+---
+title: "NLP Foundations: Industrial Pipelines with spaCy"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: flatly
+---
+
+## 1. Concept: The Unified Pipeline
+
+In the previous modules, we built tokenizers, lemmatizers, and filters manually. In a professional environment, we use **spaCy**. It provides a "Document" object where every word is already enriched with linguistic features.
+
+
+
+### Why use spaCy for Preprocessing?
+1. **Speed**: Written in Cython, it is significantly faster than pure Python loops.
+2. **Context-Awareness**: Unlike a simple manual dictionary, spaCy's lemmatizer uses Part-of-Speech (POS) tagging to distinguish between words like "saw" (noun) and "saw" (verb).
+3. **Batteries Included**: Stopwords, punctuation handling, and linguistic rules are built-in and maintained by experts.
+
+
+
+---
+
+## 2. Technical Implementation
+
+We use the `en_core_web_sm` model. It is a small, efficient Convolutional Neural Network (CNN) designed for high-speed processing on standard hardware.
+
+```{python}
+import spacy
+
+def spacy_process_text(text):
+    """
+    Standard industrial pipeline using spaCy for full preprocessing.
+    """
+    # Load the model (ensure it's downloaded: python -m spacy download en_core_web_sm)
+    nlp = spacy.load("en_core_web_sm")
+    
+    # The 'doc' now contains tokens, lemmas, and part-of-speech tags
+    doc = nlp(text)
+    
+    # Filtering logic:
+    # 1. token.lemma_ -> gets the root form
+    # 2. .lower() -> normalizes case
+    # 3. .is_stop -> removes noise words
+    # 4. .is_punct -> removes symbols
+    return [
+        token.lemma_.lower() 
+        for token in doc 
+        if not token.is_stop and not token.is_punct
+    ]
+
+```
+
+---
+
+## 3. Comparative Testing
+
+Watch how spaCy handles plurals ("scientists" $\rightarrow$ "scientist") and continuous verbs ("analyzing" $\rightarrow$ "analyze") automatically.
+
+```{python}
+raw_input = "The data scientists are analyzing large datasets efficiently!"
+clean_output = spacy_process_text(raw_input)
+
+import pandas as pd
+print(f"Raw: {raw_input}")
+print(f"Cleaned: {clean_output}")
+
+# Visualizing the reduction
+df = pd.DataFrame({
+    "Step": ["Raw String", "Processed Tokens"],
+    "Count": [len(raw_input.split()), len(clean_output)]
+})
+display(df)
+
+```
+
+---
+
+## 4. Performance & Scalability
+
+Using `en_core_web_sm` allows for processing thousands of sentences per second on modern CPUs. For large-scale production datasets, spaCy supports `nlp.pipe()`, which enables batch processing and multi-threading to maximize throughput.
+
+### Conclusion
+
+By leveraging spaCy, we've replaced several manual preprocessing steps with a single, robust, and optimized function. This serves as the critical "Clean Data" layer required before feeding information into downstream components like a **VectorSearchEngine** or a **FactChecker**.

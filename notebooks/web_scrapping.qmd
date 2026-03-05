@@ -1,0 +1,127 @@
+---
+title: "Web Scraping & Data Engineering: Automating arXiv Research"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: yeti
+    code-copy: true
+---
+
+## 1. The ETL Pipeline Concept
+
+In modern data engineering, we follow the **ETL** (Extract, Transform, Load) framework to turn unstructured web data into actionable insights. This project demonstrates an automated pipeline that queries the arXiv repository to track Artificial Intelligence research trends.
+
+
+
+---
+
+## 2. Technical Implementation
+
+We utilize the **arXiv API**, which provides metadata in XML format. This approach is more robust than parsing raw HTML, as APIs are designed for machine consumption and are less likely to break during website UI updates.
+
+
+
+### Core Engineering Functions
+
+```{python}
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+import time
+
+def fetch_arxiv_papers(query, max_results=5):
+    """
+    EXTRACT: Interface with the arXiv API to retrieve metadata.
+    """
+    print(f"--- Step 1: Querying arXiv API for '{query}' ---")
+    
+    # We use a completely raw string and strip any hidden characters
+    base_url = "http://export.arxiv.org/api/query".strip()
+    
+    params = {
+        "search_query": f"all:{query}",
+        "start": 0,
+        "max_results": max_results
+    }
+    
+    # Debug: Check if the URL is clean
+    # print(f"DEBUG: Requesting {base_url}") 
+    
+    response = requests.get(base_url, params=params)
+    soup = BeautifulSoup(response.content, 'xml') 
+    
+    papers = []
+    for entry in soup.find_all('entry'):
+        paper_data = {
+            'title': entry.title.text.strip().replace('\n', ''),
+            'published': entry.published.text,
+            'link': entry.id.text,
+            'summary': entry.summary.text.strip()
+        }
+        papers.append(paper_data)
+    
+    return papers
+
+def transform_metadata(papers):
+    """
+    TRANSFORM: Extract keywords and normalize text.
+    """
+    print("--- Step 2: Transforming summaries into structured tags ---")
+    for paper in papers:
+        # Normalize text for keyword matching
+        text = paper['summary'].lower()
+        potential_keywords = ['neural', 'learning', 'transformer', 'data', 'model']
+        found_tags = [tag for tag in potential_keywords if tag in text]
+        
+        # Adding a structured feature to our dictionary
+        paper['tags'] = ", ".join(found_tags) if found_tags else "General AI"
+        
+        # Politeness policy: pause to respect server rate limits
+        time.sleep(0.5) 
+        
+    return papers
+
+```
+
+---
+
+## 3. Pipeline Execution
+
+The final step is to orchestrate the functions and **Load** the results into a structured Pandas DataFrame for analysis.
+
+```{python}
+#| label: pipeline-execution
+# 1. Extraction Phase
+raw_data = fetch_arxiv_papers("artificial intelligence")
+
+# 2. Transformation Phase
+enriched_data = transform_metadata(raw_data)
+
+# 3. Loading Phase
+df = pd.DataFrame(enriched_data)
+
+# Display the final structured output
+print("\n--- Pipeline Complete: Structured Research Data ---")
+df[['title', 'published', 'tags']].head()
+
+```
+
+---
+
+## 4. Key Learnings & Best Practices
+
+### Data Transformation
+
+By extracting specific keywords from the `summary` field, we successfully converted **unstructured text** into **categorical tags**. This is a crucial step for preparing data for machine learning models.
+
+### Ethical Engineering (Politeness)
+
+Automation scripts can easily overwhelm servers. Implementing `time.sleep()` and using official APIs instead of aggressive scraping are essential practices for ethical data engineering.
+
+### Resilience
+
+Using a specific XML parser (`BeautifulSoup(..., 'xml')`) ensures that the hierarchy of the research entries is respected, preventing data loss during the extraction phase.

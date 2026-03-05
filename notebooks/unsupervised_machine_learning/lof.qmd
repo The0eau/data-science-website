@@ -1,0 +1,115 @@
+---
+title: "Unsupervised Learning: Local Outlier Factor (LOF) from Scratch"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: journal
+    output-file: "lof_anomaly_detection.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Concept: Density-Based Outlier Detection
+
+The **Local Outlier Factor (LOF)** is a density-based unsupervised algorithm. Unlike global anomaly detectors that look at how far a point is from the center, LOF looks at how "isolated" a point is relative to its **immediate neighborhood**.
+
+
+
+### How it works:
+1.  **K-Distance & Neighbors:** For each point, find its $k$ nearest neighbors.
+2.  **Reachability Distance:** Calculate how "reachable" a point is from its neighbors. This smooths out local fluctuations.
+3.  **Local Reachability Density (LRD):** Inverse of the average reachability distance. High density means the neighbors are very close.
+4.  **LOF Score:** The ratio of the average LRD of the neighbors to the point's own LRD. 
+    * **LOF $\approx$ 1:** Similar density to neighbors (Normal).
+    * **LOF $>$ 1:** Lower density than neighbors (Outlier).
+
+
+
+---
+
+## 2. Core Implementation
+
+We implement the pairwise distance logic and the three-step LOF calculation using `numpy`.
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+
+class LOFScratch:
+    """
+    Local Outlier Factor (LOF) implementation.
+    k : number of neighbors to consider.
+    """
+    def __init__(self, k=20):
+        self.k = k
+
+    def _get_distances(self, X):
+        """Pairwise Euclidean distances."""
+        sum_X = np.sum(np.square(X), axis=1)
+        dist_sq = np.add(np.add(-2 * np.dot(X, X.T), sum_X).T, sum_X)
+        return np.sqrt(np.maximum(dist_sq, 0))
+
+    def fit_predict(self, X):
+        n_samples = X.shape[0]
+        distances = self._get_distances(X)
+        
+        # 1. k-nearest neighbors and k-distances
+        neighbors_idx = np.argsort(distances, axis=1)[:, 1:self.k+1]
+        k_distances = np.zeros(n_samples)
+        for i in range(n_samples):
+            k_distances[i] = distances[i, neighbors_idx[i, -1]]
+
+        # 2. Local Reachability Density (LRD)
+        lrd = np.zeros(n_samples)
+        for i in range(n_samples):
+            # reach-dist(i, o) = max(k-dist(o), dist(i, o))
+            reach_dists = np.maximum(k_distances[neighbors_idx[i]], 
+                                     distances[i, neighbors_idx[i]])
+            lrd[i] = 1.0 / (np.mean(reach_dists) + 1e-10)
+
+        # 3. Local Outlier Factor (LOF)
+        lof_scores = np.zeros(n_samples)
+        for i in range(n_samples):
+            neighbors_lrd = lrd[neighbors_idx[i]]
+            lof_scores[i] = np.mean(neighbors_lrd) / lrd[i]
+            
+        return lof_scores
+
+```
+
+---
+
+## 3. Application to Financial Data
+
+In fraud detection, LOF is excellent for finding "local" anomalies—for example, a transaction that isn't extreme in amount, but is very unusual compared to the user's typical behavior or similar nearby transactions.
+
+```{python}
+# 1. Load Data
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+df = pd.read_csv(csv_path, nrows=100)
+
+# 2. Preprocessing
+# We exclude Class/Time and normalize to ensure all V-features have equal weight
+X = df.drop(columns=['Time', 'Class']).values
+X = (X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0) + 1e-9)
+
+# 3. Fit LOF
+detector = LOFScratch(k=10)
+df['lof_score'] = detector.fit_predict(X)
+
+# 4. Results
+print("--- Top 5 Local Outliers ---")
+print(df[['Class', 'Amount', 'lof_score']].sort_values(by='lof_score', ascending=False).head())
+
+```
+
+---
+
+## 4. Conclusion
+
+LOF is a sophisticated unsupervised method that captures anomalies that purely distance-based or global methods (like basic clustering) might miss. It is particularly effective in financial datasets where "normal" behavior can exist in several different dense clusters (e.g., different spending profiles).

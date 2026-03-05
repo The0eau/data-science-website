@@ -1,0 +1,122 @@
+---
+title: "NLP Foundations: Building a Rule-Based Tokenizer"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: flatly
+---
+
+## 1. Concept: The Atomization of Text
+
+**Tokenization** is the absolute first step in any Natural Language Processing pipeline. It is the process of breaking down a continuous stream of text into individual units called **tokens**.
+
+
+
+### Why not just use `.split()`?
+A simple whitespace split fails in several critical areas:
+1. **Punctuation**: "NLP!" devient un seul token, mais le point d'exclamation devrait être sa propre entité.
+2. **Contractions**: "I'm" représente "I" et "am". Séparer l'apostrophe permet au modèle de traiter ces composants grammaticaux comme distincts.
+3. **Possessives**: "John's" lie une personne à un objet. Traiter le "'s" comme un token séparé aide à identifier les relations de possession.
+
+---
+
+## 2. Implementation: English Simple Tokenizer
+
+This tokenizer uses a state-machine approach, iterating through characters to intelligently decide where a boundary should exist.
+
+
+
+```{python}
+class EnglishSimpleTokenizer:
+    """
+    A lightweight tokenizer for English text processing.
+    """
+
+    def __init__(self):
+        # Define punctuation marks to be isolated
+        self.punctuation = ".,!?;:()[]\""
+
+    def tokenize(self, text):
+        """
+        Segments a string into tokens, handling contractions and punctuation.
+        """
+        tokens = []
+        current_token = ""
+        i = 0
+        
+        while i < len(text):
+            char = text[i]
+
+            # Logic for Alphanumeric
+            if char.isalnum():
+                current_token += char
+            
+            # Logic for Apostrophes (Contractions)
+            elif char == "'":
+                if current_token:
+                    tokens.append(current_token)
+                current_token = "'"
+
+            # Logic for Whitespaces
+            elif char.isspace():
+                if current_token:
+                    tokens.append(current_token)
+                    current_token = ""
+
+            # Logic for Standard Punctuation
+            elif char in self.punctuation:
+                if current_token:
+                    tokens.append(current_token)
+                    current_token = ""
+                tokens.append(char)
+            
+            i += 1
+
+        if current_token:
+            tokens.append(current_token)
+
+        return tokens
+
+```
+
+---
+
+## 3. Results & Debugging
+
+Let's observe how the tokenizer handles complex English structures.
+
+```{python}
+tokenizer = EnglishSimpleTokenizer()
+
+test_phrases = [
+    "I'm learning NLP, it's amazing!",
+    "John's car isn't working.",
+    "They're going to the U.K. (London)."
+]
+
+# Process and display
+import pandas as pd
+data = [{"Original": p, "Tokens": tokenizer.tokenize(p)} for p in test_phrases]
+df = pd.DataFrame(data)
+display(df)
+
+```
+
+---
+
+## 4. Evaluation of the Approach
+
+### Strengths
+
+* **Deterministic**: Aucune part d'aléa ; il se comporte de la même manière à chaque exécution.
+* **Semantic Preservation**: En séparant les formes comme `'m` et `'s`, il prépare idéalement le texte pour l'étiquetage morphosyntaxique (Part-of-Speech tagging).
+* **Low Latency**: La complexité temporelle en $O(n)$ (où $n$ est le nombre de caractères) est idéale pour un traitement local en temps réel.
+
+### Limitations
+
+* **Edge Cases**: Les abréviations comme "U.K." sont divisées en ["U", ".", "K", "."]. Un tokenizer plus avancé utiliserait une table de recherche pour les abréviations courantes.
+* **Language Specificity**: Cette logique est fortement adaptée à la grammaire anglaise (utilisation des apostrophes).
