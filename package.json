@@ -12,5 +12,8 @@
   "license": "MIT",
   "devDependencies": {
     "prettier": "^3.2.5"
+  },
+  "dependencies": {
+    "gh-pages": "^6.3.0"
   }
 }
