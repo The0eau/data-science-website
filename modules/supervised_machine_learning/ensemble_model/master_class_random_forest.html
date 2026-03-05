@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Random Forest</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Random Forest Master Class</h1>
+            <p><a href="ensemble.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Ensemble Learning</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="random_forest.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: The Wisdom of the Crowd</h2>
+                <p>
+                    A <strong>Random Forest</strong> is an ensemble model that builds multiple Decision Trees and merges their predictions to make a more accurate and stable decision. It is a classic example of <strong>Bagging</strong> (Bootstrap Aggregating).
+                </p>
+            </section>
+            
+            <section>
+                <h2>2. How It Works: Bagging and Feature Randomness</h2>
+                <p>
+                    The strength of the Random Forest comes from two key sources of randomness:
+                </p>
+                <ul>
+                    <li><strong>Bootstrap Aggregating (Bagging):</strong> Each individual Decision Tree in the forest is trained on a different random subset of the training data (sampled with replacement). This ensures that the trees are diverse and do not all make the same errors.</li>
+                    <li><strong>Feature Randomness:</strong> When splitting a node, each tree only considers a random subset of features. This prevents strong predictors from dominating all the trees and further encourages diversity.</li>
+                </ul>
+                <p>Once all the trees are trained, a new data point is classified by taking a <strong>majority vote</strong> from all the individual trees in the forest.</p>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>High Accuracy:</strong> Generally provides a high level of accuracy and is robust to overfitting.</li>
+                            <li><strong>Handles Missing Data:</strong> Can maintain accuracy even when a large proportion of the data is missing.</li>
+                            <li><strong>Reduces Variance:</strong> By averaging the results of many trees, it significantly reduces the variance found in single Decision Trees.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Less Interpretable:</strong> Can be difficult to understand the exact reasoning behind a prediction compared to a single Decision Tree.</li>
+                            <li><strong>Computationally Intensive:</strong> Training many deep trees can be slow and memory-intensive on large datasets.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Random Forest is a versatile and powerful algorithm that serves as a go-to model for many classification and regression problems. Its ability to reduce overfitting while maintaining high accuracy makes it a significant improvement over single Decision Trees.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

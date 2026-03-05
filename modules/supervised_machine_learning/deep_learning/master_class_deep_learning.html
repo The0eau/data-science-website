@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Deep Learning</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Deep Learning Master Class</h1>
+            <p><a href="../supervised.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Supervised Learning</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="multilayer_perceptron.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Learning in Layers</h2>
+                <p>
+                    Deep Learning is powered by <strong>Neural Networks</strong>, specifically models with multiple layers, like the <strong>Multi-Layer Perceptron (MLP)</strong>. These models are inspired by the human brain and learn by passing data through interconnected layers of "neurons." Each layer learns to recognize increasingly complex patterns, from simple edges to intricate features.
+                </p>
+            </section>
+            
+            <section>
+                <h2>2. How a Neural Network Learns</h2>
+                <p>
+                    The learning process involves two key phases:
+                </p>
+                <ul>
+                    <li><strong>Forward Propagation:</strong> Data is fed into the input layer. Each neuron applies a weight to its input, adds a bias, and passes the result through an <strong>activation function</strong> (like Sigmoid or ReLU) to the next layer. This process continues until an output (a prediction) is generated.</li>
+                    <li><strong>Backpropagation:</strong> The model calculates the difference between its prediction and the actual target (the "error"). It then works backward from the output layer, using calculus (the chain rule) to determine how much each weight and bias contributed to the error. These contributions, or <strong>gradients</strong>, are used to adjust the parameters, gradually minimizing the error over many iterations (epochs).</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. Activation Functions: Introducing Non-Linearity</h2>
+                <p>
+                    Without activation functions, a neural network would just be a complex linear model. Activation functions introduce non-linearity, allowing the network to learn highly complex, curved decision boundaries. Common examples include the Sigmoid, Tanh, and ReLU (Rectified Linear Unit) functions.
+                </p>
+            </section>
+
+            <section>
+                <h2>4. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Highly Flexible:</strong> Can model extremely complex, non-linear relationships.</li>
+                            <li><strong>State-of-the-Art Performance:</strong> Achieves top results in fields like image recognition, NLP, and more.</li>
+                            <li><strong>Feature Learning:</strong> Automatically detects relevant features from raw data.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Requires Large Datasets:</strong> Performance suffers without sufficient data.</li>
+                            <li><strong>Computationally Expensive:</strong> Training can require significant time and hardware (like GPUs).</li>
+                            <li><strong>"Black Box" Problem:</strong> Can be difficult to interpret why the model made a specific decision.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>5. Conclusion</h2>
+                <p>
+                    Deep Learning and Multi-Layer Perceptrons represent the cutting edge of AI, capable of solving problems that were once thought to be impossible for machines. While they demand significant data and computational resources, their ability to learn intricate patterns makes them an invaluable tool for complex classification and regression tasks.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

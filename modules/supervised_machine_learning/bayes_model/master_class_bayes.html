@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Naive Bayes</title>
+    <link rel="stylesheet" href="../../../style.css">
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Naive Bayes Master Class</h1>
+            <p><a href="../supervised.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Supervised Learning</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="bayes_model.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Thinking in Probabilities</h2>
+                <p>
+                    Naive Bayes is not a single algorithm, but a family of simple yet powerful probabilistic classifiers. Its foundation is built on <strong>Bayes' Theorem</strong>, and it's particularly famous for its use in text classification, like spam filtering. The main goal is to determine the probability of a label (or class) given a set of observed features.
+                </p>
+            </section>
+            
+            <section>
+                <h2>2. Understanding Bayes' Theorem</h2>
+                <p>
+                    The theorem provides a way to update our beliefs based on new evidence. In machine learning, it helps us calculate the probability of a class given our data. The formula is:
+                </p>
+                <p>$$ P(\text{Class} | \text{Data}) = \frac{P(\text{Data} | \text{Class}) \times P(\text{Class})}{P(\text{Data})} $$</p>
+                <ul>
+                    <li><strong>Posterior Probability - \(P(\text{Class} | \text{Data})\):</strong> The probability of a data point belonging to a certain class, given the observed features. This is what we want to calculate.</li>
+                    <li><strong>Likelihood - \(P(\text{Data} | \text{Class})\):</strong> The probability of observing the features, given that the data point belongs to a certain class.</li>
+                    <li><strong>Prior Probability - \(P(\text{Class})\):</strong> The initial probability of a class before observing any data. How common is this class in our training set?</li>
+                    <li><strong>Evidence - \(P(\text{Data})\):</strong> The probability of observing the data. This term is constant for all classes, so we often ignore it during calculations for classification.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. The "Naive" Assumption of Independence</h2>
+                <p>
+                    Here's where the "naive" part comes in. The algorithm simplifies the problem by assuming that all features are <strong>independent</strong> of each other. 
+                </p>
+                <p>
+                    For example, in a spam filter, it assumes that the word "free" appearing in an email has no effect on the probability of the word "viagra" also appearing. While this is rarely true in the real world, this assumption makes the calculations dramatically simpler and faster, and the model works surprisingly well in practice.
+                </p>
+            </section>
+
+            <section>
+                <h2>4. Common Types of Naive Bayes Classifiers</h2>
+                <p>The type of Naive Bayes you use depends on the nature of your features:</p>
+                <ul>
+                    <li><strong>Gaussian Naive Bayes:</strong> Used for continuous features that are assumed to follow a Gaussian (normal) distribution, such as height, weight, or temperature.</li>
+                    <li><strong>Multinomial Naive Bayes:</strong> Ideal for features that represent counts or frequencies, like the number of times a word appears in a document. This is the most common type for text classification.</li>
+                    <li><strong>Bernoulli Naive Bayes:</strong> Similar to Multinomial, but the features are binary (yes/no or 1/0), indicating the presence or absence of a feature. For example, does a specific word appear in the document or not?</li>
+                </ul>
+            </section>
+            
+            <section>
+                <h2>5. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Fast:</strong> It's extremely quick for both training and prediction.</li>
+                            <li><strong>Scalable:</strong> Performs well even with high-dimensional data (many features), like in NLP.</li>
+                            <li><strong>Efficient:</strong> Requires a relatively small amount of training data.</li>
+                            <li><strong>Good with Text:</strong> A classic choice for text classification and spam filtering.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Naive Assumption:</strong> The core assumption of feature independence is often violated, which can impact accuracy.</li>
+                            <li><strong>Zero-Frequency Problem:</strong> If a feature doesn't appear in the training data for a class, it gets a zero probability. This is handled with "smoothing" techniques.</li>
+                            <li><strong>Poor Probability Estimates:</strong> While the final classification is often correct, the predicted probabilities themselves can be unreliable.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>6. Conclusion</h2>
+                <p>
+                    Naive Bayes is a foundational algorithm in machine learning that excels at classification tasks, especially with text data. Its simplicity, speed, and efficiency make it an excellent baseline model and a powerful tool for real-time predictions. Despite its "naive" assumption, it remains a relevant and widely-used method for solving complex problems.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

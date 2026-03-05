@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Logistic Regression</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Logistic Regression Master Class</h1>
+            <p><a href="linear_models.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Linear Models</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="logistic_regression.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Classification through Probability</h2>
+                <p>
+                    Despite its name, <strong>Logistic Regression</strong> is a classification algorithm. It works by predicting the probability that an observation belongs to a particular category. It calculates a linear combination of the input features and then passes this value through a <strong>Sigmoid function</strong>, which squashes the output to a value between 0 and 1.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The Decision Boundary</h2>
+                <p>
+                    The output of the Sigmoid function is interpreted as a probability. A decision threshold (typically 0.5) is then used to classify the input:
+                </p>
+                <ul>
+                    <li>If the probability is greater than or equal to 0.5, the model predicts the positive class (e.g., "Fraud").</li>
+                    <li>If the probability is less than 0.5, it predicts the negative class (e.g., "Normal").</li>
+                </ul>
+                <p>This creates a linear decision boundary that separates the two classes.</p>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Highly Interpretable:</strong> The model's coefficients can be interpreted as the influence of each feature on the log-odds of the outcome.</li>
+                            <li><strong>Fast and Efficient:</strong> It is computationally inexpensive to train and make predictions.</li>
+                            <li><strong>Outputs Probabilities:</strong> Provides a measure of confidence in its predictions, which can be useful for decision-making.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Assumes Linearity:</strong> It assumes a linear relationship between the features and the log-odds of the outcome, which may not hold true in all cases.</li>
+                            <li><strong>Can't Solve Non-Linear Problems:</strong> It cannot capture complex, non-linear relationships in the data.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Logistic Regression is a fundamental algorithm for binary classification. Its simplicity, interpretability, and efficiency make it an excellent baseline model and a popular choice for problems where understanding the drivers of a prediction is as important as the prediction itself.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

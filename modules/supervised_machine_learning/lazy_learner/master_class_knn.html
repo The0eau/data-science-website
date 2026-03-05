@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - k-Nearest Neighbors</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>k-Nearest Neighbors (k-NN) Master Class</h1>
+            <p><a href="lazy_learners.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Lazy Learners</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="knn_model.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Classification by Proximity</h2>
+                <p>
+                    <strong>k-Nearest Neighbors (k-NN)</strong> is a simple, yet powerful algorithm that classifies a new data point based on the majority class of its "k" closest neighbors in the feature space. It's a "lazy learner" because it doesn't build a model during the training phase; it simply stores the entire dataset.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The Prediction Process</h2>
+                <p>
+                    When a new, unseen data point needs to be classified, the k-NN algorithm follows these steps:
+                </p>
+                <ul>
+                    <li><strong>Calculate Distances:</strong> It computes the distance (typically Euclidean distance) from the new point to all points in the training dataset.</li>
+                    <li><strong>Find the Nearest Neighbors:</strong> It identifies the "k" points from the training data that are closest to the new point.</li>
+                    <li><strong>Majority Vote:</strong> It assigns the new data point to the class that is most common among its "k" nearest neighbors.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Simple and Intuitive:</strong> Easy to understand and implement.</li>
+                            <li><strong>No Training Phase:</strong> As a lazy learner, it requires no time for training.</li>
+                            <li><strong>Adapts to a Variety of Problems:</strong> Can be used for both classification and regression.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Computationally Expensive:</strong> Can be slow for large datasets as it needs to compute distances to all training points for each prediction.</li>
+                            <li><strong>Sensitive to Feature Scaling:</strong> Features with larger scales can dominate the distance calculation, making feature scaling essential.</li>
+                            <li><strong>Curse of Dimensionality:</strong> Performance degrades in high-dimensional spaces as the concept of "closeness" becomes less meaningful.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    k-NN is an excellent baseline model for classification tasks. Its simplicity and intuitive nature make it a great starting point, and it can perform surprisingly well on a variety of problems, especially when the decision boundary is non-linear.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

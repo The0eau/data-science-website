@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #000000;
+    color: #FFFFFF;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+}
+
+.container {
+    max-width: 1200px;
+    width: 90%;
+}
+
+header h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+header p {
+    font-size: 1.5rem;
+    color: #A0A0A0;
+    margin-top: 0;
+    margin-bottom: 3rem;
+}
+
+.hub {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background-color: #1A1A1A;
+    border: 1px solid #333333;
+    padding: 2rem;
+    text-decoration: none;
+    color: #FFFFFF;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.card:hover {
+    background-color: #FFFFFF;
+    color: #000000;
+    transform: translateY(-10px);
+}
+
+.card h2 {
+    font-size: 1.75rem;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+.card p {
+    font-size: 1rem;
+    color: #A0A0A0;
+    margin: 0;
+}
+
+.card:hover p {
+    color: #333333;
+}
+
+.content-page {
+    background-color: #FFFFFF;
+    color: #000000;
+    padding: 2rem;
+    text-align: left;
+    border-radius: 8px;
+}
+
+.content-page h2, .content-page h3, .content-page h4 {
+    color: #000000;
+}
+
+.content-page p, .content-page li {
+    color: #333333;
+    line-height: 1.8;
+}
+
+.content-page code {
+    background-color: #f0f0f0;
+    color: #c7254e;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: monospace;
+}

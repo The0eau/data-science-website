@@ -6,11 +6,15 @@
   "scripts": {
     "lint": "prettier --check .",
     "lint:fix": "prettier --write .",
-    "test": "echo \"No JavaScript tests configured yet.\" && exit 0"
+    "test": "echo \"No JavaScript tests configured yet.\" && exit 0",
+    "deploy": "gh-pages -d .",
+    "dev": "http-server -c-1"
   },
+  "homepage": "https://The0eau.github.io/data-science-website",
   "author": "Theau AGUET",
   "license": "MIT",
   "devDependencies": {
+    "http-server": "^14.1.1",
     "prettier": "^3.2.5"
   },
   "dependencies": {
