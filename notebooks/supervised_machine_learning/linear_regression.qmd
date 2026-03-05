@@ -1,0 +1,145 @@
+---
+title: "Machine Learning from Scratch: Linear & Regularized Regression"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: cosmo
+    output-file: "linear_regression.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Concept: Linear Regression and Regularization
+
+**Linear Regression** attempts to model the relationship between a scalar response and one or more explanatory variables by fitting a linear equation to observed data. 
+
+
+
+### Regularization (Lasso & Ridge)
+To prevent overfitting and handle multicollinearity, we add a penalty term to the cost function:
+
+* **L1 Regularization (Lasso):** Adds a penalty equal to the absolute value of the magnitude of coefficients. It can lead to zero coefficients, effectively performing feature selection.
+* **L2 Regularization (Ridge):** Adds a penalty equal to the square of the magnitude of coefficients. It shrinks coefficients but rarely sets them to zero.
+
+
+
+---
+
+## 2. Implementation from Scratch
+
+We implement the base `LinearRegression` engine and a `RegularizedRegression` class that handles both L1 and L2 penalties using Gradient Descent.
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+
+# --- UTILITIES ---
+def train_test_split_scratch(X, y, test_size=0.2, random_state=None):
+    """Splits data into training and testing sets manually."""
+    if random_state:
+        np.random.seed(random_state)
+    indices = np.arange(X.shape[0])
+    np.random.shuffle(indices)
+    split_idx = int(X.shape[0] * (1 - test_size))
+    return X[indices[:split_idx]], X[indices[split_idx:]], y[indices[:split_idx]], y[indices[split_idx:]]
+
+def mean_squared_error(y_true, y_pred):
+    return np.mean((y_true - y_pred)**2)
+
+# --- MODELS ---
+class LinearRegressionScratch:
+    def __init__(self, learning_rate=0.01, iterations=1000):
+        self.lr = learning_rate
+        self.iterations = iterations
+        self.weights = None
+        self.bias = None
+
+    def fit(self, X, y):
+        n_samples, n_features = X.shape
+        self.weights = np.zeros(n_features)
+        self.bias = 0
+
+        for _ in range(self.iterations):
+            y_predicted = np.dot(X, self.weights) + self.bias
+            
+            dw = (1 / n_samples) * np.dot(X.T, (y_predicted - y))
+            db = (1 / n_samples) * np.sum(y_predicted - y)
+
+            self.weights -= self.lr * dw
+            self.bias -= self.lr * db
+
+    def predict(self, X):
+        return np.dot(X, self.weights) + self.bias
+
+class RegularizedRegression:
+    def __init__(self, lr=0.01, iterations=1000, l1_pen=0, l2_pen=0):
+        self.lr, self.iterations = lr, iterations
+        self.l1_pen, self.l2_pen = l1_pen, l2_pen
+        self.weights, self.bias = None, None
+
+    def fit(self, X, y):
+        n_samples, n_features = X.shape
+        self.weights = np.zeros(n_features)
+        self.bias = 0
+
+        for _ in range(self.iterations):
+            y_pred = np.dot(X, self.weights) + self.bias
+            
+            # Gradients including L1 and L2 penalties
+            l1_derivative = self.l1_pen * np.sign(self.weights)
+            l2_derivative = self.l2_pen * 2 * self.weights
+            
+            dw = (1/n_samples) * (np.dot(X.T, (y_pred - y)) + l1_derivative + l2_derivative)
+            db = (1/n_samples) * np.sum(y_pred - y)
+
+            self.weights -= self.lr * dw
+            self.bias -= self.lr * db
+
+    def predict(self, X):
+        return np.dot(X, self.weights) + self.bias
+
+```
+
+---
+
+## 3. Training & Testing
+
+We evaluate both models using a small subset of the credit card dataset. For regression purposes here, we treat the `Amount` as our target variable $y$ and PCA components as features $X$.
+
+```{python}
+# 1. Load Data
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+df = pd.read_csv(csv_path, nrows=100)
+
+# 2. Data Preparation (Predicting Amount based on V1-V5)
+X = df[['V1', 'V2', 'V3', 'V4', 'V5']].values
+y = df['Amount'].values
+
+# 3. 80/20 Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split_scratch(X, y, test_size=0.2, random_state=42)
+
+# 4. Standard Linear Regression
+lin_model = LinearRegressionScratch(learning_rate=0.01, iterations=1000)
+lin_model.fit(X_train, y_train)
+lin_preds = lin_model.predict(X_test)
+
+# 5. Ridge Regression (L2 Penalty)
+ridge_model = RegularizedRegression(lr=0.01, iterations=1000, l2_pen=10.0)
+ridge_model.fit(X_train, y_train)
+ridge_preds = ridge_model.predict(X_test)
+
+print(f"Standard Linear MSE: {mean_squared_error(y_test, lin_preds):.4f}")
+print(f"Ridge Regression MSE: {mean_squared_error(y_test, ridge_preds):.4f}")
+
+```
+
+---
+
+## 4. Conclusion
+
+Regularized regression models are vital when working with highly dimensional financial data. By penalizing large weights, we ensure that the model remains stable and less sensitive to outliers in the training data, which is common in transaction datasets.

@@ -1,0 +1,105 @@
+---
+title: "NLP Intelligence: Automated Fact-Checking via NLI"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: flatly
+---
+
+## 1. Concept: Natural Language Inference (NLI)
+
+Fact-checking at scale requires more than just searching for keywords; it requires understanding the **logical relationship** between two sentences. In the world of NLP, this is known as **NLI** (Natural Language Inference) or Recognizing Textual Entailment (RTE).
+
+
+
+A model trained on NLI (like RoBERTa-large-MNLI) categorizes the relationship between a **Source (Premise)** and a **Claim (Hypothesis)** into three distinct states:
+
+| Status | Description |
+|--------|-------------|
+| **Entailment** | The source logically proves the claim is true. |
+| **Contradiction** | The source logically proves the claim is false. |
+| **Neutral** | The source does not provide enough information to confirm or deny. |
+
+---
+
+## 2. Implementation: The Fact-Checking Engine
+
+We leverage the `roberta-large-mnli` model. This model has been trained on the Multi-Genre Natural Language Inference (MNLI) corpus, making it highly robust across various domains.
+
+```{python}
+from transformers import pipeline
+
+class FactChecker:
+    """
+    Automated Fact-checking using Natural Language Inference (NLI).
+    Verifies if a 'claim' is supported by a 'source' text.
+    """
+    def __init__(self):
+        # RoBERTa-large provides high accuracy for logical reasoning tasks.
+        # For lower-resource environments, 'distilroberta-base' is a viable alternative.
+        print("--- Loading Fact-checking Model (RoBERTa-MNLI) ---")
+        self.nli_model = pipeline("text-classification", model="roberta-large-mnli")
+
+    def verify(self, context, claim):
+        """
+        Compares a claim against a context to check its veracity.
+        """
+        # The </s> is the separator token for RoBERTa to distinguish premise from hypothesis
+        result = self.nli_model(f"{context} </s> {claim}")[0]
+        
+        label = result['label']
+        score = result['score']
+
+        status_map = {
+            "CONTRADICTION": "❌ FALSE (Contradicts source)",
+            "NEUTRAL": "⚠️ UNVERIFIED (No mention in source)",
+            "ENTAILMENT": "✅ TRUE (Supported by source)"
+        }
+
+        return {
+            "status": status_map.get(label, "UNKNOWN"),
+            "confidence": f"{score:.2%}",
+            "raw_label": label
+        }
+
+```
+
+---
+
+## 3. Real-World Testing
+
+Let's test the engine with a scientific source text and various claims to observe the logical reasoning.
+
+```{python}
+checker = FactChecker()
+
+source_text = "The James Webb Space Telescope reached its orbit at the second Lagrange point (L2) in January 2022."
+
+claims = [
+    "The telescope is located at the L2 point.",         # Expected: Entailment
+    "The mission was cancelled in late 2021.",          # Expected: Contradiction
+    "The telescope has discovered signs of water."      # Expected: Neutral
+]
+
+print(f"Source Text: {source_text}\n")
+
+for c in claims:
+    res = checker.verify(source_text, c)
+    print(f"Claim: {c}")
+    print(f"Result: {res['status']} | Confidence: {res['confidence']}\n")
+
+```
+
+---
+
+## 4. Why This Matters for AI Safety
+
+In an era of "LLM Hallucinations," tools like this are vital. If you have an AI generating summaries or answering questions, you can use an NLI Fact-Checker as a **Judge Model** to cross-reference the AI's output with the original document to ensure zero hallucinations.
+
+### Technical Note:
+
+The confidence score is a softmax output. A high confidence in **Neutral** means the model is very sure that the source simply does not contain the information required to validate the claim. This is often more useful in production than a "best guess" approach.

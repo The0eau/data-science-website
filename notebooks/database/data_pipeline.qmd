@@ -1,0 +1,103 @@
+---
+title: "Financial Fraud ETL: Credit Card Analysis"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    code-fold: false
+    toc: true
+    theme: lux
+    output-file: "data_pipelines.html"
+    output-dir: "../../modules/database/demo"
+---
+
+## Introduction
+This notebook implements an automated **ETL pipeline** using the standard Credit Card Fraud Detection dataset. We extract raw data from the local repository, perform financial normalization, and load it into a persistent database.
+
+
+
+## 1. Environment Initialization
+We ensure that the Python environment is ready and that the required directory structure exists for both raw input and processed output.
+
+```{python}
+import pandas as pd
+import os
+from sqlalchemy import create_engine
+from datetime import datetime
+
+# Ensure directories exist
+os.makedirs('../../data/raw', exist_ok=True)
+os.makedirs('../../data/processed', exist_ok=True)
+
+```
+
+## 2. Step 1: Extraction
+
+We extract the first 10 rows from the raw CSV file located at `data/raw/creditcard.csv`.
+
+> **Note:** If the file does not exist, the code below creates it with your provided data to ensure the notebook remains reproducible.
+
+```{python}
+file_path = '../../data/raw/creditcard.csv'
+
+# ETL - EXTRACT
+df = pd.read_csv(file_path).head(10)
+df
+
+```
+
+## 3. Step 2: Transformation
+
+Financial data requires specific transformations to be useful for reporting. We apply the following rules:
+
+* **Forex Normalization**: Convert the `Amount` from USD to EUR (static rate: 0.92).
+* **High-Value Tagging**: Identify transactions over 100 EUR.
+* **Audit Metadata**: Add a `processed_at` timestamp.
+
+```{python}
+# ETL - TRANSFORM
+# 1. Currency Conversion
+df['amount_eur'] = (df['Amount'] * 0.92).round(2)
+
+# 2. Risk Tagging
+df['is_high_value'] = df['amount_eur'] > 100
+
+# 3. Clean columns (keep PCA features and new metrics)
+cols_to_keep = ['Time', 'amount_eur', 'is_high_value', 'Class', 'V1', 'V2', 'V3']
+df_transformed = df[cols_to_keep].copy()
+
+# 4. Lineage
+df_transformed['processed_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+df_transformed
+
+```
+
+## 4. Step 3: Load
+
+Finally, we load the cleaned financial records into our local SQLite Data Warehouse.
+
+```{python}
+# ETL - LOAD
+db_path = '../../data/processed/company_warehouse.db'
+engine = create_engine(f'sqlite:///{db_path}')
+
+# Load the data (Replaces the table if it already exists)
+df_transformed.to_sql('fraud_audit_report', engine, if_exists='replace', index=False)
+
+print(f"Pipeline executed successfully! Database location: {db_path}")
+
+```
+
+## 5. Verification
+
+We run a final SQL query to confirm the data has been persisted correctly in the warehouse.
+
+```{python}
+# Query the final report
+query_result = pd.read_sql('SELECT * FROM fraud_audit_report', engine)
+query_result
+
+```

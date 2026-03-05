@@ -1,0 +1,134 @@
+---
+title: "SQL Masterclass & Credit Card ETL"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: lux
+    output-file: "sqlalchemy_demo.html"
+    output-dir: "../../modules/database/demo"
+---
+
+## 1. Concepts: SQLite vs PostgreSQL
+
+> **2. SQLite (The "Featherweight")**
+>
+> - **How it works:** A self-contained, serverless database engine in a single file (`.db`).
+> - **Architecture:** The engine is integrated directly into the application.
+> - **Best for:** Mobile apps (iOS/Android), desktop software, IoT, or prototyping.
+> - **Pros:** Zero configuration, ultra-fast reads, highly portable.
+
+> **3. PostgreSQL (The "Heavyweight")**
+>
+> - **How it works:** A robust Client-Server database management system (RDBMS).
+> - **Architecture:** Runs as a separate service on a server. Multiple users connect via network.
+> - **Best for:** High-traffic websites, complex enterprise apps, GIS data.
+> - **Pros:** Handles massive data, advanced security, strict data integrity.
+
+
+
+---
+
+## 2. ETL Pipeline (Extract, Transform, Load)
+
+Before running the SQL demo, we extract the first 10 lines from our raw credit card data and normalize the currency.
+
+```{python}
+import pandas as pd
+import sqlite3
+import os
+from datetime import datetime
+
+# Path Management (Navigating from notebooks/database/ to project root)
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+db_dir = os.path.join(base_path, "data/processed")
+db_path = os.path.join(db_dir, "finance_warehouse.db")
+
+# Ensure the processed directory exists
+os.makedirs(db_dir, exist_ok=True)
+
+# 1. EXTRACT
+df_raw = pd.read_csv(csv_path, nrows=10)
+
+# 2. TRANSFORM
+# Converting Amount to EUR (approx rate 0.92) and adding metadata
+df_raw['amount_eur'] = (df_raw['Amount'] * 0.92).round(2)
+df_raw['processed_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+# Selecting a clean subset
+df_final = df_raw[['Time', 'V1', 'V2', 'amount_eur', 'Class', 'processed_at']]
+
+print(f"[ETL] Success: {len(df_final)} rows processed.")
+
+```
+
+---
+
+## 3. SQL Masterclass Demo
+
+Using standard SQL commands (DDL, DML, DQL) to manage our financial records.
+
+```{python}
+def run_database_demo(dataframe, database_file):
+    # 1. CONNECTION
+    conn = sqlite3.connect(database_file)
+    cursor = conn.cursor()
+
+    print("--- SQL MASTER CLASS: START ---")
+
+    # 2. DDL (Data Definition Language) - Creating the structure
+    # We use pandas to bootstrap the table
+    dataframe.to_sql('transactions', conn, if_exists='replace', index=False)
+    print("[DDL] Table 'transactions' created.")
+
+    # 3. DML (Data Manipulation Language) - Inserting data
+    # Adding a manual test entry
+    test_tx = (999, -1.5, 0.5, 500.0, 0, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    cursor.execute("INSERT INTO transactions VALUES (?, ?, ?, ?, ?, ?)", test_tx)
+    conn.commit()
+    print("[DML] Manual test transaction inserted.")
+
+    # 4. DQL (Data Query Language) - Querying and Filtering
+    print("\n--- QUERY RESULTS (Transactions > 100 EUR) ---")
+    cursor.execute("SELECT Time, amount_eur FROM transactions WHERE amount_eur > 100")
+    
+    for row in cursor.fetchall():
+        print(f"-> TX ID: {row[0]} | Value: {row[1]}€")
+
+    # 5. AGGREGATE FUNCTIONS - Calculations
+    cursor.execute("SELECT AVG(amount_eur) FROM transactions")
+    avg_val = cursor.fetchone()[0]
+    print(f"\n[STATS] Average Transaction Value: {avg_val:.2f} EUR")
+
+    # 6. UPDATE & DELETE - Maintenance
+    cursor.execute("UPDATE transactions SET amount_eur = 1.0 WHERE amount_eur < 1")
+    cursor.execute("DELETE FROM transactions WHERE Time = 999")
+    conn.commit()
+    print("[DML] Database maintenance complete: Test entry removed.")
+
+    # Close connection
+    conn.close()
+    print("\n--- DEMO FINISHED: Connection closed ---")
+
+# Run the demo
+run_database_demo(df_final, db_path)
+
+```
+
+---
+
+## 4. Final Warehouse Audit
+
+```{python}
+# Final check of the persisted data
+conn = sqlite3.connect(db_path)
+audit_df = pd.read_sql("SELECT * FROM transactions", conn)
+conn.close()
+
+audit_df
+
+```

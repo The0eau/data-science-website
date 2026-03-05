@@ -1,0 +1,127 @@
+---
+title: "Machine Learning from Scratch: Centroid Partition Classifier"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: cosmo
+    output-file: "centroid_classifier.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Concept: Spatial Partitioning via Centroids
+
+The **Centroid Partition Classifier** (often known as a Nearest Centroid Classifier) is a linear model that represents each class by its **centroid**—the arithmetic mean of all samples belonging to that class. 
+
+
+
+### Decision Mechanism
+To classify a new observation $x$, the model calculates the distance between $x$ and each class centroid $\mu_c$. The observation is assigned to the class whose centroid is closest. This creates a decision boundary known as a **Voronoi partition**.
+
+$$ \hat{y} = \arg\min_{c \in C} \|x - \mu_c\|_2 $$
+
+---
+
+## 2. Implementation from Scratch
+
+We implement the manual data split and the Centroid engine using `numpy`.
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+
+# --- UTILITIES ---
+def train_test_split_scratch(X, y, test_size=0.2, random_state=None):
+    """Splits data into training and testing sets manually."""
+    if random_state:
+        np.random.seed(random_state)
+    indices = np.arange(X.shape[0])
+    np.random.shuffle(indices)
+    split_idx = int(X.shape[0] * (1 - test_size))
+    return X[indices[:split_idx]], X[indices[split_idx:]], y[indices[:split_idx]], y[indices[split_idx:]]
+
+def accuracy_score(y_true, y_pred):
+    return np.sum(y_true == y_pred) / len(y_true)
+
+# --- CENTROID CLASSIFIER ---
+class CentroidPartitionClassifier:
+    def __init__(self):
+        self.centroids = {}
+        self.classes = None
+
+    def fit(self, X, y):
+        """Calculate the mean vector (centroid) for each class."""
+        self.classes = np.unique(y)
+        for cls in self.classes:
+            X_cls = X[y == cls]
+            self.centroids[cls] = np.mean(X_cls, axis=0)
+
+    def predict(self, X):
+        """Assign each point to the nearest class centroid."""
+        return np.array([self._assign_partition(x) for x in X])
+
+    def _assign_partition(self, x):
+        # Calculate Euclidean distance to each centroid
+        distances = {cls: np.sqrt(np.sum((x - c)**2)) for cls, c in self.centroids.items()}
+        return min(distances, key=distances.get)
+
+```
+
+---
+
+## 3. Application to Financial Fraud Data
+
+We apply this model to the `creditcard.csv` dataset. Because Centroid-based models rely on Euclidean distance, **Feature Scaling** is mandatory. Without it, the `Amount` feature would outweigh the normalized PCA features ($V1-V28$).
+
+```{python}
+# 1. Path Management
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+df = pd.read_csv(csv_path, nrows=50)
+
+# 2. Data Preparation
+X = df.drop(columns=['Time', 'Class']).values
+y = df['Class'].values
+
+# 3. Min-Max Normalization (Scaling to [0, 1])
+X = (X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0) + 1e-9)
+
+# 4. 80/20 Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split_scratch(X, y, test_size=0.2, random_state=42)
+
+print(f"Training on {X_train.shape[0]} samples.")
+print(f"Testing on {X_test.shape[0]} samples.")
+
+```
+
+---
+
+## 4. Model Training & Evaluation
+
+```{python}
+# Initialize and Fit
+model = CentroidPartitionClassifier()
+model.fit(X_train, y_train)
+
+# Predict on Test Set
+y_pred = model.predict(X_test)
+
+# Results
+acc = accuracy_score(y_test, y_pred)
+
+print("-" * 30)
+print(f"Centroid Test Accuracy: {acc * 100:.2f}%")
+print(f"Predicted Classes: {y_pred}")
+print(f"Actual Classes:    {y_test}")
+
+```
+
+---
+
+## 5. Conclusion
+
+The **Centroid Partition Classifier** is effectively a "one-cluster-per-class" version of K-Means. While it is extremely fast and robust against noise, it assumes that classes are **spherically distributed** around their means. In fraud detection, where the "Fraud" class is often an outlier rather than a dense sphere, this model serves as a strong, simple baseline.

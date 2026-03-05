@@ -1,0 +1,165 @@
+---
+title: "Machine Learning from Scratch: Naive Bayes with Train/Test Split"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: cosmo
+    output-file: "bayes_model.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Mathematical Concept: Gaussian Naive Bayes
+
+Naive Bayes is a probabilistic classifier based on **Bayes' Theorem**. It operates under the "Naive" assumption that all features are independent of each other given the class label. For continuous data, we assume features follow a **Gaussian (Normal) Distribution**.
+
+$$P(y|X) = \frac{P(X|y)P(y)}{P(X)}$$
+
+
+
+---
+
+## 2. Implementation from Scratch
+
+To ensure a rigorous evaluation, we implement a manual `train_test_split_scratch` function to shuffle and divide our data without relying on external libraries like Scikit-Learn.
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+
+def train_test_split_scratch(X, y, test_size=0.2, random_state=None):
+    """Splits data into training and testing sets."""
+    if random_state:
+        np.random.seed(random_state)
+    
+    # Shuffle indices to ensure random distribution
+    indices = np.arange(X.shape[0])
+    np.random.shuffle(indices)
+    
+    split_idx = int(X.shape[0] * (1 - test_size))
+    train_indices = indices[:split_idx]
+    test_indices = indices[split_idx:]
+    
+    return X[train_indices], X[test_indices], y[train_indices], y[test_indices]
+
+def accuracy_score(y_true, y_pred):
+    """Calculate the percentage of correct predictions."""
+    return np.sum(y_true == y_pred) / len(y_true)
+
+def confusion_matrix_scratch(y_true, y_pred):
+    """Compute 2x2 confusion matrix: [[TN, FP], [FN, TP]]"""
+    matrix = np.zeros((2, 2), dtype=int)
+    for gt, lp in zip(y_true, y_pred):
+        matrix[int(gt)][int(lp)] += 1
+    return matrix
+
+class NaiveBayes:
+    def __init__(self):
+        self.classes = None
+        self.mean = None
+        self.var = None
+        self.priors = None
+
+    def fit(self, X, y):
+        """Calculate mean, variance, and prior for each class."""
+        n_samples, n_features = X.shape
+        self.classes = np.unique(y)
+        n_classes = len(self.classes)
+
+        self.mean = np.zeros((n_classes, n_features), dtype=np.float64)
+        self.var = np.zeros((n_classes, n_features), dtype=np.float64)
+        self.priors = np.zeros(n_classes, dtype=np.float64)
+
+        for idx, c in enumerate(self.classes):
+            X_c = X[y == c]
+            self.mean[idx, :] = X_c.mean(axis=0)
+            self.var[idx, :] = X_c.var(axis=0) + 1e-9 # Epsilon to prevent division by zero
+            self.priors[idx] = X_c.shape[0] / float(n_samples)
+
+    def predict(self, X):
+        """Predict the class for each sample in X."""
+        return np.array([self._predict(x) for x in X])
+
+    def _predict(self, x):
+        """Calculate posterior probability for each class."""
+        posteriors = []
+        for idx, c in enumerate(self.classes):
+            prior = np.log(self.priors[idx])
+            # Sum of log-likelihoods to prevent numerical underflow
+            class_conditional = np.sum(np.log(self._pdf(idx, x)))
+            posterior = prior + class_conditional
+            posteriors.append(posterior)
+        return self.classes[np.argmax(posteriors)]
+
+    def _pdf(self, class_idx, x):
+        """Gaussian Probability Density Function."""
+        mean = self.mean[class_idx]
+        var = self.var[class_idx]
+        numerator = np.exp(-((x - mean) ** 2) / (2 * var))
+        denominator = np.sqrt(2 * np.pi * var)
+        return numerator / denominator
+
+```
+
+---
+
+## 3. Data Preparation & Splitting
+
+We load the first 50 rows of the `creditcard.csv` dataset and perform an **80/20 split**.
+
+```{python}
+# Path Management
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+
+# Load 50 rows for testing
+df = pd.read_csv(csv_path, nrows=50)
+
+# Prepare Features (V1-V28, Amount) and Target (Class)
+X = df.drop(columns=['Time', 'Class']).values
+y = df['Class'].values
+
+# Split: 80% for training, 20% for testing
+X_train, X_test, y_train, y_test = train_test_split_scratch(X, y, test_size=0.2, random_state=42)
+
+print(f"Training set size: {X_train.shape[0]} samples")
+print(f"Testing set size: {X_test.shape[0]} samples")
+
+```
+
+---
+
+## 4. Model Training & Evaluation
+
+The model learns from the 40 training samples and is then evaluated on the 10 unseen test samples.
+
+```{python}
+# Initialize and train
+model = NaiveBayes()
+model.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = model.predict(X_test)
+
+# Metrics
+acc = accuracy_score(y_test, y_pred)
+cm = confusion_matrix_scratch(y_test, y_pred)
+
+print("="*30)
+print("TEST SET PERFORMANCE")
+print("="*30)
+print(f"Accuracy: {acc * 100:.2f}%")
+print("\nConfusion Matrix (Test Set):")
+print(cm)
+
+```
+
+---
+
+## 5. Conclusion
+
+By implementing a **Train/Test split**, we moved beyond simple data fitting to true model validation. Although our sample size is small (50 rows total), this architecture ensures that the model is tested on data it has never seen, providing a more realistic measure of its performance in detecting financial fraud.

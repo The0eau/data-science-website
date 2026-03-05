@@ -1,0 +1,114 @@
+---
+title: "Vector Intelligence: Semantic Search with FAISS"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: cosmo
+---
+
+## 1. Concept: The Semantic Embedding Space
+
+Traditional search engines look for exact words. **Vector Search** transforms text into high-dimensional numerical arrays (embeddings). In this space, sentences with similar meanings are geometrically close to each other, even if they share zero common words.
+
+
+
+* **Sentence Transformer**: Converts text into a vector of 384 dimensions (for `all-MiniLM-L6-v2`).
+* **FAISS Index**: A specialized data structure that allows for "Nearest Neighbor" searches at lightning speed.
+
+---
+
+## 2. Implementation: The Vector Engine
+
+We combine `sentence-transformers` for the intelligence layer and `faiss-cpu` for the indexing layer.
+
+```{python}
+import numpy as np
+import faiss
+from sentence_transformers import SentenceTransformer
+
+class VectorSearchEngine:
+    """
+    Industrial Retrieval system using FAISS and Sentence Transformers.
+    """
+    def __init__(self, model_name='all-MiniLM-L6-v2'):
+        # MiniLM is highly efficient for local deployment: fast, small, and accurate.
+        self.model = SentenceTransformer(model_name)
+        self.index = None
+        self.documents = []
+
+    def build_index(self, documents):
+        """
+        Encodes documents and adds them to a FAISS index.
+        """
+        self.documents = documents
+        
+        # 1. Transform text into numerical vectors (Embeddings)
+        embeddings = self.model.encode(documents)
+        
+        # 2. Define the index (L2 = Euclidean Distance)
+        dimension = embeddings.shape[1]
+        self.index = faiss.IndexFlatL2(dimension)
+        
+        # 3. Load vectors into memory
+        self.index.add(np.array(embeddings).astype('float32'))
+        print(f"--- Index successfully built with {self.index.ntotal} documents ---")
+
+    def search(self, query, top_k=2):
+        """
+        Finds the top_k most semantically similar documents.
+        """
+        # Encode the user query into the same vector space
+        query_vector = self.model.encode([query]).astype('float32')
+        
+        # Search for the nearest neighbors using Euclidean distance
+        distances, indices = self.index.search(query_vector, top_k)
+        
+        return [
+            {"text": self.documents[idx], "score": float(distances[0][i])}
+            for i, idx in enumerate(indices[0])
+        ]
+
+```
+
+---
+
+## 3. Real-World Simulation
+
+We will index a diverse set of facts and perform a query that uses different vocabulary than the source text to demonstrate semantic understanding.
+
+```{python}
+docs = [
+    "The Eiffel Tower is located in Paris, France.",
+    "Python is a versatile programming language for Data Science.",
+    "The Great Wall of China is a historic landmark.",
+    "Machine Learning models require high-quality data."
+]
+
+engine = VectorSearchEngine()
+engine.build_index(docs)
+
+# Query: Note that 'French monuments' is not in the source text, but 'Eiffel Tower' is.
+query = "Tell me about landmarks in France"
+results = engine.search(query, top_k=1)
+
+import pandas as pd
+print(f"Query: {query}")
+display(pd.DataFrame(results))
+
+```
+
+---
+
+## 4. Architectural Deep Dive
+
+### IndexFlatL2
+
+We used `IndexFlatL2`, which performs a "Brute Force" search. It is perfectly accurate but can slow down with millions of documents. For massive datasets, we would upgrade to `IndexIVFFlat`, which uses clusters to speed up the search.
+
+### Distance vs. Similarity
+
+In `IndexFlatL2`, a **lower score** means the vectors are closer together (more similar). If we used Cosine Similarity, a higher score would indicate higher similarity. This geometric approach allows for "Fuzzy Matching" that transcends simple keyword overlap.

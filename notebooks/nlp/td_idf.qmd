@@ -1,0 +1,110 @@
+---
+title: "NLP Foundations: Measuring Word Importance with TF-IDF"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: lux
+---
+
+## 1. Concept: What makes a word "Important"?
+
+In a large collection of documents (a corpus), not all words are created equal. 
+* A word like "data" might appear 50 times in a data science article, making it a high-frequency term (**TF**).
+* However, if every article in your database is about data, the word "data" doesn't help you find a *specific* article (**IDF**).
+
+**TF-IDF** is the product of these two metrics. It assigns a high score to words that are frequent in a specific document but rare across the rest of the collection.
+
+
+
+---
+
+## 2. Mathematical Implementation
+
+Cette implémentation utilise l'échelle logarithmique standard pour l'IDF afin de garantir que la "pénalité" pour les mots communs ne croisse pas de manière linéaire, mais se stabilise.
+
+$$\text{TF-IDF}(t, d, D) = \text{TF}(t, d) \times \log\left(\frac{N}{1 + |\{d \in D : t \in d\}|}\right)$$
+
+
+
+```{python}
+import math
+
+class SimpleTFIDF:
+    """
+    A basic TF-IDF calculator to understand word importance in a corpus.
+    """
+
+    def __init__(self, corpus):
+        self.corpus = corpus
+        self.num_docs = len(corpus)
+        self.idf_counts = self._calculate_idf_counts()
+
+    def _calculate_idf_counts(self):
+        """Pre-calculates document frequency for every word."""
+        counts = {}
+        for doc in self.corpus:
+            for word in set(doc):
+                counts[word] = counts.get(word, 0) + 1
+        return counts
+
+    def get_tfidf(self, word, doc):
+        """Calculates the TF-IDF score."""
+        # TF: How often it appears in THIS doc
+        tf = doc.count(word) / len(doc)
+        
+        # IDF: How rare it is across ALL docs
+        docs_with_word = self.idf_counts.get(word, 0)
+        idf = math.log(self.num_docs / (1 + docs_with_word))
+        
+        return tf * idf
+
+```
+
+---
+
+## 3. Comparative Results
+
+Observe how the algorithm treats a "topic word" (specific) versus a "context word" (generic).
+
+```{python}
+corpus = [
+    ["data", "science", "is", "awesome"],
+    ["data", "science", "is", "about", "data"],
+    ["the", "weather", "is", "sunny"]
+]
+
+tfidf_tool = SimpleTFIDF(corpus)
+
+# 'data' appears in 2/3 documents (common in this context)
+score_data = tfidf_tool.get_tfidf("data", corpus[1])
+
+# 'sunny' appears in only 1/3 documents (very specific)
+score_sunny = tfidf_tool.get_tfidf("sunny", corpus[2])
+
+import pandas as pd
+results = pd.DataFrame({
+    "Word": ["data", "sunny"],
+    "TF-IDF Score": [score_data, score_sunny],
+    "Insight": ["Lower score due to higher document frequency", "Higher score due to uniqueness"]
+})
+display(results)
+
+```
+
+---
+
+## 4. Industrial Application: Why this matters
+
+TF-IDF est le moteur derrière :
+
+1. **Moteurs de recherche** : Classement des pages en fonction de la pertinence unique par rapport à une requête.
+2. **Extraction de mots-clés** : Étiquetage automatique des articles avec leurs termes les plus significatifs.
+3. **Features pour le ML** : Avant l'ère des Transformers, les vecteurs TF-IDF étaient le standard pour l'entraînement des modèles de classification.
+
+### Performance & Interpretability
+
+Calculer le TF-IDF sur des milliers de documents est quasi instantané sur du matériel standard. Bien qu'il ne comprenne pas le "contexte" sémantique (il ignore que 'ensoleillé' et 'chaud' sont liés), sa **vitesse** et son **interprétabilité** en font un outil indispensable pour l'analyse de texte rapide et transparente.

@@ -1,0 +1,187 @@
+---
+title: "Advanced Ensemble: Stacking from Scratch"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: cosmo
+    output-file: "stacking.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Concept: The Stacking Architecture
+
+Unlike Bagging (Random Forest) or Boosting (XGBoost), **Stacking** (Stacked Generalization) uses a meta-learner to aggregate predictions. The base models are trained on the original dataset, and their outputs become the input features for the final layer.
+
+
+
+* **Layer 0 (Specialists):** Diverse models (e.g., Naive Bayes and Decision Trees) that capture different patterns in the data.
+* **Layer 1 (Manager):** A meta-model (e.g., Logistic Regression) that learns how to weigh the predictions of the specialists to make a final decision.
+
+---
+
+## 2. Implementation of Learners
+
+We define our manual splitting utility and the core components of our stack using `numpy`.
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+from collections import Counter
+
+# --- UTILITIES ---
+def train_test_split_scratch(X, y, test_size=0.2, random_state=None):
+    """Splits data into training and testing sets manually."""
+    if random_state:
+        np.random.seed(random_state)
+    indices = np.arange(X.shape[0])
+    np.random.shuffle(indices)
+    split_idx = int(X.shape[0] * (1 - test_size))
+    return X[indices[:split_idx]], X[indices[split_idx:]], y[indices[:split_idx]], y[indices[split_idx:]]
+
+def accuracy_score(y_true, y_pred):
+    return np.sum(y_true == y_pred) / len(y_true)
+
+# --- LAYER 0: NAIVE BAYES ---
+class NaiveBayesScratch:
+    def fit(self, X, y):
+        self.classes = np.unique(y)
+        self.mean = np.array([X[y==c].mean(axis=0) for c in self.classes])
+        self.var = np.array([X[y==c].var(axis=0) + 1e-9 for c in self.classes])
+        self.priors = np.array([X[y==c].shape[0]/len(y) for c in self.classes])
+
+    def predict(self, X):
+        return np.array([self._predict(x) for x in X])
+
+    def _predict(self, x):
+        posteriors = []
+        for i, c in enumerate(self.classes):
+            prior = np.log(self.priors[i])
+            likelihood = np.sum(np.log(self._pdf(i, x) + 1e-9))
+            posteriors.append(prior + likelihood)
+        return self.classes[np.argmax(posteriors)]
+
+    def _pdf(self, idx, x):
+        m, v = self.mean[idx], self.var[idx]
+        return np.exp(-(x-m)**2 / (2*v)) / np.sqrt(2*np.pi*v)
+
+# --- LAYER 0: DECISION TREE ---
+class DecisionTreeScratch:
+    def __init__(self, max_depth=3):
+        self.max_depth = max_depth
+
+    def fit(self, X, y):
+        self.tree = self._grow_tree(X, y)
+
+    def _grow_tree(self, X, y, depth=0):
+        if depth >= self.max_depth or len(np.unique(y)) == 1:
+            leaf_val = Counter(y).most_common(1)[0][0] if len(y) > 0 else 0
+            return leaf_val
+        feat = np.argmax(np.var(X, axis=0)) 
+        thresh = np.median(X[:, feat])
+        left_idx = X[:, feat] <= thresh
+        return {'feat': feat, 'thresh': thresh, 
+                'left': self._grow_tree(X[left_idx], y[left_idx], depth+1),
+                'right': self._grow_tree(X[~left_idx], y[~left_idx], depth+1)}
+
+    def predict(self, X):
+        return np.array([self._traverse(x, self.tree) for x in X])
+
+    def _traverse(self, x, node):
+        if not isinstance(node, dict): return node
+        if x[node['feat']] <= node['thresh']:
+            return self._traverse(x, node['left'])
+        return self._traverse(x, node['right'])
+
+# --- LAYER 1: LOGISTIC REGRESSION META-LEARNER ---
+class LogisticRegressionMeta:
+    def __init__(self, lr=0.1, iters=500):
+        self.lr, self.iters = lr, iters
+
+    def fit(self, X, y):
+        self.w, self.b = np.zeros(X.shape[1]), 0
+        for _ in range(self.iters):
+            # Sigmoid activation
+            y_hat = 1 / (1 + np.exp(-(np.dot(X, self.w) + self.b)))
+            # Gradient descent updates
+            self.w -= self.lr * (1/len(y)) * np.dot(X.T, (y_hat - y))
+            self.b -= self.lr * (1/len(y)) * np.sum(y_hat - y)
+
+    def predict(self, X):
+        # Probability threshold at 0.5
+        return (1 / (1 + np.exp(-(np.dot(X, self.w) + self.b))) > 0.5).astype(int)
+
+```
+
+---
+
+## 3. The Stacking Ensemble
+
+The `StackingClassifier` manages the data flow: it trains Layer 0 models, generates "meta-features" (their predictions), and feeds them into the Meta-Model.
+
+```{python}
+class StackingClassifierScratch:
+    def __init__(self, base_models, meta_model):
+        self.base_models = base_models
+        self.meta_model = meta_model
+
+    def fit(self, X, y):
+        meta_features = np.zeros((X.shape[0], len(self.base_models)))
+        for i, model in enumerate(self.base_models):
+            model.fit(X, y)
+            meta_features[:, i] = model.predict(X)
+        self.meta_model.fit(meta_features, y)
+
+    def predict(self, X):
+        meta_features = np.zeros((X.shape[0], len(self.base_models)))
+        for i, model in enumerate(self.base_models):
+            meta_features[:, i] = model.predict(X)
+        return self.meta_model.predict(meta_features)
+
+```
+
+---
+
+## 4. Testing on Financial Fraud Data
+
+We apply the **80/20 split** to the 50-row subset of the credit card dataset.
+
+```{python}
+# Load Data
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+df = pd.read_csv(csv_path, nrows=50)
+
+X = df.drop(columns=['Time', 'Class']).values
+y = df['Class'].values
+
+# 80/20 Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split_scratch(X, y, test_size=0.2, random_state=42)
+
+# Define Architecture
+layer0 = [NaiveBayesScratch(), DecisionTreeScratch(max_depth=3)]
+layer1 = LogisticRegressionMeta()
+
+# Train Stack on Training Set
+stack = StackingClassifierScratch(layer0, layer1)
+stack.fit(X_train, y_train)
+
+# Evaluate on Test Set
+test_preds = stack.predict(X_test)
+test_acc = accuracy_score(y_test, test_preds)
+
+print(f"Training samples: {len(X_train)} | Test samples: {len(X_test)}")
+print("-" * 30)
+print(f"Stacking Ensemble Test Accuracy: {test_acc*100:.2f}%")
+
+```
+
+---
+
+## 5. Conclusion
+
+Stacking allows us to combine the strengths of different modeling approaches. By using a **Train/Test split**, we confirm that the Logistic Regression meta-learner can effectively interpret the combined "advice" of the base models to identify fraudulent transactions on previously unseen data.

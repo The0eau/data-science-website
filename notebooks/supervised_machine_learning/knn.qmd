@@ -1,0 +1,137 @@
+---
+title: "Machine Learning from Scratch: k-Nearest Neighbors"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: cosmo
+    output-file: "knn_model.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Concept: Distance-Based Classification
+
+**k-Nearest Neighbors (k-NN)** is a non-parametric, lazy learning algorithm. It does not "learn" a mathematical function; instead, it stores the entire training dataset and makes predictions based on the proximity of a new data point to its neighbors.
+
+
+
+### Mathematical Intuition
+The most common way to measure "closeness" is the **Euclidean Distance**. For two points $p$ and $q$ in $n$-dimensional space, the distance is calculated as:
+
+$$d(p, q) = \sqrt{\sum_{i=1}^{n} (p_i - q_i)^2}$$
+
+* **k:** The number of neighbors to check. A small $k$ is sensitive to noise, while a large $k$ can smooth out the decision boundary too much.
+* **Majority Vote:** The class that appears most frequently among the $k$ neighbors is chosen as the prediction.
+
+---
+
+## 2. Implementation from Scratch
+
+We implement the manual split and the KNN engine using only `numpy`.
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+from collections import Counter
+
+# --- UTILITIES ---
+def train_test_split_scratch(X, y, test_size=0.2, random_state=None):
+    if random_state:
+        np.random.seed(random_state)
+    indices = np.arange(X.shape[0])
+    np.random.shuffle(indices)
+    split_idx = int(X.shape[0] * (1 - test_size))
+    return X[indices[:split_idx]], X[indices[split_idx:]], y[indices[:split_idx]], y[indices[split_idx:]]
+
+def accuracy_score(y_true, y_pred):
+    return np.sum(y_true == y_pred) / len(y_true)
+
+# --- KNN MODEL ---
+class KNNScratch:
+    def __init__(self, k=3):
+        self.k = k
+
+    def fit(self, X, y):
+        # KNN is a 'Lazy Learner' - it just stores the data
+        self.X_train = X
+        self.y_train = y
+
+    def predict(self, X):
+        return np.array([self._predict(x) for x in X])
+
+    def _predict(self, x):
+        # 1. Compute Euclidean distances between x and all training points
+        distances = [np.sqrt(np.sum((x - x_train)**2)) for x_train in self.X_train]
+        
+        # 2. Sort by distance and return indices of the first k neighbors
+        k_indices = np.argsort(distances)[:self.k]
+        
+        # 3. Extract the labels of these k neighbors
+        k_nearest_labels = [self.y_train[i] for i in k_indices]
+        
+        # 4. Return the most common label (Majority Vote)
+        most_common = Counter(k_nearest_labels).most_common(1)
+        return most_common[0][0]
+
+```
+
+---
+
+## 3. Data Loading & Splitting
+
+We use the 50-row sample of the `creditcard.csv` dataset. Since KNN relies on distances, it is highly sensitive to the scale of the data.
+
+```{python}
+# Path Management
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+df = pd.read_csv(csv_path, nrows=50)
+
+X = df.drop(columns=['Time', 'Class']).values
+y = df['Class'].values
+
+# Feature Scaling (Normalization) 
+# Essential for KNN to prevent 'Amount' from dominating PCA features
+X = (X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0) + 1e-9)
+
+# 80/20 Split
+X_train, X_test, y_train, y_test = train_test_split_scratch(X, y, test_size=0.2, random_state=42)
+
+print(f"Training set: {X_train.shape[0]} samples")
+print(f"Testing set: {X_test.shape[0]} samples")
+
+```
+
+---
+
+## 4. Training & Testing
+
+We initialize the model with $k=3$ and evaluate it on the test set.
+
+```{python}
+# Initialize and 'Fit'
+knn = KNNScratch(k=3)
+knn.fit(X_train, y_train)
+
+# Predict on test set
+y_pred = knn.predict(X_test)
+
+# Metrics
+acc = accuracy_score(y_test, y_pred)
+
+print("-" * 30)
+print(f"KNN Test Accuracy: {acc * 100:.2f}%")
+print(f"Predictions: {y_pred}")
+print(f"True Labels: {y_test}")
+
+```
+
+---
+
+## 5. Conclusion
+
+Unlike the Neural Network or XGBoost, **k-NN** is intuitive because it mirrors how humans often classify things: "If it looks like its neighbors, it probably belongs with them." While simple, it can be computationally expensive on very large datasets as it must calculate the distance to every training point for every new prediction.

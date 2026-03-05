@@ -1,0 +1,170 @@
+---
+title: "Unsupervised Learning: Density-Based Clustering (DBSCAN & OPTICS)"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: cosmo
+    output-file: "density_clustering.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Concept: Density-Based Spatial Clustering
+
+Density-based algorithms differ from Centroid-based (K-Means) or Hierarchical methods because they don't assume clusters have a specific shape (like spheres). They define clusters as dense regions separated by areas of low density.
+
+
+
+### DBSCAN (Density-Based Spatial Clustering of Applications with Noise)
+DBSCAN uses two parameters:
+* **Eps ($\epsilon$):** The maximum distance between two points to be considered neighbors.
+* **Min Samples:** The minimum number of points required to form a "dense" region (Core Point).
+
+Points that are not reachable from any core point are labeled as **Noise (-1)**.
+
+### OPTICS (Ordering Points To Identify the Clustering Structure)
+OPTICS is an evolution of DBSCAN. It addresses the main weakness of DBSCAN: the inability to detect clusters of **varying densities**. It creates an "ordering" of data and records the **Reachability Distance**, which can be visualized to find clusters at various scales.
+
+
+
+---
+
+## 2. Core Implementation
+
+We implement both algorithms from scratch using `numpy`.
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+
+# --- DBSCAN IMPLEMENTATION ---
+class DBSCANScratch:
+    def __init__(self, eps=0.5, min_samples=5):
+        self.eps = eps
+        self.min_samples = min_samples
+        self.labels_ = None
+
+    def _get_neighbors(self, X, idx):
+        distances = np.linalg.norm(X - X[idx], axis=1)
+        return np.where(distances <= self.eps)[0]
+
+    def fit(self, X):
+        n_samples = X.shape[0]
+        self.labels_ = np.full(n_samples, -2) # -2 = Unvisited
+        cluster_id = 0
+
+        for i in range(n_samples):
+            if self.labels_[i] != -2: continue
+            
+            neighbors = self._get_neighbors(X, i)
+            if len(neighbors) < self.min_samples:
+                self.labels_[i] = -1 # Noise
+            else:
+                self._expand_cluster(X, i, neighbors, cluster_id)
+                cluster_id += 1
+        return self
+
+    def _expand_cluster(self, X, idx, neighbors, cluster_id):
+        self.labels_[idx] = cluster_id
+        seeds = list(neighbors)
+        i = 0
+        while i < len(seeds):
+            p = seeds[i]
+            if self.labels_[p] == -1: self.labels_[p] = cluster_id
+            elif self.labels_[p] == -2:
+                self.labels_[p] = cluster_id
+                cur_neighbors = self._get_neighbors(X, p)
+                if len(cur_neighbors) >= self.min_samples:
+                    for n in cur_neighbors:
+                        if n not in seeds: seeds.append(n)
+            i += 1
+
+# --- OPTICS IMPLEMENTATION ---
+class OPTICSScratch:
+    def __init__(self, eps=np.inf, min_samples=5):
+        self.eps = eps
+        self.min_samples = min_samples
+        self.ordered_list_ = []
+        self.reachability_ = None
+
+    def fit(self, X):
+        n_samples = X.shape[0]
+        self.reachability_ = np.full(n_samples, np.inf)
+        self.core_distances_ = np.full(n_samples, np.inf)
+        visited = np.zeros(n_samples, dtype=bool)
+        dist_matrix = np.sqrt(np.sum((X[:, None] - X[None, :]) ** 2, axis=2))
+
+        for i in range(n_samples):
+            sorted_dists = np.sort(dist_matrix[i])
+            if len(sorted_dists) >= self.min_samples:
+                self.core_distances_[i] = sorted_dists[self.min_samples - 1]
+
+        for i in range(n_samples):
+            if not visited[i]:
+                visited[i] = True
+                self.ordered_list_.append(i)
+                if self.core_distances_[i] != np.inf:
+                    seeds = []
+                    self._update_seeds(i, visited, seeds, dist_matrix)
+                    while seeds:
+                        seeds.sort(key=lambda idx: self.reachability_[idx])
+                        next_p = seeds.pop(0)
+                        visited[next_p] = True
+                        self.ordered_list_.append(next_p)
+                        if self.core_distances_[next_p] != np.inf:
+                            self._update_seeds(next_p, visited, seeds, dist_matrix)
+        return self
+
+    def _update_seeds(self, p, visited, seeds, dists):
+        core_dist = self.core_distances_[p]
+        neighbors = np.where(dists[p] <= self.eps)[0]
+        for o in neighbors:
+            if not visited[o]:
+                new_reach = max(core_dist, dists[p, o])
+                if self.reachability_[o] == np.inf:
+                    self.reachability_[o] = new_reach
+                    seeds.append(o)
+                elif new_reach < self.reachability_[o]:
+                    self.reachability_[o] = new_reach
+
+```
+
+---
+
+## 3. Financial Fraud Application
+
+We use DBSCAN to find clusters of "normal" transactions. Any point labeled as **-1 (Noise)** is a potential candidate for investigation.
+
+```{python}
+# 1. Load Data
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+df = pd.read_csv(csv_path, nrows=100)
+
+# 2. Features and Normalization
+X = df.drop(columns=['Time', 'Class']).values
+X = (X - X.mean(axis=0)) / (X.std(axis=0) + 1e-9)
+
+# 3. Fit DBSCAN
+# eps=3 and min_samples=5 are starting points for normalized credit data
+db = DBSCANScratch(eps=3.0, min_samples=5)
+db.fit(X)
+df['dbscan_label'] = db.labels_
+
+# 4. Results
+n_noise = list(db.labels_).count(-1)
+print(f"Detected {n_noise} noise points (potential anomalies) out of {len(X)} transactions.")
+print("\n--- Samples labeled as Noise ---")
+print(df[df['dbscan_label'] == -1][['Amount', 'Class']].head())
+
+```
+
+---
+
+## 4. Conclusion
+
+**DBSCAN** is a "set-and-forget" anomaly detector: it automatically identifies outliers without you needing to tell it how many clusters exist. **OPTICS** goes a step further by allowing us to visualize the density structure of our financial data. Both are essential for discovering complex fraud patterns that don't cluster neatly around a central mean.
