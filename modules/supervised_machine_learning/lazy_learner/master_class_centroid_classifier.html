@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Centroid Partition Classifier</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Centroid Partition Classifier Master Class</h1>
+            <p><a href="lazy_learners.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Lazy Learners</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="centroid_classifier.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Representing Classes by Their Center</h2>
+                <p>
+                    The <strong>Centroid Partition Classifier</strong> (or Nearest Centroid Classifier) is a very simple and efficient algorithm. It represents each class by a single point: its <strong>centroid</strong>, which is simply the average of all the training samples belonging to that class. 
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The Classification Process</h2>
+                <p>
+                    To classify a new data point, the algorithm performs a straightforward calculation:
+                </p>
+                <ul>
+                    <li><strong>Find Centroids:</strong> In the "training" phase, the model calculates the central point (mean vector) for each class.</li>
+                    <li><strong>Calculate Distances:</strong> For a new point, it calculates the distance from that point to the centroid of each class.</li>
+                    <li><strong>Assign Class:</strong> The new point is assigned to the class of the closest centroid. This effectively carves up the feature space into a Voronoi diagram, where each region belongs to one centroid.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Extremely Fast:</strong> Both training and prediction are incredibly fast since they only involve calculating means and distances.</li>
+                            <li><strong>Simple and Interpretable:</strong> The model is easy to understand, as each class is represented by a single, average point.</li>
+                            <li><strong>Robust to Noise:</strong> By averaging all points, the model is naturally robust to outliers.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Assumes Spherical Classes:</strong> The model works best when classes are roughly spherical and equally sized. It performs poorly with complex, non-convex shapes.</li>
+                            <li><strong>Sensitive to Feature Scaling:</strong> Like k-NN, it relies on distances, so feature scaling is mandatory.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    The Centroid Partition Classifier is a powerful baseline model due to its speed and simplicity. While it makes strong assumptions about the data's structure, it provides a fast and interpretable starting point for many classification problems.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

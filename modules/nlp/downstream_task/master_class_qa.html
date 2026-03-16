@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Question Answering</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Question Answering (Q&A) Master Class</h1>
+            <p><a href="downstream_task.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Downstream Task</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="fact_checking.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Reading Comprehension for Machines</h2>
+                <p>
+                    <strong>Question Answering (Q&A)</strong> is the task of automatically answering questions posed by humans in a natural language. A Q&A model is given a question and a context (a piece of text containing the answer), and it must identify the span of text in the context that answers the question. This is also known as "extractive question answering".
+                </p>
+            </section>
+
+            <section>
+                <h2>2. How it Works: Fine-tuning Transformers for Q&A</h2>
+                <p>
+                    Like many other NLP tasks, Q&A models are typically built by fine-tuning a pre-trained transformer model (like BERT or DistilBERT) on a question-answering dataset. The model learns to predict the start and end positions of the answer span within the given context. The output is the piece of text that lies between these two positions.
+                </p>
+            </section>
+
+            <section>
+                <h2>3. The Difference with Semantic Search</h2>
+                <p>
+                    While both can be used to answer questions, there is a key difference:
+                </p>
+                <ul>
+                    <li><strong>Semantic Search:</strong> Retrieves a list of relevant documents that are likely to contain the answer.</li>
+                    <li><strong>Question Answering:</strong> Takes a single document and extracts the specific answer from it.</li>
+                </ul>
+                <p>The two are often used together in a pipeline: first, semantic search is used to find the most relevant documents, and then a Q&A model is used to extract the precise answer from those documents.</p>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Question answering is a powerful tool for information retrieval and a key component of many conversational AI systems. It allows users to get direct answers to their questions without having to read through long documents. As models become more powerful, they are able to answer increasingly complex questions and to reason over multiple pieces of information.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

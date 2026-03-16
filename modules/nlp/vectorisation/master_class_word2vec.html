@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Word2Vec</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Word2Vec Master Class</h1>
+            <p><a href="vectorisation.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Vectorisation</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="word2vec.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Words as Vectors</h2>
+                <p>
+                    <strong>Word2Vec</strong> is a foundational technique that learns to represent words as dense numerical vectors. The key insight is that a word can be understood by the company it keeps. Words that appear in similar contexts (e.g., "cat" and "dog" are often surrounded by words like "pet", "food", "house") will have similar vector representations.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The Two Architectures</h2>
+                <p>
+                    Word2Vec is not a single algorithm but a family of two architectures:
+                </p>
+                <ul>
+                    <li><strong>Continuous Bag-of-Words (CBOW):</strong> This model predicts a target word based on its surrounding context words. It is fast and works well for large datasets.</li>
+                    <li><strong>Skip-gram:</strong> This model does the opposite: it predicts the context words based on a given target word. It is slower than CBOW but is more effective for infrequent words and smaller datasets.</li>
+                </ul>
+                <p>Both architectures learn a set of "weights" for each word, which become the word's vector representation.</p>
+            </section>
+
+            <section>
+                <h2>3. Semantic Arithmetic: The Magic of Embeddings</h2>
+                <p>
+                    The most remarkable property of Word2Vec embeddings is their ability to capture semantic relationships. The classic example is the vector equation:
+                </p>
+                <code>vector('King') - vector('Man') + vector('Woman') ≈ vector('Queen')</code>
+                <p>
+                    This demonstrates that the learned vectors encode analogies and relationships, turning words into points in a meaningful geometric space.
+                </p>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Word2Vec revolutionized NLP by moving from sparse, high-dimensional representations (like one-hot encoding) to dense, low-dimensional embeddings. While more advanced models have since emerged, Word2Vec remains a crucial concept and a powerful tool for learning word representations from scratch, especially when pre-trained models are not available or suitable.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Named Entity Recognition</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Named Entity Recognition (NER) Master Class</h1>
+            <p><a href="downstream_task.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Downstream Task</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="ner.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Finding and Classifying Nouns</h2>
+                <p>
+                    <strong>Named Entity Recognition (NER)</strong> is a subtask of information extraction that seeks to locate and classify named entities in unstructured text into pre-defined categories such as person names, organizations, locations, medical codes, time expressions, quantities, monetary values, percentages, etc.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. How it Works: From Words to Spans</h2>
+                <p>
+                    NER models are typically trained on a large corpus of text that has been manually annotated with entity labels. The model learns to predict the probability that a given word or sequence of words (a "span") belongs to a particular entity class. Modern NER systems often use transformer-based architectures to achieve high accuracy.
+                </p>
+            </section>
+
+            <section>
+                <h2>3. Applications of NER</h2>
+                <ul>
+                    <li><strong>Information Extraction:</strong> Automatically populating databases with information extracted from documents.</li>
+                    <li><strong>Content Recommendation:</strong> Recommending articles or products based on the entities mentioned in a user's reading history.</li>
+                    <li><strong>Customer Support:</strong> Automatically routing customer support tickets based on the products or locations mentioned.</li>
+                    <li><strong>Healthcare:</strong> Extracting information about diseases, drugs, and symptoms from clinical notes.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    NER is a fundamental building block for many NLP applications. It provides a way to extract structured information from unstructured text, which can then be used to power a wide range of downstream tasks. The ability to automatically identify key entities in a text is a crucial step towards understanding its meaning and content.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

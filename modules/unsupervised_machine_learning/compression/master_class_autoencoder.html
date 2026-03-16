@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Autoencoders</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Autoencoders Master Class</h1>
+            <p><a href="../unsupervised-learning.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Data Compression</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="autoencoder_anomaly.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Learning to Reconstruct</h2>
+                <p>
+                    An <strong>Autoencoder</strong> is a special type of neural network that is trained to learn an efficient representation (encoding) of unlabeled data. It consists of two main parts: an <strong>encoder</strong> that compresses the input data into a lower-dimensional latent space, and a <strong>decoder</strong> that reconstructs the original data from this compressed representation. The network's goal is to make the output as close to the input as possible.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. Anomaly Detection with Autoencoders</h2>
+                <p>
+                    The power of autoencoders for anomaly detection comes from training them on a dataset that consists entirely (or mostly) of "normal" data. The network learns the underlying patterns and relationships of this normal data. When a new data point is presented:
+                </p>
+                <ul>
+                    <li>If the data point is <strong>normal</strong>, the autoencoder will be able to reconstruct it accurately, resulting in a <strong>low reconstruction error</strong>.</li>
+                    <li>If the data point is an <strong>anomaly</strong>, it will deviate from the patterns the network has learned. The autoencoder will struggle to reconstruct it, leading to a <strong>high reconstruction error</strong>.</li>
+                </ul>
+                <p>By setting a threshold for the reconstruction error, we can effectively flag potential anomalies.</p>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Unsupervised:</strong> Can learn from large amounts of unlabeled data.</li>
+                            <li><strong>Non-Linear:</strong> Capable of learning complex, non-linear patterns in the data.</li>
+                            <li><strong>Flexible:</strong> The complexity of the autoencoder can be adjusted (by adding more layers or neurons) to fit the complexity of the data.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Can be Computationally Expensive:</strong> Training can be slow, especially for deep autoencoders and large datasets.</li>
+                            <li><strong>Requires Careful Tuning:</strong> Performance can be sensitive to the architecture (number of layers, encoding dimension) and hyperparameters (learning rate, number of epochs).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Autoencoders are a powerful and versatile tool for unsupervised anomaly detection. By learning the essence of normal data through compression, they provide a sophisticated way to identify outliers that don't conform to expected patterns. They represent a significant step up from traditional methods, bridging the gap towards more advanced deep learning solutions.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

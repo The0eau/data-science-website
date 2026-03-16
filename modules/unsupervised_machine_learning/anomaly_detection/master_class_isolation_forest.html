@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Isolation Forest</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Isolation Forest Master Class</h1>
+            <p><a href="anomaly_detection.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Anomaly Detection</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="isolation_forest.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Anomalies are Easy to Isolate</h2>
+                <p>
+                    <strong>Isolation Forest</strong> is a powerful and efficient anomaly detection algorithm based on a simple yet effective principle: anomalies are "few and different." This makes them more susceptible to isolation than normal points. The algorithm builds an ensemble of decision trees, and anomalies are the points that require the fewest splits to be isolated.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The Isolation Process</h2>
+                <p>
+                    The algorithm works by randomly partitioning the data:
+                </p>
+                <ul>
+                    <li><strong>Build Trees:</strong> A forest of random trees is constructed. For each tree, a random subset of the data is selected.</li>
+                    <li><strong>Random Splits:</strong> At each node in a tree, a random feature and a random split value are chosen.</li>
+                    <li><strong>Path Length:</strong> The number of splits required to isolate a data point is its path length. Anomalies, being different, are expected to have shorter average path lengths across the trees.</li>
+                </ul>
+                <p>An anomaly score is then calculated based on this average path length. A score closer to 1 indicates a high likelihood of being an anomaly.</p>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Highly Efficient:</strong> Works very well with large, high-dimensional datasets.</li>
+                            <li><strong>No Need for Labeled Data:</strong> As an unsupervised algorithm, it can detect anomalies without prior knowledge.</li>
+                            <li><strong>Effective at Finding Global Outliers:</strong> Excellent at identifying points that are clearly different from the rest of the data.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Can be Sensitive to the Number of Trees:</strong> The performance can depend on the number of trees in the forest.</li>
+                            <li><strong>May Struggle with Local Anomalies:</strong> Less effective at identifying anomalies that are only outliers in a specific, local region.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Isolation Forest is a go-to algorithm for anomaly detection due to its speed, scalability, and effectiveness. It's a valuable first line of defense in applications like fraud detection, where it can quickly flag unusual activities for further investigation.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

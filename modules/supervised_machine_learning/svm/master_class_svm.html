@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - SVM</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SVM Master Class</h1>
+            <p><a href="../supervised.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Supervised Learning</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="svm_model.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Maximum Margin Classification</h2>
+                <p>
+                    A Support Vector Machine (SVM) is a powerful supervised learning model used for binary classification. Its primary goal is to find the optimal <strong>hyperplane</strong>—a decision boundary—that best separates two classes. The "best" hyperplane is the one that has the largest possible <strong>margin</strong>, which is the distance to the nearest data point of any class.
+                </p>
+            </section>
+            
+            <section>
+                <h2>2. How it Finds the Optimal Boundary</h2>
+                <p>
+                    The data points closest to the hyperplane that dictate its position and orientation are called <strong>support vectors</strong>. The SVM focuses only on these critical points to build its boundary, making it memory-efficient.
+                </p>
+                <ul>
+                    <li><strong>The Objective:</strong> The model's objective is to maximize the margin while minimizing classification errors. This trade-off is controlled by a regularization parameter.</li>
+                    <li><strong>Hinge Loss:</strong> SVM uses a loss function called Hinge Loss, which penalizes points that are either misclassified or fall within the margin. This encourages the model to create a clear separation.</li>
+                    <li><strong>Data Scaling:</strong> Since SVMs are based on distances, it is crucial to scale your data (e.g., through normalization or standardization) before training the model.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. The Kernel Trick: Handling Non-Linear Data</h2>
+                <p>
+                    What if the data isn't separable by a straight line? This is where the <strong>kernel trick</strong> comes in. SVMs can use kernels (like Radial Basis Function or Polynomial) to project the data into a higher-dimensional space where a linear separation becomes possible, without the computational cost of actually transforming the data.
+                </p>
+            </section>
+
+            <section>
+                <h2>4. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Effective in High Dimensions:</strong> Works well even when you have many features.</li>
+                            <li><strong>Memory Efficient:</strong> Uses only a subset of training points (support vectors) in the decision function.</li>
+                            <li><strong>Versatile:</strong> Different kernel functions can be specified for the decision function.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Computationally Intensive:</strong> Can be slow on very large datasets.</li>
+                            <li><strong>Sensitive to Parameters:</strong> Performance is highly dependent on the choice of the regularization parameter and the kernel.</li>
+                            <li><strong>Less Interpretable:</strong> The model's decision boundary can be difficult to interpret, especially with complex kernels.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>5. Conclusion</h2>
+                <p>
+                    The Support Vector Machine is a robust and precise classification algorithm, particularly powerful for complex, high-dimensional datasets where it can find intricate boundaries. Its focus on the most challenging data points makes it a go-to model for tasks requiring high accuracy.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

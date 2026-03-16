@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Doc2Vec</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: From Words to Documents</h2>
+                <p>
+                    While Word2Vec is excellent for understanding individual words, many applications require a way to represent entire documents. <strong>Doc2Vec</strong> (also known as Paragraph Vector) is an extension of Word2Vec that learns to create vector representations for variable-length pieces of text, such as sentences, paragraphs, or entire documents.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. How It Works: The Paragraph ID</h2>
+                <p>
+                    Doc2Vec introduces a new token, the <strong>Paragraph ID</strong>, which is a unique identifier for each document. During training, this Paragraph ID is treated like any other word and is used to predict context words within the document. This forces the model to learn a representation of the document's topic and meaning.
+                </p>
+                 <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Distributed Memory (PV-DM)</h4>
+                        <p>This is analogous to CBOW in Word2Vec. The model learns to predict a word in the document given its context words and the Paragraph ID.</p>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Distributed Bag of Words (PV-DBOW)</h4>
+                        <p>This is analogous to Skip-gram. The model is trained to predict a random set of words from the document given only the Paragraph ID. This is often faster and surprisingly effective.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>3. Applications</h2>
+                <p>
+                    Doc2Vec embeddings can be used for a variety of tasks, including:
+                </p>
+                <ul>
+                    <li><strong>Document Similarity:</strong> Finding documents that are semantically similar to a given document.</li>
+                    <li><strong>Information Retrieval:</strong> Searching for relevant documents based on a query.</li>
+                    <li><strong>Text Classification:</strong> Using the document vectors as features for a classification model.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Doc2Vec provides a powerful way to move beyond word-level semantics and create meaningful representations for entire documents. While it has been surpassed in some areas by more modern techniques like transformers, it remains a valuable and efficient tool for many document-level NLP tasks.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

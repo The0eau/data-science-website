@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Semantic Search</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Semantic Search Master Class</h1>
+            <p><a href="vectorisation.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Vectorisation</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="retrieval.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Searching by Meaning, Not Just Keywords</h2>
+                <p>
+                    Traditional search engines rely on keyword matching. If you search for "how to make a car go faster", you will get results that contain those exact words. <strong>Semantic search</strong> goes a step further by understanding the user's intent and the contextual meaning of the query. It can find relevant results even if they do not contain the exact keywords. For example, a semantic search for "how to make a car go faster" might return articles about "engine tuning" or "aerodynamic improvements".
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The Three Pillars of Semantic Search</h2>
+                <p>
+                    A semantic search system is built on three key components:
+                </p>
+                <ol>
+                    <li><strong>A Sentence Transformer Model:</strong> To convert both the document collection and the user's query into high-quality vector embeddings.</li>
+                    <li><strong>A Vector Database:</strong> To store the document embeddings and perform efficient similarity searches.</li>
+                    <li><strong>An Orchestrator:</strong> To manage the end-to-end process of converting the query, searching the database, and retrieving the original documents.</li>
+                </ol>
+            </section>
+
+            <section>
+                <h2>3. How it Works in Practice</h2>
+                <p>
+                    When a user enters a query, the following steps occur:
+                </p>
+                <ol>
+                    <li>The query is converted into a vector embedding using the sentence transformer model.</li>
+                    <li>This query vector is used to search the vector database for the most similar document vectors.</li>
+                    <li>The original documents corresponding to these similar vectors are retrieved and presented to the user.</li>
+                </ol>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Semantic search represents a paradigm shift in information retrieval. By leveraging the power of deep learning and vector embeddings, it provides a more intuitive and human-like search experience. It is a cornerstone of modern AI applications, from question-answering systems to personalized recommendation engines, and is a key building block for more advanced systems like Retrieval-Augmented Generation (RAG).
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

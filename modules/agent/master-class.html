@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Master Class - Theau</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MCP Master Class</h1>
+            <p><a href="agent.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Agent</a></p>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. Introduction to the Model Context Protocol (MCP)</h2>
+                <p>The Model Context Protocol (MCP) is a framework that enables Large Language Models (LLMs) to interact with external tools and services in a structured and predictable way. It acts as a bridge between the conversational abilities of an LLM and the practical functionalities of Python code. Before an LLM can "reason", it needs to be able to read and process raw text into a usable format.</p>
+            </section>
+            
+            <section>
+                <h2>2. Core Concepts of MCP</h2>
+                <ul>
+                    <li><strong>Tools:</strong> These are Python functions exposed to the LLM. Each tool is decorated with <code>@mcp.tool()</code>, which provides metadata about the function's purpose, parameters, and return values.</li>
+                    <li><strong>MCP Server:</strong> A server (like <code>FastMCP</code>) that hosts the tools and makes them discoverable to the LLM. It handles the JSON-RPC communication between the LLM and the Python code.</li>
+                    <li><strong>Orchestration:</strong> The process of defining and managing the workflow of how different tools are used to accomplish a task. This can be as simple as a single function call or a complex pipeline of data ingestion, processing, and analysis.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. The Modern NLP Pipeline: From Text to Action</h2>
+                <p>To understand how an AI Agent leverages MCP, it's essential to grasp the modern NLP pipeline that transforms raw text into actionable intelligence.</p>
+                
+                <h3>3.1. Foundations: Text Mining & Preprocessing</h3>
+                <p>Before any analysis, text must be cleaned and structured. This involves:</p>
+                <ul>
+                    <li><strong>Tokenization:</strong> Breaking text into words or sub-words.</li>
+                    <li><strong>Stopwords:</strong> Filtering out common words (e.g., "the", "a", "is").</li>
+                    <li><strong>Lemmatization:</strong> Reducing words to their root form (e.g., "running" to "run").</li>
+                    <li><strong>Tools:</strong> <code>NLTK</code> for academic purposes, <code>SpaCy</code> for high-performance industrial applications.</li>
+                </ul>
+
+                <h3>3.2. Vectorization: Embeddings & Semantics</h3>
+                <p>Words are transformed into numerical vectors (embeddings) to capture their meaning:</p>
+                <ul>
+                    <li><strong>TF-IDF:</strong> A classical statistical approach to weigh word importance.</li>
+                    <li><strong>Word2Vec:</strong> A neighborhood-based approach where similar words have close vectors.</li>
+                    <li><strong>Sentence Transformers:</strong> Modern models that capture the meaning of entire sentences, providing richer context.</li>
+                </ul>
+                
+                <h3>3.3. Architecture: Retrieval-Augmented Generation (RAG)</h3>
+                <p>Instead of relying solely on the LLM's internal knowledge (which can lead to "hallucinations"), we provide it with an external knowledge base.</p>
+                <ul>
+                    <li><strong>Information Retrieval:</strong> Using vector databases like <strong>FAISS</strong> or <strong>Chroma</strong> to quickly find relevant documents.</li>
+                    <li><strong>Orchestration:</strong> Using frameworks like <strong>LangChain</strong> to connect the database to the LLM API (e.g., OpenAI, Hugging Face). This is where MCP plays a crucial role in exposing the retrieval and processing logic as tools.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Building a Practical Example: News Intelligence Pipeline</h2>
+                <p>In our example (<code>mcp.html</code>), we build a simple pipeline to fetch and analyze news articles. This demonstrates MCP's power in creating a targeted AI agent.</p>
+                
+                <h3>4.1. Data Ingestion</h3>
+                <p>The <code>fetch_news</code> function simulates fetching raw data from a News API for a given topic.</p>
+                
+                <h3>4.2. Data Processing</h3>
+                <p>The <code>analyze_data</code> function cleans and enriches this data, for instance, by calculating a relevance score.</p>
+                
+                <h3>4.3. Tool Exposure with FastMCP</h3>
+                <p>The <code>@mcp.tool()</code> decorator wraps the entire pipeline into a single <code>run_news_pipeline</code> function. This abstracts the complexity, allowing the AI to call a single, high-level tool to get the job done.</p>
+            </section>
+            
+            <section>
+                <h2>5. Advanced Downstream Tasks</h2>
+                <p>Once the pipeline is orchestrated with MCP, you can deploy specific features:</p>
+                <ul>
+                    <li><strong>NER (Named Entity Recognition):</strong> Extract names, dates, or locations from articles.</li>
+                    <li><strong>Summarization & Q&A:</strong> Condense information or answer specific questions about a document.</li>
+                    <li><strong>Fact-checking:</strong> Verify claims against a trusted source.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>6. Conclusion</h2>
+                <p>MCP provides a powerful and flexible way to extend the capabilities of LLMs. By creating structured tools and services, we can build intelligent agents that can interact with the world and perform complex tasks, moving beyond simple conversation to practical application. The key takeaway is knowing <strong>when to use which tool</strong> and how to orchestrate them effectively.</p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

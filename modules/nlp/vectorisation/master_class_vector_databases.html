@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Vector Databases</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Storing and Querying in High-Dimensional Space</h2>
+                <p>
+                    Once we have created vector embeddings for our text, we need an efficient way to store and retrieve them. Traditional databases are not designed to handle high-dimensional vectors. A <strong>vector database</strong> is a specialized type of database that is optimized for storing, managing, and querying large collections of vector embeddings.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The Challenge of High-Dimensionality</h2>
+                <p>
+                    As the number of dimensions in a vector increases, the "curse of dimensionality" makes it computationally expensive to find the nearest neighbors to a given query vector. A brute-force search that compares the query vector to every other vector in the database is too slow for real-world applications.
+                </p>
+            </section>
+
+            <section>
+                <h2>3. Approximate Nearest Neighbor (ANN) Search</h2>
+                <p>
+                    To overcome this challenge, vector databases use <strong>Approximate Nearest Neighbor (ANN)</strong> algorithms. These algorithms trade a small amount of accuracy for a massive gain in search speed. Instead of guaranteeing the absolute closest neighbors, they find a set of "good enough" neighbors very quickly. Common ANN techniques include:
+                </p>
+                <ul>
+                    <li><strong>Hierarchical Navigable Small World (HNSW):</strong> A graph-based approach that creates a hierarchical structure of the data to speed up search.</li>
+                    <li><strong>Product Quantization (PQ):</strong> A technique that compresses the vectors to reduce their memory footprint and speed up distance calculations.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Vector databases are a critical component of modern AI systems, particularly for applications involving semantic search, recommendation engines, and Retrieval-Augmented Generation (RAG). They provide the infrastructure needed to perform fast and scalable similarity searches on massive datasets of unstructured data, enabling a new generation of intelligent applications.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

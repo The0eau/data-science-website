@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Linear Discriminant Analysis</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Linear Discriminant Analysis (LDA) Master Class</h1>
+            <p><a href="dimensionality_reduction.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Dimensionality Reduction</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="lda_dim_reduction.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Supervised Dimensionality Reduction</h2>
+                <p>
+                    Unlike unsupervised techniques like PCA, <strong>Linear Discriminant Analysis (LDA)</strong> is a supervised algorithm. Its primary goal is not just to reduce dimensions, but to find a new feature subspace that maximizes the separability between different classes. It seeks to project the data in a way that makes classification as easy as possible.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The Optimization Goal</h2>
+                <p>
+                    LDA achieves this by simultaneously optimizing two objectives:
+                </p>
+                <ul>
+                    <li><strong>Maximizing the Between-Class Scatter ($S_B$):</strong> It pushes the means (centroids) of the different classes as far apart from each other as possible.</li>
+                    <li><strong>Minimizing the Within-Class Scatter ($S_W$):</strong> It makes the data points within each class as close to their class mean as possible, creating dense, tight clusters.</li>
+                </ul>
+                <p>The optimal projection is found by solving an eigenvalue problem on the matrix $S_W^{-1} S_B$. The eigenvectors corresponding to the largest eigenvalues form the new feature space.</p>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Improves Classification Performance:</strong> By focusing on class separability, it can significantly improve the accuracy of subsequent classification models.</li>
+                            <li><strong>Reduces Overfitting:</strong> By removing non-discriminatory feature dimensions, it helps models generalize better.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Assumes Linearity:</strong> LDA can only find linear boundaries between classes.</li>
+                            <li><strong>Requires Labeled Data:</strong> As a supervised method, it needs class labels to work.</li>
+                            <li><strong>Number of Components is Limited:</strong> The number of components you can extract is limited to (number of classes - 1).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    LDA is a powerful preprocessing step for classification tasks. When your goal is to reduce dimensionality while preserving the information that is most relevant for distinguishing between groups, LDA is often a more effective choice than purely unsupervised methods like PCA.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

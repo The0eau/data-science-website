@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Stacking</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Stacking Master Class</h1>
+            <p><a href="ensemble.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Ensemble Learning</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="stacking.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Learning How to Combine Models</h2>
+                <p>
+                    <strong>Stacking (Stacked Generalization)</strong> is an advanced ensemble method that combines multiple different models by training a "meta-learner" to make a final prediction based on the outputs of the base models. It's like having a team of specialists who give their opinions to a manager, and the manager learns how to best weigh those opinions to make the final call.
+                </p>
+            </section>
+            
+            <section>
+                <h2>2. The Stacking Architecture</h2>
+                <p>
+                    A typical stacking architecture has two layers:
+                </p>
+                <ul>
+                    <li><strong>Layer 0 (Base Models):</strong> This layer contains a set of diverse learning algorithms (e.g., a Random Forest, an SVM, and a Naive Bayes model). These models are trained on the original training data.</li>
+                    <li><strong>Layer 1 (Meta-Model):</strong> This layer consists of a single model (often a simple one, like Logistic Regression) whose job is to make the final prediction. Its input features are the predictions made by the Layer 0 models. By training on the outputs of the base models, it learns the optimal way to combine their predictions.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Improved Accuracy:</strong> Often leads to better performance than any single model in the ensemble.</li>
+                            <li><strong>Model Diversity:</strong> Excels at combining the strengths of different types of models.</li>
+                            <li><strong>Flexibility:</strong> Highly customizable in terms of which models to include in the base and meta layers.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Increased Complexity:</strong> Can be complex to set up and train properly.</li>
+                            <li><strong>Computationally Expensive:</strong> Training multiple models sequentially can be very time-consuming.</li>
+                            <li><strong>Risk of Information Leakage:</strong> Care must be taken to avoid a situation where the meta-model is trained on predictions made on the same data it was trained on (usually solved with cross-validation).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Stacking is a powerful technique for pushing predictive accuracy to its limits. By learning how to intelligently aggregate the predictions of a diverse set of models, it can often outperform any individual model and is a common strategy in top-level machine learning competitions.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

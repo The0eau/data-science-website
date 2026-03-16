@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Manifold Learning</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Manifold Learning (t-SNE & UMAP) Master Class</h1>
+            <p><a href="dimensionality_reduction.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Dimensionality Reduction</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="manifold_learning.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Unrolling Complex Data</h2>
+                <p>
+                    Many real-world datasets have an intrinsically lower-dimensional structure that is "rolled up" in a high-dimensional space. <strong>Manifold Learning</strong> algorithms are designed to discover and "unroll" this underlying structure, allowing for powerful non-linear dimensionality reduction. They are primarily used for data visualization.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. Two Key Algorithms</h2>
+                
+                <h3>t-SNE (t-distributed Stochastic Neighbor Embedding)</h3>
+                <p>t-SNE is renowned for its ability to create compelling 2D or 3D visualizations. It works by converting high-dimensional similarities between data points into probabilities. It then tries to find a low-dimensional embedding that preserves these probabilities. It excels at revealing the fine-grained <strong>local structure</strong> of the data, showing how individual points cluster together.</p>
+
+                <h3>UMAP (Uniform Manifold Approximation and Projection)</h3>
+                <p>UMAP is a newer algorithm that is often faster than t-SNE and, crucially, better at preserving the <strong>global structure</strong> of the data. This means that the distances and relationships between distant clusters in the UMAP plot are more meaningful. It is built on a solid mathematical foundation from Riemannian geometry and topology.</p>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Excellent for Visualization:</strong> Unrivaled in their ability to create insightful visualizations of high-dimensional data.</li>
+                            <li><strong>Handles Non-Linear Structures:</strong> Can find patterns that linear methods like PCA would completely miss.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Computationally Intensive:</strong> Can be very slow on large datasets.</li>
+                            <li><strong>Interpretability:</strong> The resulting axes have no direct meaning, and the distances between clusters can sometimes be misleading (especially in t-SNE).</li>
+                            <li><strong>Not Meant for Feature Extraction:</strong> These methods are primarily for visualization, not for creating features for a subsequent model.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    t-SNE and UMAP are essential tools for exploratory data analysis. When you need to understand the underlying shape and clustering of your data, these manifold learning techniques provide a window into its non-linear world, revealing patterns that would otherwise remain hidden.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

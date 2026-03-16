@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Decision Trees</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Decision Tree Master Class</h1>
+            <p><a href="../supervised.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Supervised Learning</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="decision_tree.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Recursive Partitioning</h2>
+                <p>
+                    Decision Trees are intuitive yet powerful models that work by recursively splitting the data into smaller, more manageable subsets. Imagine a flowchart of questions designed to lead to a final decision. The main goal is to partition the data based on feature values to create nodes that are as "pure" or homogeneous as possible.
+                </p>
+            </section>
+            
+            <section>
+                <h2>2. How the "Best" Split is Chosen</h2>
+                <p>
+                    The tree must learn the best questions to ask. It does this by measuring the quality of a split. The metric used depends on the task:
+                </p>
+                <ul>
+                    <li><strong>Classification (Entropy & Information Gain):</strong> For classification tasks, the tree aims to reduce uncertainty. It measures the disorder, or <strong>Entropy</strong>, of a node. A split is considered good if it results in a significant reduction in entropy, which is measured as <strong>Information Gain</strong>. The higher the gain, the better the split.</li>
+                    <li><strong>Regression (Variance Reduction):</strong> For regression tasks, where the goal is to predict a continuous value, the tree measures the <strong>variance</strong> within a node. The best split is the one that minimizes the combined variance of the resulting child nodes.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. Building the Tree: Nodes and Leaves</h2>
+                <p>
+                    The process starts with the entire dataset at the <strong>root node</strong>. The algorithm then searches for the best feature and threshold to split the data. This creates two new <strong>child nodes</strong>. This process is repeated for each child node until one of the stopping conditions is met:
+                </p>
+                <ul>
+                    <li>The maximum depth of the tree is reached.</li>
+                    <li>A node contains too few samples to be split further.</li>
+                    <li>All data points in a node belong to the same class (or are very similar for regression).</li>
+                </ul>
+                <p>
+                    A node that is not split further is called a <strong>leaf node</strong>, and it holds the final prediction.
+                </p>
+            </section>
+            
+            <section>
+                <h2>4. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Highly Interpretable:</strong> The flowchart-like structure is easy to understand and explain.</li>
+                            <li><strong>Handles Mixed Data:</strong> Works with both numerical and categorical features with little preprocessing.</li>
+                            <li><strong>Non-Parametric:</strong> Makes no assumptions about the underlying data distribution.</li>
+                            <li><strong>Foundation for Ensembles:</strong> Forms the basis for powerful algorithms like Random Forests and Gradient Boosting.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Prone to Overfitting:</strong> Trees can easily become too complex and memorize the training data. This is often managed with pruning or setting a max depth.</li>
+                            <li><strong>Instability:</strong> Small changes in the data can lead to a completely different tree structure.</li>
+                            <li><strong>Biased with Imbalanced Data:</strong> Can create trees that favor the majority classes.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>5. Conclusion</h2>
+                <p>
+                    Decision Trees are a fundamental building block in machine learning. Their simplicity and interpretability make them an excellent starting point for many classification and regression problems. While a single tree might be prone to overfitting, its true power is unlocked when used in an ensemble, forming some of the most robust and widely-used models today.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

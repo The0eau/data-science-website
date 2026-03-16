@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Boosting</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Boosting Master Class</h1>
+            <p><a href="ensemble.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Ensemble Learning</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="boosting.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Learning from Mistakes</h2>
+                <p>
+                    <strong>Boosting</strong> is an ensemble technique where models are built sequentially, and each new model focuses on correcting the errors made by its predecessors. Instead of a simple majority vote, models are weighted based on their performance. <strong>XGBoost (Extreme Gradient Boosting)</strong> is a highly optimized and powerful implementation of this concept.
+                </p>
+            </section>
+            
+            <section>
+                <h2>2. How Gradient Boosting Works</h2>
+                <p>
+                    The process works as follows:
+                </p>
+                <ul>
+                    <li><strong>Initial Model:</strong> The ensemble starts with a simple initial prediction (e.g., the average of the target values).</li>
+                    <li><strong>Sequential Tree Building:</strong> A new Decision Tree is built in each iteration to predict the <strong>residuals</strong> (the errors) of the previous model.</li>
+                    <li><strong>Weighted Updates:</strong> The predictions of the new tree are added to the overall prediction, scaled by a learning rate. This slowly nudges the model in the right direction.</li>
+                    <li><strong>Gradient & Hessian:</strong> XGBoost refines this process by using the <strong>gradient (first derivative)</strong> and <strong>Hessian (second derivative)</strong> of the loss function to create trees, which allows for more precise and faster convergence.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Exceptional Performance:</strong> Often the top-performing model in machine learning competitions.</li>
+                            <li><strong>Regularization:</strong> Includes built-in L1 and L2 regularization to prevent overfitting.</li>
+                            <li><strong>Speed and Efficiency:</strong> Highly optimized for performance and parallel processing.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Sensitive to Hyperparameters:</strong> Requires careful tuning of parameters like learning rate and tree depth.</li>
+                            <li><strong>Prone to Overfitting:</strong> Can overfit if the number of trees is too high without proper regularization.</li>
+                            <li><strong>Longer Training Time:</strong> Sequential nature can make it slower to train than parallel methods like Random Forest.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Boosting, and specifically XGBoost, is a powerful technique for building high-performance predictive models. By focusing on its past mistakes, the ensemble creates a highly accurate and refined final prediction, making it a favorite for competitive data science.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

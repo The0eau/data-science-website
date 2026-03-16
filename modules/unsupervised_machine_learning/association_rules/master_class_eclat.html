@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - ECLAT Algorithm</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ECLAT Algorithm Master Class</h1>
+            <p><a href="association_rules.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Association Rule Learning</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="eclat_mining.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: A Faster Way to Find Frequent Itemsets</h2>
+                <p>
+                    The <strong>ECLAT (Equivalence Class Transformation)</strong> algorithm is another popular method for association rule mining. It offers a significant performance improvement over Apriori by changing the way the data is structured. Instead of repeatedly scanning the horizontal transaction database, ECLAT uses a vertical format where each item is associated with a list of transaction IDs (a "tidlist") in which it appears.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The ECLAT Process</h2>
+                <p>
+                    ECLAT finds frequent itemsets through set intersections:
+                </p>
+                <ul>
+                    <li><strong>Create Tidlists:</strong> First, the algorithm scans the database to create a tidlist for each item.</li>
+                    <li><strong>Intersect Tidlists:</strong> To find the support of a 2-itemset (e.g., {Milk, Bread}), ECLAT simply intersects the tidlists of Milk and Bread. The size of the resulting intersection is the support count.</li>
+                    <li><strong>Depth-First Search:</strong> It uses a depth-first search (DFS) approach to explore the search space, which is generally faster and more memory-efficient than Apriori's breadth-first approach.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Faster than Apriori:</strong> Generally outperforms Apriori, especially for dense datasets, as it avoids the costly candidate generation step.</li>
+                            <li><strong>Memory Efficient:</strong> The vertical format can be more compact, and the DFS approach can be more memory-friendly.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Tidlists Can Be Large:</strong> For very common items, the tidlists can become very large, consuming significant memory.</li>
+                            <li><strong>Does Not Natively Generate Rules:</strong> The core ECLAT algorithm only finds frequent itemsets. An additional step is required to generate association rules (confidence, lift).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    ECLAT is a powerful and efficient algorithm for frequent itemset mining. Its clever use of a vertical data format and set intersections makes it a go-to choice for large-scale market basket analysis and other pattern discovery tasks.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

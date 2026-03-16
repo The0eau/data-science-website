@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - TF-IDF</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TF-IDF Master Class</h1>
+            <p><a href="text_mining.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Text Mining</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="td_idf.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Measuring Word Importance</h2>
+                <p>
+                    <strong>TF-IDF (Term Frequency-Inverse Document Frequency)</strong> is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus. It is a simple yet powerful way to score and rank words in text.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The Two Components</h2>
+                <p>
+                    TF-IDF is the product of two metrics:
+                </p>
+                <ul>
+                    <li><strong>Term Frequency (TF):</strong> This measures how frequently a term appears in a document. It is often normalized by dividing by the total number of words in the document to prevent a bias towards longer documents.
+                        <br>
+                        <code>TF(t, d) = (Number of times term t appears in document d) / (Total number of terms in document d)</code>
+                    </li>
+                    <li><strong>Inverse Document Frequency (IDF):</strong> This measures how important a term is. It is a logarithmic scale of the number of documents in the corpus divided by the number of documents where the specific term appears. The logarithm is used to dampen the effect of very common words.
+                        <br>
+                        <code>IDF(t, D) = log(Total number of documents in corpus D / (1 + Number of documents with term t in D))</code>
+                    </li>
+                </ul>
+                <p>A high TF-IDF score is achieved by a high term frequency (in the given document) and a low document frequency of the term in the whole collection of documents.</p>
+            </section>
+
+            <section>
+                <h2>3. Applications</h2>
+                 <ul>
+                    <li><strong>Information Retrieval and Search Engines:</strong> TF-IDF is used to rank search results based on their relevance to a query.</li>
+                    <li><strong>Keyword Extraction:</strong> It can be used to automatically identify the most important keywords in a document.</li>
+                    <li><strong>Feature Engineering:</strong> Before the rise of deep learning, TF-IDF vectors were a standard way to represent text for machine learning models.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    TF-IDF is a classic and highly interpretable method for scoring word importance. While it does not capture semantic meaning (it treats "car" and "automobile" as completely different words), its speed and simplicity make it a valuable tool for many NLP tasks, especially in information retrieval and initial data exploration.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

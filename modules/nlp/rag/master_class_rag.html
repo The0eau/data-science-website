@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - RAG</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Bridging the Knowledge Gap</h2>
+                <p>
+                    Large Language Models (LLMs) have a vast amount of knowledge that is frozen at the time of their training. They cannot access information that is created after their training cutoff date. This is where <strong>Retrieval-Augmented Generation (RAG)</strong> comes in. RAG is a technique that combines the generative power of an LLM with the information retrieval capabilities of a vector database.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The RAG Pipeline</h2>
+                <p>
+                    A RAG pipeline consists of the following steps:
+                </p>
+                <ol>
+                    <li><strong>Retrieval:</strong> When a user asks a question, the RAG system first uses a semantic search component to retrieve a set of relevant documents from a knowledge base (e.g., a collection of private documents or a scrape of a website).</li>
+                    <li><strong>Augmentation:</strong> The retrieved documents are then concatenated with the user's original question to form an augmented prompt.</li>
+                    <li><strong>Generation:</strong> This augmented prompt is then fed to an LLM, which generates an answer that is grounded in the retrieved information.</li>
+                </ol>
+            </section>
+
+            <section>
+                <h2>3. Why RAG is so Powerful</h2>
+                <ul>
+                    <li><strong>Access to Real-time Information:</strong> RAG allows LLMs to access and use up-to-date information, overcoming the knowledge cutoff problem.</li>
+                    <li><strong>Reduced Hallucinations:</strong> By grounding the LLM's response in a set of retrieved documents, RAG reduces the likelihood of the model "hallucinating" or making up facts.</li>
+                    <li><strong>Increased Trust and Transparency:</strong> RAG systems can cite their sources, allowing users to verify the information and increasing trust in the system.</li>
+                    <li><strong>Private and Domain-Specific Knowledge:</strong> RAG allows you to build Q&A systems over your own private documents, without the need to fine-tune a massive LLM.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    RAG is a powerful and flexible architecture that combines the best of both worlds: the vast knowledge and generative capabilities of LLMs, and the ability to access and use real-time, domain-specific information. It is a key enabler for building sophisticated, reliable, and trustworthy AI systems.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

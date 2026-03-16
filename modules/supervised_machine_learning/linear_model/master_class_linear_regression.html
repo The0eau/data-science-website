@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Linear & Regularized Regression</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Linear & Regularized Regression Master Class</h1>
+            <p><a href="linear_models.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Linear Models</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="linear_regression.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Fitting a Line to Data</h2>
+                <p>
+                    <strong>Linear Regression</strong> models the relationship between a dependent variable (what you want to predict) and one or more independent variables (the features) by fitting a linear equation to the observed data. The goal is to find the straight line that best minimizes the distance to all data points.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. Regularization: Preventing Overfitting</h2>
+                <p>
+                    In situations with many features, linear regression can overfit the training data. <strong>Regularization</strong> introduces a penalty for large coefficients, forcing the model to be simpler and more general.
+                </p>
+                <ul>
+                    <li><strong>L1 Regularization (Lasso):</strong> Adds a penalty based on the absolute value of the coefficients. It is unique in its ability to shrink some coefficients to exactly zero, effectively performing feature selection.</li>
+                    <li><strong>L2 Regularization (Ridge):</strong> Adds a penalty based on the squared value of the coefficients. It shrinks large coefficients but does not set them to zero.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>Highly Interpretable:</strong> The model's coefficients clearly show the impact of each feature on the prediction.</li>
+                            <li><strong>Computationally Efficient:</strong> Simple to implement and fast to train, even on large datasets.</li>
+                            <li><strong>Reduces Overfitting (with Regularization):</strong> Ridge and Lasso make the model more robust when dealing with complex data.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Assumes Linearity:</strong> Performs poorly if the underlying relationship between features and the target is not linear.</li>
+                            <li><strong>Sensitive to Outliers:</strong> Extreme values can disproportionately influence the model's parameters.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Linear and regularized regression are foundational algorithms in machine learning. They provide an interpretable and efficient baseline for regression problems and are essential tools for understanding the relationships within your data.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

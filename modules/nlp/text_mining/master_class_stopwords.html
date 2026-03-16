@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Stopword Filtering</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Stopword Filtering Master Class</h1>
+            <p><a href="text_mining.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Text Mining</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="stop_words.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Increasing Information Density</h2>
+                <p>
+                    In any language, there are words that appear with very high frequency but carry little semantic meaning. These are known as <strong>stopwords</strong>, and they include articles ("the", "a"), prepositions ("in", "on"), and conjunctions ("and", "but"). Stopword filtering is the process of removing these words from the text to focus on the words that carry the most information.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. Why Filter Stopwords?</h2>
+                <ul>
+                    <li><strong>Reduced Dimensionality:</strong> Removing stopwords significantly reduces the size of the vocabulary, which can speed up model training and reduce memory usage.</li>
+                    <li><strong>Improved Performance:</strong> For certain tasks like topic modeling or text classification, stopwords can act as noise and distract the model from the important keywords.</li>
+                    <li><strong>Focus on Content:</strong> By filtering out the grammatical glue, we are left with the core concepts of the text.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. When NOT to Filter Stopwords</h2>
+                <p>
+                    Stopword removal is not always the right choice. For tasks that require an understanding of grammar and context, stopwords are essential:
+                </p>
+                <ul>
+                    <li><strong>Sentiment Analysis:</strong> The word "not" is often a stopword, but removing it would completely change the meaning of a phrase like "not good".</li>
+                    <li><strong>Language Modeling:</strong> Models like GPT that generate human-like text need stopwords to create grammatically correct and natural-sounding sentences.</li>
+                    <li><strong>Machine Translation:</strong> Correct translation requires a full understanding of the grammatical structure of the source and target languages.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Stopword filtering is a simple yet powerful technique for text preprocessing. It is a crucial step in many NLP pipelines, but it must be applied judiciously, with a clear understanding of the downstream task. The decision to remove stopwords should always be based on whether they are likely to be noise or a valuable signal for the specific problem you are trying to solve.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Hierarchical Clustering</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hierarchical Clustering (AHC) Master Class</h1>
+            <p><a href="clustering.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Clustering</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Ready to see the theory in practice?</p>
+                <a href="hierarchical_clustering.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #5e5f61, #a3a5a5); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Go to Demo</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. The Core Idea: Building a Tree of Clusters</h2>
+                <p>
+                    <strong>Agglomerative Hierarchical Clustering (AHC)</strong> is a "bottom-up" clustering method. It starts by treating each data point as its own cluster. Then, it iteratively merges the two closest clusters until only one cluster (containing all the data) remains. This process creates a tree-like structure called a dendrogram, which shows the hierarchy of how clusters were merged.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. The Role of Linkage Criteria</h2>
+                <p>
+                    The decision of which clusters to merge is determined by a <strong>linkage criterion</strong>, which defines the distance between clusters:
+                </p>
+                <ul>
+                    <li><strong>Ward's Linkage:</strong> Merges the two clusters that result in the minimum increase in the total within-cluster variance. It's often a good default choice and tends to produce clusters of similar sizes.</li>
+                    <li><strong>Average Linkage:</strong> Merges the clusters based on the average distance between all pairs of points in the two clusters.</li>
+                    <li><strong>Complete (or Max) Linkage:</strong> Merges based on the maximum distance between any two points in the clusters.</li>
+                    <li><strong>Single Linkage:</strong> Merges based on the minimum distance between any two points in the clusters.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. Strengths and Weaknesses</h2>
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Strengths</h4>
+                        <ul>
+                            <li><strong>No Need to Specify K:</strong> You don't need to choose the number of clusters beforehand. The dendrogram allows you to see the clustering structure at all levels.</li>
+                            <li><strong>Provides Rich Visualization:</strong> The dendrogram is highly interpretable and shows the relationships between clusters.</li>
+                            <li><strong>Handles Non-Spherical Shapes:</strong> Depending on the linkage criterion, it can find clusters of various shapes.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Weaknesses</h4>
+                        <ul>
+                            <li><strong>Computationally Expensive:</strong> Has a high time complexity (often O(n^3)), making it unsuitable for very large datasets.</li>
+                            <li><strong>Decisions are Final:</strong> Once a merge is made, it cannot be undone, which can lead to suboptimal clusters.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>4. Conclusion</h2>
+                <p>
+                    Hierarchical clustering is a powerful tool for exploratory data analysis. It provides a detailed view of the data's structure, making it ideal for tasks like customer segmentation or understanding taxonomic relationships. While it may not be the fastest algorithm, the insights gained from its dendrogram are often invaluable.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
