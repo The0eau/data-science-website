@@ -22,3 +22,4 @@ htmlcov/
 # Staff computer files
 .DS_Store      # For teachers with Macs
 Thumbs.db      # For teachers with Windows
+data/raw/creditcard.csv

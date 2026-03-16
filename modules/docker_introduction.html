@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Training: From Containers to Swarm</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Docker Training Summary: Running Containers</h1>
+    <p>This document summarizes the basic steps to execute and interact with Docker containers.</p>
+
+    <h2>1. Running a Container</h2>
+    <p>To run your first container, use the Docker Command Line Interface (CLI).</p>
+    <pre><code>$ docker container run -t ubuntu top</code></pre>
+    
+    
+    
+    <ul>
+        <li><strong><code>docker container run</code></strong>: Command to start a new container.</li>
+        <li><strong><code>-t</code></strong>: Allocates a pseudo-TTY for interactive commands.</li>
+        <li><strong><code>ubuntu</code></strong>: The base image.</li>
+        <li><strong><code>top</code></strong>: The process running inside the isolated PID namespace.</li>
+    </ul>
+
+    <hr>
+
+    <h2>2. Working with Docker Hub</h2>
+    <p>Docker Hub is the central registry for official and community images.</p>
+    <h3>Deploying NGINX</h3>
+    <pre><code>$ docker container run --detach --publish 8080:80 --name nginx nginx</code></pre>
+
+    <hr>
+
+    <h2>3. Building Custom Images</h2>
+    <p>The <strong>Dockerfile</strong> defines the environment for your application.</p>
+    
+    
+    
+    <pre><code># Example Dockerfile
+FROM python:3.6.1-alpine
+RUN pip install flask
+COPY app.py /app.py
+CMD ["python", "app.py"]</code></pre>
+
+    <h3>Building and Pushing</h3>
+    <pre><code>$ docker image build -t username/my-app .
+$ docker push username/my-app</code></pre>
+
+    <hr>
+
+    <h2>4. Docker Swarm Orchestration</h2>
+    <p>Swarm manages a cluster of nodes, ensuring high availability and scaling.</p>
+    
+    
+
+    <pre><code>$ docker swarm init --advertise-addr eth0
+$ docker service create --name web-service --replicas 3 -p 80:80 nginx</code></pre>
+
+    <div class="note">
+        <strong>Pro Tip:</strong> Always use an odd number of Managers (3, 5, or 7) to maintain Quorum and prevent "split-brain" scenarios.
+    </div>
+</div>
+
+</body>
+</html>

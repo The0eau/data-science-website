@@ -1,0 +1,145 @@
+---
+title: "ORM & Financial Data: Mapping Credit Card Transactions"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: flatly
+    output-file: "index.html"
+    output-dir: "../../modules/database/demo"
+---
+
+## 1. ORM & Data Science
+When dealing with large datasets like `creditcard.csv`, we often use an **ORM (Object-Relational Mapping)** to manage metadata, such as audit logs, user assignments, or report tagging, without writing complex SQL strings.
+
+
+
+---
+
+## 2. Model Definition
+
+We will create a relationship where one **Reviewer** (Analyst) can be assigned multiple **Transactions** from our dataset.
+
+```{python}
+from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import declarative_base, sessionmaker, relationship
+import pandas as pd
+import os
+
+# 1. PATH CONFIGURATION
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+db_dir = os.path.join(base_path, "data/processed")
+db_path = f"sqlite:///{os.path.join(db_dir, 'fraud_orm.db')}"
+
+os.makedirs(db_dir, exist_ok=True)
+
+# 2. ENGINE & BASE
+engine = create_engine(db_path, echo=False)
+Base = declarative_base()
+
+# 3. MODELS
+class Analyst(Base):
+    __tablename__ = 'analysts'
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    team = Column(String)
+    
+    # One Analyst -> Many Transactions
+    cases = relationship("Transaction", back_populates="reviewer")
+
+class Transaction(Base):
+    __tablename__ = 'transactions'
+    id = Column(Integer, primary_key=True)
+    time = Column(Float)
+    amount = Column(Float)
+    fraud_class = Column(Integer)
+    analyst_id = Column(Integer, ForeignKey('analysts.id'))
+    
+    reviewer = relationship("Analyst", back_populates="cases")
+
+# Create tables
+Base.metadata.create_all(engine)
+
+```
+
+---
+
+## 3. Populating Data from CSV
+
+We extract the first few rows from `creditcard.csv` and inject them into our ORM structure.
+
+```{python}
+# Load Data
+df = pd.read_csv(csv_path, nrows=5)
+
+# Start Session
+Session = sessionmaker(bind=engine)
+session = Session()
+
+# Create a Reviewer
+theau = Analyst(name="Theau", team="Fraud Detection")
+
+# Convert CSV rows to Transaction objects and link them to the Analyst
+for index, row in df.iterrows():
+    tx = Transaction(
+        time=row['Time'], 
+        amount=row['Amount'], 
+        fraud_class=row['Class']
+    )
+    theau.cases.append(tx)
+
+session.add(theau)
+session.commit()
+
+print(f"Success: {len(theau.cases)} transactions assigned to Analyst '{theau.name}'.")
+
+```
+
+---
+
+## 4. Querying & Analysis (CRUD)
+
+Now we can navigate the data through Python objects.
+
+```{python}
+# Find the analyst and their assigned high-value cases
+analyst = session.query(Analyst).filter_by(name="Theau").first()
+
+print(f"Report for {analyst.name} (Team: {analyst.team})")
+print("-" * 30)
+
+for case in analyst.cases:
+    status = "⚠️ FRAUD" if case.fraud_class == 1 else "✅ CLEAR"
+    print(f"TX Time: {case.time} | Amount: ${case.amount} | Status: {status}")
+
+# UPDATE Example: Adjusting a transaction amount manually
+if analyst.cases:
+    first_case = analyst.cases[0]
+    first_case.amount = 0.00  # Nullifying for demo
+    session.commit()
+    print(f"\n[Update] Transaction {first_case.id} amount reset to 0.")
+
+# CLEANUP Example: Delete the analyst (will delete cases via cascade)
+session.delete(analyst)
+session.commit()
+print("\n[Delete] Audit session cleared.")
+
+session.close()
+
+```
+
+---
+
+## 5. Final Database State
+
+```{python}
+# Verification via Pandas
+with engine.connect() as conn:
+    remaining = pd.read_sql("SELECT * FROM transactions", conn)
+    print(f"Transactions remaining in DB: {len(remaining)}")
+
+```

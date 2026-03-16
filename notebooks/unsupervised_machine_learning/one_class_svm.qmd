@@ -1,0 +1,120 @@
+---
+title: "Unsupervised Learning: One-Class SVM from Scratch"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: journal
+    output-file: "one_class_svm.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Concept: Separating the Normal from the Origin
+
+The **One-Class SVM (OCSVM)** is an unsupervised algorithm used for novelty and anomaly detection. Unlike a standard SVM that separates two classes, the One-Class SVM attempts to separate the data distribution from the **origin** in a high-dimensional feature space.
+
+
+
+### How it works:
+1.  **Spatial Mapping:** The algorithm maps the data into a high-dimensional space.
+2.  **Hyperplane Optimization:** It finds a hyperplane that maximizes the distance from the origin while encompassing most of the training data.
+3.  **Boundary Definition:** Points that fall on the "origin side" of the hyperplane are flagged as anomalies, while those on the other side are considered inliers (normal).
+4.  **The parameter $\nu$ (Nu):** This serves as a trade-off. It represents the upper bound on the fraction of outliers allowed in the training data and a lower bound on the fraction of support vectors.
+
+---
+
+## 2. Core Implementation
+
+We implement the OCSVM using **Stochastic Gradient Descent (SGD)**. This version uses a linear kernel logic to find the separating hyperplane $(\mathbf{w})$ and the offset $(\rho)$.
+
+
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+
+class OneClassSVMScratch:
+    """
+    One-Class SVM using Stochastic Gradient Descent.
+    nu: fraction of outliers expected.
+    """
+    def __init__(self, nu=0.1, learning_rate=0.01, n_epochs=100):
+        self.nu = nu
+        self.lr = learning_rate
+        self.n_epochs = n_epochs
+        self.w = None
+        self.rho = 0.0
+
+    def fit(self, X):
+        n_samples, n_features = X.shape
+        self.w = np.zeros(n_features)
+        self.rho = 0.0
+        
+        for _ in range(self.n_epochs):
+            for i in range(n_samples):
+                # Calculate the decision score
+                score = np.dot(self.w, X[i]) - self.rho
+                
+                # Update rule based on Hinge Loss
+                if score < 0:
+                    # Point is on the wrong side of the boundary
+                    self.w = (1 - self.lr) * self.w + (self.lr / (self.nu * n_samples)) * X[i]
+                    self.rho = self.rho - self.lr * (1 - 1/self.nu)
+                else:
+                    # Point is correctly "inside" the boundary (Regularization only)
+                    self.w = (1 - self.lr) * self.w
+                    self.rho = self.rho - self.lr
+        return self
+
+    def decision_function(self, X):
+        """Distance from the hyperplane boundary."""
+        return np.dot(X, self.w) - self.rho
+
+    def predict(self, X):
+        """1 for normal, -1 for anomaly."""
+        return np.where(self.decision_function(X) >= 0, 1, -1)
+
+```
+
+---
+
+## 3. Financial Fraud Application (Unsupervised)
+
+In a fraud detection context, the One-Class SVM learns the "signature" of normal transactions. It is particularly robust against datasets where fraud is extremely rare, as it treats the majority class as the only reference point.
+
+```{python}
+# 1. Load Data
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+df = pd.read_csv(csv_path, nrows=100)
+
+# 2. Preprocessing
+# Exclude Class/Time and normalize to establish a consistent scale for weights
+X = df.drop(columns=['Time', 'Class']).values
+X = (X - X.mean(axis=0)) / (X.std(axis=0) + 1e-9)
+
+# 3. Fit One-Class SVM (Unsupervised)
+# We set nu=0.05, assuming about 5% of our data might be anomalous
+ocsvm = OneClassSVMScratch(nu=0.05, n_epochs=200)
+ocsvm.fit(X)
+
+# 4. Generate Scores and Predictions
+df['ocsvm_score'] = ocsvm.decision_function(X)
+df['is_anomaly'] = ocsvm.predict(X)
+
+# 5. Results
+print("--- One-Class SVM Anomalies Detected ---")
+# Sorting by lowest score (most anomalous)
+print(df[['Class', 'Amount', 'ocsvm_score', 'is_anomaly']].sort_values(by='ocsvm_score').head())
+
+```
+
+---
+
+## 4. Conclusion
+
+The **One-Class SVM** is a robust choice when you have a vast amount of normal data but very few (or no) examples of fraud. Unlike density-based methods like LOF, it focuses on finding a global boundary that defines the "normal zone," making it highly effective for catching novel attacks that deviate from known patterns.

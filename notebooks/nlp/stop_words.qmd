@@ -1,0 +1,97 @@
+---
+title: "NLP Foundations: Information Density via Stopword Filtering"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: cosmo
+---
+
+## 1. Concept: Filtering the Signal from the Noise
+
+In NLP, **Stopwords** are the most frequent words in a language (articles, prepositions, conjunctions) that provide grammatical structure but carry very little semantic weight. 
+
+
+
+Filtering these out allows us to:
+1. **Reduce memory footprint**: Smaller feature sets lead to faster training and lower storage requirements.
+2. **Improve Focus**: Models for classification or clustering won't get distracted by the high frequency of words like "and" or "the," which appear in almost every document regardless of the topic.
+
+---
+
+## 2. Implementation: Multi-language Stopword Filter
+
+This implementation uses a **Python Set** for lookups. Because sets use a hash table, checking if a word is a stopword happens in constant time—$O(1)$—which is vital when processing large corpora.
+
+```{python}
+class StopwordFilter:
+    """
+    A tool to remove high-frequency words that carry little semantic meaning.
+    """
+
+    def __init__(self, language="english"):
+        """
+        Initializes the filter with a predefined set of common stopwords.
+        """
+        if language == "english":
+            self.stopwords = {
+                "a", "an", "the", "and", "but", "if", "or", "because", "as", "what",
+                "which", "is", "are", "was", "were", "be", "been", "being",
+                "have", "has", "had", "do", "does", "did", "to", "from", "in", "out"
+            }
+        else: # French
+            self.stopwords = {
+                "le", "la", "les", "un", "une", "des", "de", "du", "et", "ou", 
+                "est", "sont", "en", "pour", "dans", "par", "qui", "que", "ne", "pas"
+            }
+
+    def filter(self, tokens):
+        """
+        Removes stopwords from a list of tokens while maintaining case-insensitivity.
+        """
+        return [t for t in tokens if t.lower() not in self.stopwords]
+
+```
+
+---
+
+## 3. Execution & Impact Analysis
+
+Let's observe how filtering transforms a typical sentence into a dense collection of "content words."
+
+```{python}
+# Initialize the filter
+english_filter = StopwordFilter(language="english")
+
+# Sample data
+raw_tokens = ["The", "data", "science", "is", "an", "amazing", "field", "to", "study"]
+
+# Processing
+clean_tokens = english_filter.filter(raw_tokens)
+
+# Visualization
+import pandas as pd
+reduction = 100 * (1 - len(clean_tokens)/len(raw_tokens))
+
+print(f"Original Tokens: {raw_tokens}")
+print(f"Filtered Tokens: {clean_tokens}")
+print(f"\nInformation Density increased. Vocabulary reduced by {reduction:.1f}%.")
+
+```
+
+---
+
+## 4. When NOT to use Stopword Filtering
+
+It is important to note that stopword removal isn't always beneficial. In specific tasks, these words are essential:
+
+* **Sentiment Analysis**: The word "not" is often a stopword, but removing it flips the meaning of "not happy" to "happy."
+* **Language Modeling**: Models like GPT require stopwords to generate natural, grammatically correct sentences.
+* **Question Answering**: Stopwords help define the relationship between entities and the specific intent of a query.
+
+### Summary of Pipeline Integration
+
+In an industrial AI pipeline, this filter acts as a **"Guard"** that cleans text before it is vectorized by a search engine or indexed by a vector database like FAISS. By stripping away structural noise, we ensure that similarity searches are based on meaningful content rather than grammatical coincidences.

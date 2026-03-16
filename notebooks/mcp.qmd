@@ -1,0 +1,127 @@
+---
+title: "AI Orchestration: Building a News Intelligence Pipeline with MCP"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: lux
+    code-fold: false
+---
+
+## 1. Introduction to MCP Orchestration
+
+The **Model Context Protocol (MCP)** allows us to expose local Python logic as structured tools that a Language Model (LLM) can discover and execute. In this notebook, we build an orchestration layer that connects:
+
+1. **Data Ingestion**: Fetching raw data from a simulated API.
+2. **Data Processing**: Cleaning and enriching data with relevance scores.
+3. **Tool Exposure**: Wrapping the pipeline into an MCP server using `FastMCP`.
+
+
+
+---
+
+## 2. Core Pipeline Logic
+
+We define our modular components. Separating ingestion from processing is a best practice in orchestration, allowing for easier testing and maintenance.
+
+```{python}
+import asyncio
+from typing import List, Dict
+
+async def fetch_news(topic: str) -> List[Dict]:
+    """
+    Simulates fetching raw data from a News API.
+    """
+    return [
+        {"title": f"L'IA révolutionne le {topic}", "content": "Contenu détaillé..."},
+        {"title": f"Nouveaux modèles de {topic} en 2026", "content": "Analyse..."},
+    ]
+
+def analyze_data(raw_items: List[Dict]) -> List[Dict]:
+    """
+    Cleans and enriches raw data.
+    """
+    enriched_results = []
+    for item in raw_items:
+        # Simple heuristic: calculate relevance based on title length
+        sentiment_score = len(item['title']) / 100 
+        enriched_results.append({
+            "headline": item['title'].upper(),
+            "relevance": round(sentiment_score, 2),
+            "processed": True
+        })
+    return enriched_results
+
+```
+
+---
+
+## 3. The FastMCP Server
+
+We use `FastMCP` to bridge these functions into the AI ecosystem. The `@mcp.tool()` decorator handles the creation of the JSON-RPC schema that agents use to understand the tool's purpose.
+
+```{python}
+from mcp.server.fastmcp import FastMCP
+
+# Initializing the server
+mcp = FastMCP("NewsIntelligence")
+
+@mcp.tool()
+async def run_news_pipeline(topic: str):
+    """
+    Pipeline complet : Ingestion -> Analyse -> Résultat.
+    This is the tool the AI will call to perform research.
+    """
+    raw = await fetch_news(topic)
+    final = analyze_data(raw)
+    return final
+
+```
+
+---
+
+## 4. Execution Simulation
+
+To verify the pipeline within this notebook, we use `nest_asyncio` to allow the asynchronous loop to run inside the existing Quarto kernel.
+
+Note: We use a `try-except` block to call the function directly, ensuring compatibility regardless of how `FastMCP` wraps the tool.
+
+```{python}
+import nest_asyncio
+import pandas as pd
+
+# Apply nesting for notebook environments
+nest_asyncio.apply()
+
+async def simulate_agent_call():
+    topic = "Machine Learning"
+    print(f"Simulating AI Agent calling pipeline for: {topic}...\n")
+    
+    # Attempt direct call (standard function) or unwrapped call
+    try:
+        # Check if the function is accessible directly
+        results = await run_news_pipeline(topic)
+    except Exception:
+        # Fallback to the underlying function if the decorator changed the signature
+        results = await run_news_pipeline.__wrapped__(topic)
+        
+    return pd.DataFrame(results)
+
+# Run the simulation
+df_results = asyncio.run(simulate_agent_call())
+df_results
+
+```
+
+---
+
+## 5. Conclusion
+
+By using **FastMCP**, we've transformed standard Python code into an **Agentic Tool**. This orchestration pattern allows for:
+
+* **Separation of Concerns**: The AI handles the "When" to search, while Python handles the "How" to process.
+* **Safety**: Validation happens in code before results are sent to the LLM.
+* **Visibility**: We can log and monitor the pipeline execution independently of the AI's internal reasoning.

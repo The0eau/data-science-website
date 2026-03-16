@@ -1,0 +1,133 @@
+---
+title: "Unsupervised Learning: K-Means & K-Medoids Clustering"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: cosmo
+    output-file: "centroid_clustering.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Concept: Partitioning Clustering
+
+Partitioning algorithms divide a dataset into $K$ distinct, non-overlapping groups. 
+
+### K-Means
+K-Means is the most popular clustering algorithm. It aims to minimize the within-cluster sum of squares (variance). It is fast and efficient but sensitive to outliers because it uses the **mean** to update centroids.
+
+
+### K-Medoids
+K-Medoids is a robust alternative to K-Means. Instead of using the mean, it selects actual data points from the dataset as centers (**medoids**). By typically using Manhattan ($L_1$) distance, it is far less influenced by extreme outliers—a common occurrence in fraud detection.
+
+
+---
+
+## 2. Core Implementation
+
+We implement both algorithms using `numpy` to handle the iterative assignment and update steps.
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+
+# --- K-MEANS ---
+class KMeansScratch:
+    def __init__(self, n_clusters=3, max_iters=100, tol=1e-4, random_state=None):
+        self.n_clusters = n_clusters
+        self.max_iters = max_iters
+        self.tol = tol
+        self.random_state = random_state
+        self.centroids = None
+
+    def fit(self, X):
+        if self.random_state: np.random.seed(self.random_state)
+        idx = np.random.choice(len(X), self.n_clusters, replace=False)
+        self.centroids = X[idx].astype(float)
+
+        for _ in range(self.max_iters):
+            distances = np.linalg.norm(X[:, np.newaxis] - self.centroids, axis=2)
+            labels = np.argmin(distances, axis=1)
+            
+            new_centroids = np.array([X[labels == i].mean(axis=0) for i in range(self.n_clusters)])
+            
+            if np.linalg.norm(new_centroids - self.centroids) < self.tol:
+                break
+            self.centroids = new_centroids
+        return labels
+
+# --- K-MEDOIDS ---
+class KMedoidsScratch:
+    def __init__(self, n_clusters=3, max_iters=100, tol=1e-4, random_state=None):
+        self.n_clusters = n_clusters
+        self.max_iters = max_iters
+        self.tol = tol
+        self.random_state = random_state
+        self.medoids = None
+
+    def fit(self, X):
+        if self.random_state: np.random.seed(self.random_state)
+        idx = np.random.choice(len(X), self.n_clusters, replace=False)
+        self.medoids = X[idx].astype(float)
+
+        for _ in range(self.max_iters):
+            # Use Manhattan distance for K-Medoids
+            distances = np.sum(np.abs(X[:, np.newaxis] - self.medoids), axis=2)
+            labels = np.argmin(distances, axis=1)
+
+            new_medoids = np.copy(self.medoids)
+            for i in range(self.n_clusters):
+                cluster_points = X[labels == i]
+                if len(cluster_points) > 0:
+                    # New medoid is the point minimizing sum of distances within cluster
+                    dists = np.sum(np.abs(cluster_points[:, np.newaxis] - cluster_points), axis=2)
+                    new_medoids[i] = cluster_points[np.argmin(dists.sum(axis=1))]
+
+            if np.linalg.norm(new_medoids - self.medoids) < self.tol:
+                break
+            self.medoids = new_medoids
+        return labels
+
+```
+
+---
+
+## 3. Financial Transaction Clustering
+
+We apply these models to identify "types" of spending behavior. Since credit card data (PCA-transformed) has varying scales, we normalize the data first.
+
+```{python}
+# 1. Load Data
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+df = pd.read_csv(csv_path, nrows=100)
+
+# 2. Features and Normalization
+X = df.drop(columns=['Time', 'Class']).values
+X = (X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0) + 1e-9)
+
+# 3. Fit K-Means
+kmeans = KMeansScratch(n_clusters=3, random_state=42)
+df['kmeans_cluster'] = kmeans.fit(X)
+
+# 4. Fit K-Medoids
+kmedoids = KMedoidsScratch(n_clusters=3, random_state=42)
+df['kmedoids_cluster'] = kmedoids.fit(X)
+
+# 5. Summary
+print("K-Means Cluster Counts:")
+print(df['kmeans_cluster'].value_counts())
+print("\nK-Medoids Cluster Counts:")
+print(df['kmedoids_cluster'].value_counts())
+
+```
+
+---
+
+## 4. Conclusion
+
+While **K-Means** is the standard for fast clustering, **K-Medoids** provides a much-needed robustness when dealing with financial datasets that contain "heavy-tailed" distributions (large transaction amounts). By identifying the "typical" transaction (the medoid), we can better define the boundary of what constitutes normal behavior.

@@ -1,0 +1,180 @@
+---
+title: "Decision Trees from Scratch: Classification & Regression"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: journal
+    output-file: "decision_tree.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Decision Tree Mechanics
+
+Decision trees work by recursively partitioning the data based on feature thresholds that maximize homogeneity in the resulting child nodes.
+
+
+
+* **Classification:** Uses **Entropy** and **Information Gain** to find the best split.
+* **Regression:** Uses **Variance Reduction** to minimize the squared error in child nodes.
+
+---
+
+## 2. Core Implementation
+
+We implement the `Node` structure, a manual data splitting utility, and the base logic shared between both types of trees.
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+from collections import Counter
+
+# --- UTILITIES ---
+def train_test_split_scratch(X, y, test_size=0.2, random_state=None):
+    """Manually split data into training and testing sets."""
+    if random_state:
+        np.random.seed(random_state)
+    indices = np.arange(X.shape[0])
+    np.random.shuffle(indices)
+    
+    split_idx = int(X.shape[0] * (1 - test_size))
+    return X[indices[:split_idx]], X[indices[split_idx:]], y[indices[:split_idx]], y[indices[split_idx:]]
+
+def accuracy_score(y_true, y_pred):
+    return np.sum(y_true == y_pred) / len(y_true)
+
+def confusion_matrix_scratch(y_true, y_pred):
+    matrix = np.zeros((2, 2), dtype=int)
+    for gt, lp in zip(y_true, y_pred):
+        matrix[int(gt)][int(lp)] += 1
+    return matrix
+
+# --- TREE STRUCTURE ---
+class Node:
+    def __init__(self, feature=None, threshold=None, left=None, right=None, *, value=None):
+        self.feature, self.threshold, self.left, self.right, self.value = feature, threshold, left, right, value
+
+    def is_leaf_node(self):
+        return self.value is not None
+
+class BaseTree:
+    def __init__(self, min_samples_split=2, max_depth=100):
+        self.min_samples_split = min_samples_split
+        self.max_depth = max_depth
+        self.root = None
+
+    def _split(self, X_column, split_thresh):
+        left_idxs = np.where(X_column <= split_thresh)[0]
+        right_idxs = np.where(X_column > split_thresh)[0]
+        return left_idxs, right_idxs
+
+    def predict(self, X):
+        return np.array([self._traverse_tree(x, self.root) for x in X])
+
+    def _traverse_tree(self, x, node):
+        if node.is_leaf_node():
+            return node.value
+        if x[node.feature] <= node.threshold:
+            return self._traverse_tree(x, node.left)
+        return self._traverse_tree(x, node.right)
+
+```
+
+---
+
+## 3. Classification Tree (Entropy-based)
+
+The classifier looks for splits that reduce the uncertainty (Entropy) of the labels by maximizing **Information Gain**.
+
+```{python}
+class DecisionTreeClassifierScratch(BaseTree):
+    def fit(self, X, y):
+        self.root = self._grow_tree(X, y)
+
+    def _grow_tree(self, X, y, depth=0):
+        n_samples, n_features = X.shape
+        n_labels = len(np.unique(y))
+        if (depth >= self.max_depth or n_labels == 1 or n_samples < self.min_samples_split):
+            leaf_val = Counter(y).most_common(1)[0][0] if len(y) > 0 else 0
+            return Node(value=leaf_val)
+
+        feat_idxs = np.random.choice(n_features, n_features, replace=False)
+        best_feat, best_thresh = self._best_criteria(X, y, feat_idxs)
+        
+        if best_feat is None:
+            return Node(value=Counter(y).most_common(1)[0][0])
+
+        left_idxs, right_idxs = self._split(X[:, best_feat], best_thresh)
+        left = self._grow_tree(X[left_idxs, :], y[left_idxs], depth + 1)
+        right = self._grow_tree(X[right_idxs, :], y[right_idxs], depth + 1)
+        return Node(best_feat, best_thresh, left, right)
+
+    def _best_criteria(self, X, y, feat_idxs):
+        best_gain = -1
+        split_idx, split_thresh = None, None
+        for feat_idx in feat_idxs:
+            X_col = X[:, feat_idx]
+            for threshold in np.unique(X_col):
+                gain = self._info_gain(y, X_col, threshold)
+                if gain > best_gain:
+                    best_gain, split_idx, split_thresh = gain, feat_idx, threshold
+        return split_idx, split_thresh
+
+    def _info_gain(self, y, X_col, thresh):
+        parent_entropy = self._entropy(y)
+        l_idx, r_idx = self._split(X_col, thresh)
+        if len(l_idx) == 0 or len(r_idx) == 0: return 0
+        n, n_l, n_r = len(y), len(l_idx), len(r_idx)
+        child_entropy = (n_l/n)*self._entropy(y[l_idx]) + (n_r/n)*self._entropy(y[r_idx])
+        return parent_entropy - child_entropy
+
+    def _entropy(self, y):
+        ps = np.bincount(y) / len(y)
+        return -np.sum([p * np.log2(p) for p in ps if p > 0])
+
+```
+
+---
+
+## 4. Application: Financial Fraud Detection
+
+We split our 50-row sample from `creditcard.csv` into training (80%) and testing (20%) sets to evaluate how the decision tree generalizes to unseen transactions.
+
+```{python}
+# Load Data
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+df = pd.read_csv(csv_path, nrows=50)
+
+X = df.drop(columns=['Time', 'Class']).values
+y = df['Class'].values
+
+# 80/20 Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split_scratch(X, y, test_size=0.2, random_state=42)
+
+# Train
+clf = DecisionTreeClassifierScratch(max_depth=5)
+clf.fit(X_train, y_train)
+
+# Predict on Test Set
+y_pred = clf.predict(X_test)
+
+# Results
+print(f"Training set size: {len(X_train)}")
+print(f"Testing set size: {len(X_test)}")
+print("-" * 30)
+print(f"Test Accuracy: {accuracy_score(y_test, y_pred)*100:.2f}%")
+print("\nConfusion Matrix (Test Set):")
+print(confusion_matrix_scratch(y_test, y_pred))
+
+```
+
+---
+
+## 5. Summary of Metrics
+
+The decision tree creates a series of hierarchical rules to isolate fraud cases. By using a **Train/Test split**, we can confirm if the rules learned on the initial 40 samples are applicable to the 10 samples held back. This process is essential for building robust models that don't just "memorize" the training data.

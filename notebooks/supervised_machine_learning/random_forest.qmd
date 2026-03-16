@@ -1,0 +1,190 @@
+---
+title: "Ensemble Learning: Random Forest from Scratch"
+author: "Theau"
+date: "2026-03-05"
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+    toc: true
+    theme: flatly
+    output-file: "random_forest.html"
+    output-dir: "../../modules/machine-learning/demo"
+---
+
+## 1. Concept: Bagging and Random Forests
+
+A **Random Forest** is an ensemble of Decision Trees. It overcomes the tendency of a single tree to overfit by relying on two main concepts:
+1.  **Bootstrap Aggregating (Bagging):** Each tree in the forest is trained on a random sample of the data (sampled with replacement).
+2.  **Majority Voting:** Instead of relying on one model, the final prediction is the class that receives the most "votes" from all individual trees.
+
+
+
+---
+
+## 2. Core Implementation
+
+We define a manual `train_test_split_scratch` function and the underlying **Decision Tree** engine.
+
+```{python}
+import numpy as np
+import pandas as pd
+import os
+from collections import Counter
+
+# --- UTILITIES ---
+def train_test_split_scratch(X, y, test_size=0.2, random_state=None):
+    """Splits data into training and testing sets manually."""
+    if random_state:
+        np.random.seed(random_state)
+    indices = np.arange(X.shape[0])
+    np.random.shuffle(indices)
+    split_idx = int(X.shape[0] * (1 - test_size))
+    return X[indices[:split_idx]], X[indices[split_idx:]], y[indices[:split_idx]], y[indices[split_idx:]]
+
+def accuracy_score(y_true, y_pred):
+    return np.sum(y_true == y_pred) / len(y_true)
+
+def confusion_matrix_scratch(y_true, y_pred):
+    matrix = np.zeros((2, 2), dtype=int)
+    for gt, lp in zip(y_true, y_pred):
+        matrix[int(gt)][int(lp)] += 1
+    return matrix
+
+# --- DECISION TREE ENGINE ---
+class Node:
+    def __init__(self, feature=None, threshold=None, left=None, right=None, *, value=None):
+        self.feature, self.threshold, self.left, self.right, self.value = feature, threshold, left, right, value
+
+    def is_leaf_node(self):
+        return self.value is not None
+
+class DecisionTreeClassifierScratch:
+    def __init__(self, min_samples_split=2, max_depth=100):
+        self.min_samples_split, self.max_depth, self.root = min_samples_split, max_depth, None
+
+    def fit(self, X, y):
+        self.root = self._grow_tree(X, y)
+
+    def _grow_tree(self, X, y, depth=0):
+        n_samples, n_features = X.shape
+        if depth >= self.max_depth or len(np.unique(y)) == 1 or n_samples < self.min_samples_split:
+            leaf_val = Counter(y).most_common(1)[0][0] if len(y) > 0 else 0
+            return Node(value=leaf_val)
+
+        feat_idxs = np.random.choice(n_features, n_features, replace=False)
+        best_feat, best_thresh = self._best_criteria(X, y, feat_idxs)
+        
+        if best_feat is None:
+            return Node(value=Counter(y).most_common(1)[0][0])
+
+        l_idxs = np.where(X[:, best_feat] <= best_thresh)[0]
+        r_idxs = np.where(X[:, best_feat] > best_thresh)[0]
+        
+        left = self._grow_tree(X[l_idxs, :], y[l_idxs], depth + 1)
+        right = self._grow_tree(X[r_idxs, :], y[r_idxs], depth + 1)
+        return Node(best_feat, best_thresh, left, right)
+
+    def _best_criteria(self, X, y, feat_idxs):
+        best_gain = -1
+        split_idx, split_thresh = None, None
+        for feat_idx in feat_idxs:
+            X_col = X[:, feat_idx]
+            for threshold in np.unique(X_col):
+                gain = self._info_gain(y, X_col, threshold)
+                if gain > best_gain:
+                    best_gain, split_idx, split_thresh = gain, feat_idx, threshold
+        return split_idx, split_thresh
+
+    def _info_gain(self, y, X_col, thresh):
+        parent_entropy = self._entropy(y)
+        l_idx = np.where(X_col <= thresh)[0]
+        r_idx = np.where(X_col > thresh)[0]
+        if len(l_idx) == 0 or len(r_idx) == 0: return 0
+        n, n_l, n_r = len(y), len(l_idx), len(r_idx)
+        child_entropy = (n_l/n)*self._entropy(y[l_idx]) + (n_r/n)*self._entropy(y[r_idx])
+        return parent_entropy - child_entropy
+
+    def _entropy(self, y):
+        ps = np.bincount(y) / len(y)
+        return -np.sum([p * np.log2(p) for p in ps if p > 0])
+
+    def predict(self, X):
+        return np.array([self._traverse_tree(x, self.root) for x in X])
+
+    def _traverse_tree(self, x, node):
+        if node.is_leaf_node(): return node.value
+        if x[node.feature] <= node.threshold:
+            return self._traverse_tree(x, node.left)
+        return self._traverse_tree(x, node.right)
+
+```
+
+---
+
+## 3. Random Forest Assembly
+
+The forest uses **Bootstrap Sampling** (training on subsets of data with replacement) to create a diverse set of trees.
+
+```{python}
+class RandomForestClassifierScratch:
+    def __init__(self, n_trees=5, max_depth=10, min_samples_split=2):
+        self.n_trees, self.max_depth, self.min_samples_split = n_trees, max_depth, min_samples_split
+        self.trees = []
+
+    def fit(self, X, y):
+        self.trees = []
+        for _ in range(self.n_trees):
+            tree = DecisionTreeClassifierScratch(max_depth=self.max_depth, min_samples_split=self.min_samples_split)
+            # Bootstrap sampling: pick indices with replacement
+            indices = np.random.choice(X.shape[0], X.shape[0], replace=True)
+            tree.fit(X[indices], y[indices])
+            self.trees.append(tree)
+
+    def predict(self, X):
+        # Aggregate predictions from all trees
+        tree_preds = np.array([tree.predict(X) for tree in self.trees])
+        # Minority/Majority voting
+        tree_preds = np.swapaxes(tree_preds, 0, 1)
+        return np.array([Counter(s).most_common(1)[0][0] for s in tree_preds])
+
+```
+
+---
+
+## 4. Evaluation on Financial Fraud Data
+
+We load 50 rows from `creditcard.csv` and apply an **80/20 Train-Test split**. By training the forest on the training set, we reduce the variance of our predictions.
+
+```{python}
+# Load Data
+base_path = os.path.abspath("../../")
+csv_path = os.path.join(base_path, "data/raw/creditcard.csv")
+df = pd.read_csv(csv_path, nrows=50)
+
+X = df.drop(columns=['Time', 'Class']).values
+y = df['Class'].values
+
+# 80/20 Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split_scratch(X, y, test_size=0.2, random_state=42)
+
+# Initialize Forest
+rf = RandomForestClassifierScratch(n_trees=10, max_depth=5)
+rf.fit(X_train, y_train)
+
+# Predict on Test Set
+y_pred = rf.predict(X_test)
+
+print(f"Training samples: {len(X_train)} | Test samples: {len(X_test)}")
+print("-" * 30)
+print(f"Test Accuracy: {accuracy_score(y_test, y_pred) * 100:.2f}%")
+print("\nConfusion Matrix (Test Set):")
+print(confusion_matrix_scratch(y_test, y_pred))
+
+```
+
+---
+
+## 5. Conclusion
+
+Random Forest demonstrates that multiple "weak" or individual decision trees can combine to form a robust classifier. By using **Bootstrap sampling** and **Majority voting**, we ensure that the model is less sensitive to specific anomalies in the training set, leading to better generalization on the test set.
