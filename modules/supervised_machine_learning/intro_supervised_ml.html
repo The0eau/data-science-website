@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class - Supervised Learning Theory</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Supervised Learning Master Class</h1>
+            <p><a href="supervised.html" style="color: #A0A0A0; text-decoration: none;">&larr; Back to Curriculum</a></p>
+            <div style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 25px; margin-top: 30px; margin-bottom: 60px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <p style="margin-top: 0; margin-bottom: 15px; font-size: 1.1em; color: #E0E0E0;">Deep dive into the engine of Machine Learning.</p>
+                <a href="ml_simulator.html" style="display: inline-block; padding: 15px 30px; font-size: 1.1em; font-weight: bold; text-decoration: none; color: white; background: linear-gradient(45deg, #2c3e50, #4ca1af); border-radius: 50px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease-in-out;">Test Optimization Logic</a>
+            </div>
+        </header>
+
+        <main class="content content-page">
+            <section>
+                <h2>1. Data Splitting & Validation Strategies</h2>
+                <p>
+                    A model is only as good as its evaluation. To ensure a model generalizes to unseen data, we must strictly isolate information during the development cycle.
+                </p>
+                <ul>
+                    <li><strong>The Three-Way Split:</strong> 
+                        <ul>
+                            <li><em>Train Set:</em> Used to compute gradients and update model parameters (weights).</li>
+                            <li><em>Validation Set:</em> Used for <strong>Hyperparameter Tuning</strong> (choosing tree depth, learning rate). It prevents overfitting on the test set.</li>
+                            <li><em>Test Set:</em> The "Gold Standard". It is only used once at the very end to estimate real-world performance.</li>
+                        </ul>
+                    </li>
+                    <li><strong>K-Fold Cross-Validation:</strong> For smaller datasets, a single split is risky. We divide the data into <em>k</em> folds, training <em>k</em> times while rotating the validation fold. This provides a mean performance score with a standard deviation.</li>
+                    <li><strong>Stratified Splitting:</strong> In cases of <strong>Class Imbalance</strong> (e.g., Fraud detection), stratification ensures that the proportion of each class is identical in every split, preventing the model from never "seeing" the minority class during training.</li>
+                </ul>
+                
+            </section>
+            
+            <section>
+                <h2>2. The Optimization Engine: Loss & Gradient Descent</h2>
+                <p>
+                    Supervised learning is an optimization problem. We want to minimize the "gap" between predictions ($\hat{y}$) and truth ($y$).
+                </p>
+                <h3>Loss Functions</h3>
+                <p>The <strong>Loss Function</strong> acts as the mathematical compass of the model:</p>
+                <ul>
+                    <li><strong>MSE (Mean Squared Error):</strong> $\frac{1}{n} \sum (y - \hat{y})^2$. Used for regression. It heavily penalizes large errors (outliers) due to the squaring effect.</li>
+                    <li><strong>Binary Cross-Entropy (Log-Loss):</strong> Used for classification. It penalizes confident but incorrect predictions exponentially.</li>
+                </ul>
+                <h3>Gradient Descent Update Rule</h3>
+                <p>To find the minimum of the loss, we iteratively update weights ($w$):</p>
+                <div style="background: #252525; padding: 15px; border-radius: 5px; font-family: 'Courier New', monospace; color: #4ca1af; margin: 20px 0;">
+                    w_new = w_old - η * ∇L(w)
+                </div>
+                <p>
+                    Where <strong>η (Learning Rate)</strong> is the step size. If too large, the model overshoots the minimum; if too small, convergence is painfully slow.
+                </p>
+                
+            </section>
+
+            <section>
+                <h2>3. Bias-Variance Tradeoff & Regularization</h2>
+                <p>
+                    This is the "medical diagnosis" of model performance.
+                </p>
+                <ul>
+                    <li><strong>Underfitting (High Bias):</strong> The model is too simple to capture the underlying pattern. Error is high on both training and testing sets.</li>
+                    <li><strong>Overfitting (High Variance):</strong> The model captures the noise instead of the signal. Error is low on training but high on testing.</li>
+                </ul>
+                <h3>Regularization (L1 & L2)</h3>
+                <p>To combat overfitting, we add a penalty to the loss function to keep weights small:</p>
+                <ul>
+                    <li><strong>Ridge (L2):</strong> Adds $\lambda \sum w^2$. It prevents any single feature from having too much influence, making the model stable.</li>
+                    <li><strong>Lasso (L1):</strong> Adds $\lambda \sum |w|$. It can shrink some weights to exactly <strong>zero</strong>, performing automated <strong>Feature Selection</strong>.</li>
+                </ul>
+                
+            </section>
+
+            <section>
+                <h2>4. Evaluation Metrics: The Business Context</h2>
+                <p>Choosing the right metric depends on the <strong>cost of failure</strong>. Accuracy is often a trap in imbalanced datasets.</p>
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                    <div style="width: 48%; min-width: 300px;">
+                        <h4>Classification Metrics</h4>
+                        <ul>
+                            <li><strong>Precision:</strong> High when <strong>False Positives</strong> are costly (e.g., Spam detection).</li>
+                            <li><strong>Recall:</strong> High when <strong>False Negatives</strong> are dangerous (e.g., Cancer screening).</li>
+                            <li><strong>ROC-AUC:</strong> Measures the model's ability to rank positive instances higher than negative ones across all thresholds.</li>
+                        </ul>
+                    </div>
+                    <div style="width: 48%; min-width: 300px;">
+                        <h4>Regression Metrics</h4>
+                        <ul>
+                            <li><strong>MAE:</strong> Average error magnitude. Robust to outliers.</li>
+                            <li><strong>RMSE:</strong> Root Mean Square Error. Penalizes large errors severely—useful when big mistakes are unacceptable.</li>
+                            <li><strong>R²:</strong> The proportion of variance explained by the model (0 to 1).</li>
+                        </ul>
+                    </div>
+                </div>
+                
+            </section>
+
+            <section>
+                <h2>5. Hyperparameter Tuning</h2>
+                <p>
+                    Finding the optimal settings for a model (like $\lambda$ in Ridge or the depth of a tree) requires search strategies:
+                </p>
+                <ul>
+                    <li><strong>Grid Search:</strong> Exhaustively tries every combination. Computationally expensive but thorough.</li>
+                    <li><strong>Random Search:</strong> Samples combinations randomly. Surprisingly more efficient for high-dimensional spaces.</li>
+                    <li><strong>Bayesian Optimization:</strong> Uses previous results to predict which hyperparameters will likely perform better in the next iteration.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Conclusion</h2>
+                <p>
+                    Mastering supervised learning requires a balance between mathematical optimization (Loss & Gradient) and rigorous validation (Splitting & Metrics). Always align your choice of algorithm and metric with the specific business outcome you aim to achieve.
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
